@@ -88,12 +88,17 @@
             <article class="shop-item locked" data-id="grapeFarm"><div class="shop-emoji">🍇</div><div class="item-main"><div class="item-name">ぶどう農園</div><div class="item-desc">りんご強化Lv.1で解放</div><div class="item-bottom"><span class="item-cost">🍉 1,200</span><button class="buy-btn" data-buy="grapeFarm">ロック中</button></div></div></article>
             <article class="shop-item" data-id="tapupgrade"><div class="shop-emoji">💪</div><div class="item-main"><div class="item-name">タップ強化</div><div class="item-desc">タップの基本パワー +1</div><div class="item-bottom"><span class="item-cost">🍉 50</span><button class="buy-btn" data-buy="tapupgrade">買う</button></div></div></article>
             <article class="shop-item" data-id="golden"><div class="shop-emoji">🌟</div><div class="item-main"><div class="item-name">黄金のすいか畑</div><div class="item-desc">たくさんの🍉ポイントを自動生産</div><div class="item-bottom"><span class="item-cost">🍉 2,500</span><button class="buy-btn" data-buy="golden">買う</button></div></div></article>
+            <article class="shop-item locked" data-id="bigmelonfarm"><div class="shop-emoji">🍉</div><div class="item-main"><div class="item-name">大玉すいか農園</div><div class="item-desc">すいか畑を2個買うと解放</div><div class="item-bottom"><span class="item-cost">🍉 900</span><button class="buy-btn" data-buy="bigmelonfarm">ロック中</button></div></div></article>
+            <article class="shop-item locked" data-id="greenhouse"><div class="shop-emoji">🏡</div><div class="item-main"><div class="item-name">温室すいか農園</div><div class="item-desc">大玉すいか農園を買うと解放</div><div class="item-bottom"><span class="item-cost">🍉 5,500</span><button class="buy-btn" data-buy="greenhouse">ロック中</button></div></div></article>
+            <article class="shop-item locked" data-id="hydroponic"><div class="shop-emoji">💧</div><div class="item-main"><div class="item-name">水耕すいか農園</div><div class="item-desc">温室すいか農園を2個買うと解放</div><div class="item-bottom"><span class="item-cost">🍉 25,000</span><button class="buy-btn" data-buy="hydroponic">ロック中</button></div></div></article>
+            <article class="shop-item locked" data-id="skyfarm"><div class="shop-emoji">☁️</div><div class="item-main"><div class="item-name">空中すいか農園</div><div class="item-desc">1回転生すると解放</div><div class="item-bottom"><span class="item-cost">🍉 100,000</span><button class="buy-btn" data-buy="skyfarm">ロック中</button></div></div></article>
+            <article class="shop-item locked" data-id="moonfarm"><div class="shop-emoji">🌙</div><div class="item-main"><div class="item-name">月面すいか農園</div><div class="item-desc">転生3回＋強化ラボ解放で解放</div><div class="item-bottom"><span class="item-cost">🍉 400,000</span><button class="buy-btn" data-buy="moonfarm">ロック中</button></div></div></article>
           </div>
         </div>
 
         <div class="panel lab-panel">
           <div class="shop-title-row"><h2 class="section-title">🧪 フルーツ強化ラボ</h2><span class="shop-tag">倍率アップ！</span></div>
-          <p class="lab-intro">🍍で強化 → 🍎で大強化 → 🍇で超強化！ラボは中盤以降に解放されるよ。強化倍率は大きくなりすぎないように調整。</p>
+          <p class="lab-intro">🍍で強化 → 🍎で大強化 → 🍇で超強化！ラボは転生3回＋累計250,000ポイントで解放。農園も少しずつ増やしていこう。</p>
           <div class="lab-locked" id="labLocked">
             <div class="lab-lock-icon">🔒</div>
             <div class="lab-lock-title">強化ラボはまだ封印中</div>
@@ -178,7 +183,12 @@
       appleFarm:{name:'りんご農園',cost:500,growth:1.65,fruit:'apple',fruitRate:.11,emoji:'🍎',desc:'強化に使うりんごを育てる',unlock:()=>state.upgrades.pineapple>=1},
       grapeFarm:{name:'ぶどう農園',cost:2000,growth:1.75,fruit:'grape',fruitRate:.08,emoji:'🍇',desc:'強化に使うぶどうを育てる',unlock:()=>state.upgrades.apple>=1},
       tapupgrade:{name:'タップ強化',cost:100,growth:1.70,tap:1,emoji:'💪',desc:'タップの基本パワー +1'},
-      golden:{name:'黄金のすいか畑',cost:6000,growth:1.85,rate:12,emoji:'🌟',desc:'すいかポイントを大量生産'}
+      golden:{name:'黄金のすいか畑',cost:6000,growth:1.85,rate:12,emoji:'🌟',desc:'すいかポイントを大量生産'},
+      bigmelonfarm:{name:'大玉すいか農園',cost:900,growth:1.52,rate:9,emoji:'🍉',desc:'大きなすいかを育てて自動生産',unlock:()=> (state.owned.melonfarm||0)>=2,unlockText:'🌱 先に普通のすいか畑を2個買おう！'},
+      greenhouse:{name:'温室すいか農園',cost:5500,growth:1.56,rate:30,emoji:'🏡',desc:'温室で年中すいかを生産',unlock:()=> (state.owned.bigmelonfarm||0)>=1,unlockText:'🍉 先に大玉すいか農園を1個買おう！'},
+      hydroponic:{name:'水耕すいか農園',cost:25000,growth:1.60,rate:90,emoji:'💧',desc:'水耕栽培ですいかを効率生産',unlock:()=> (state.owned.greenhouse||0)>=2,unlockText:'🏡 温室すいか農園を2個買うと解放！'},
+      skyfarm:{name:'空中すいか農園',cost:100000,growth:1.65,rate:260,emoji:'☁️',desc:'空中農園からすいかを自動生産',unlock:()=> (state.rebirths||0)>=1,unlockText:'🌌 1回転生すると解放されるよ！'},
+      moonfarm:{name:'月面すいか農園',cost:400000,growth:1.70,rate:700,emoji:'🌙',desc:'月面農園からすいかを自動生産',unlock:()=> (state.rebirths||0)>=3&&labUnlocked(),unlockText:'🌌 転生3回と強化ラボの解放が必要だよ！'}
     };
     const upgradeData={
       pineapple:{name:'パイナップル強化',fruit:'pineapple',emoji:'🍍',base:40,growth:1.85,bonusPerLevel:.10,maxLevel:5,desc:'タップ・生産 +10%（上限Lv.5）',unlocked:()=> (state.owned.pineappleFarm||0)>0},
@@ -191,7 +201,7 @@
       {n:10000,title:'フルーツ王国！',desc:'転生できるくらい稼ごう！',icon:'👑'},
       {n:250000,title:'すいかレジェンド！',desc:'転生を重ねて、強化ラボの封印を解こう！',icon:'🏆'}
     ];
-    const fresh=()=>({version:4,points:0,total:0,lifetimeTotal:0,tap:1,legacyRate:0,owned:{melonfarm:0,pineappleFarm:0,appleFarm:0,grapeFarm:0,tapupgrade:0,golden:0},stock:{pineapple:0,apple:0,grape:0},upgrades:{pineapple:0,apple:0,grape:0},rebirths:0,rebirthShards:0,rebirthPerks:{tap:0,farm:0,fruit:0,lab:0,start:0,luck:0,golden:0,coupon:0,offline:0,labcost:0,mission:0,goldspeed:0,shard:0},clicks:0,claimedMissions:{},dailyClaim:'',goldenReady:false,goldenNext:Date.now()+35000,lastTime:Date.now()});
+    const fresh=()=>({version:4,points:0,total:0,lifetimeTotal:0,tap:1,legacyRate:0,owned:{melonfarm:0,pineappleFarm:0,appleFarm:0,grapeFarm:0,tapupgrade:0,golden:0,bigmelonfarm:0,greenhouse:0,hydroponic:0,skyfarm:0,moonfarm:0},stock:{pineapple:0,apple:0,grape:0},upgrades:{pineapple:0,apple:0,grape:0},rebirths:0,rebirthShards:0,rebirthPerks:{tap:0,farm:0,fruit:0,lab:0,start:0,luck:0,golden:0,coupon:0,offline:0,labcost:0,mission:0,goldspeed:0,shard:0},clicks:0,claimedMissions:{},dailyClaim:'',goldenReady:false,goldenNext:Date.now()+35000,lastTime:Date.now()});
     let state=fresh(),noticeTimer,selectedRebirthPerk='';
     const perkData={
       tap:{name:'タップの極意',icon:'⚡',next:'タップ基本力 +1（最大Lv.10）',maxLevel:10,summary:'タップ+',describe:lv=>`タップ基本力 +${Math.min(10,lv)}`},
@@ -218,7 +228,7 @@
     function upgradeMultiplier(){const labIsOpen=labUnlocked(),pine=labIsOpen?Math.min(.5,(state.upgrades.pineapple||0)*.10):0,apple=labIsOpen?Math.min(.6,(state.upgrades.apple||0)*.15):0,grape=labIsOpen?Math.min(.6,(state.upgrades.grape||0)*.20):0,labBonus=labIsOpen?1+Math.min(.30,perkLevel('lab')*.03):1;return (1+pine+apple+grape)*rebirthMultiplier()*labBonus}
     function rebirthMultiplier(){return 1+Math.min(.25,(state.rebirthShards||0)*.005)}
     function rebirthRequirement(){return Math.floor(REBIRTH_REQUIREMENT*Math.pow(1.5,Math.min(state.rebirths||0,15)))}
-    function rate(){const raw=(shop.melonfarm.rate*effectiveOwned(state.owned.melonfarm||0))+(shop.golden.rate*effectiveOwned(state.owned.golden||0))+Math.min(50,state.legacyRate||0);return scaledGain(raw*upgradeMultiplier()*(1+Math.min(.50,perkLevel('farm')*.05)))}
+    function rate(){const farmRate=Object.entries(shop).reduce((sum,[id,item])=>sum+(item.rate||0)*effectiveOwned(state.owned[id]||0),0);const raw=farmRate+Math.min(50,state.legacyRate||0);return scaledGain(raw*upgradeMultiplier()*(1+Math.min(.50,perkLevel('farm')*.05)))}
     function nextCost(id){const item=shop[id],discount=Math.min(.30,perkLevel('coupon')*.03);return Math.ceil(item.cost*Math.pow(item.growth||1.17,state.owned[id]||0)*(1-discount))}
     function upgradeCost(id){const item=upgradeData[id],discount=Math.min(.30,perkLevel('labcost')*.05);return Math.ceil(item.base*Math.pow(item.growth,state.upgrades[id]||0)*(1-discount))}
     function rebirthReward(){return 1+(state.total>=rebirthRequirement()*3?1:0)+Math.floor(perkLevel('shard')/3)}
@@ -270,7 +280,7 @@
         else if(item.tap){el.querySelector('.item-desc').textContent=`タップの基本パワー +1（いま基本 +${fmt(state.tap)}）`}
         else{el.querySelector('.item-desc').textContent=`毎秒 +${fmt(item.rate)} 🍉ポイント`}
         el.classList.toggle('locked',!unlocked);el.classList.toggle('can-buy',unlocked&&state.points>=cost);btn.disabled=!unlocked;btn.textContent=!unlocked?'ロック中':owned>0?`買う · ${owned}個`:'買う';btn.classList.toggle('ready',unlocked&&state.points>=cost);
-        if(!unlocked){el.querySelector('.item-desc').textContent=id==='appleFarm'?'パイン強化Lv.1で解放':id==='grapeFarm'?'りんご強化Lv.1で解放':item.desc}
+        if(!unlocked){el.querySelector('.item-desc').textContent=item.unlockText||item.desc}
         btn.setAttribute('aria-label',unlocked?`${item.name}を${fmt(cost)}すいかポイントで購入`:`${item.name}はまだロック中`);
       });
     }
@@ -289,7 +299,7 @@
     function render(){
       $('score').textContent=fmt(state.points);$('tapPower').textContent='+'+fmt(state.tap*upgradeMultiplier());$('perSecond').textContent=fmt(rate());$('rebirthMultiplier').textContent='×'+rebirthMultiplier().toFixed(1);
       $('stockPineapple').textContent=fmt(state.stock.pineapple);$('stockApple').textContent=fmt(state.stock.apple);$('stockGrape').textContent=fmt(state.stock.grape);
-      $('farmLevel').textContent=`🌱 すいか畑 レベル ${1+Math.floor(state.total/500)}`;
+      $('farmLevel').textContent=`🍉 すいか王国レベル ${1+Math.floor(state.total/500)} ・ 農園 ${fmt(['melonfarm','golden','bigmelonfarm','greenhouse','hydroponic','skyfarm','moonfarm'].reduce((sum,id)=>sum+(state.owned[id]||0),0))}個`;
       renderShop();renderUpgrades();
       const labOpen=labUnlocked();$('labLocked').style.display=labOpen?'none':'block';$('upgradeList').style.display=labOpen?'grid':'none';$('labRebirthProgress').textContent=`🌌 転生 ${fmt(Math.min(state.rebirths,LAB_UNLOCK_REBIRTHS))} / ${LAB_UNLOCK_REBIRTHS}回`; $('labLifetimeProgress').textContent=`🍉 累計 ${fmt(Math.min(state.lifetimeTotal,LAB_UNLOCK_LIFETIME))} / ${fmt(LAB_UNLOCK_LIFETIME)}`;
       const goal=goals.find(g=>state.total<g.n)||goals[goals.length-1],previous=goals[goals.indexOf(goal)-1]?.n||0,completed=state.total>=goals[goals.length-1].n;
@@ -333,7 +343,7 @@
       if(state.total>=100&&(state.total-amount)<100)toast('🎉 100ポイント達成！農園ショップを見てみよう');if(state.total>=1000&&(state.total-amount)<1000)toast('🍍 フルーツ強化への道が開けてきたよ！');const need=rebirthRequirement();if(state.total>=need&&(state.total-amount)<need)toast('🌌 転生できるようになったよ！');
     });
     $('shopList').addEventListener('click',e=>{
-      const btn=e.target.closest('[data-buy]');if(!btn)return;const id=btn.dataset.buy,item=shop[id];if(!item)return;if(item.unlock&&!item.unlock()){toast(id==='appleFarm'?'🍍 パイン強化Lv.1でりんご農園が解放！':'🍎 りんご強化Lv.1でぶどう農園が解放！');return}
+      const btn=e.target.closest('[data-buy]');if(!btn)return;const id=btn.dataset.buy,item=shop[id];if(!item)return;if(item.unlock&&!item.unlock()){toast(item.unlockText||'まだ解放されていないよ！');return}
       const cost=nextCost(id);if(state.points<cost){toast(`あと ${fmt(cost-state.points)} 🍉ポイント必要だよ！`);return}
       state.points-=cost;state.owned[id]=(state.owned[id]||0)+1;if(item.tap)state.tap+=item.tap;render();save();toast(`${item.emoji} ${item.name}を購入したよ！`);
     });
