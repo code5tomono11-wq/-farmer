@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#d8f3dc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="すいかクリッカー">
+  <meta name="description" content="すいかをタップ！パイナップル・りんご・ぶどうで強化して、転生してもっと強くなろう！">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <title>すいかクリッカー</title>
+  <style>
+    :root{--leaf:#2d6a4f;--leaf-dark:#1b4332;--leaf-light:#40916c;--cream:#fffdf3;--melon:#e63946;--gold:#ffcf56;--ink:#22352d;--muted:#6a7b70;--line:#d8e8d6;--shadow:0 8px 0 rgba(27,67,50,.10),0 15px 30px rgba(27,67,50,.08)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html{min-height:100%;background:#d8f3dc}
+    body{margin:0;min-height:100vh;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:radial-gradient(circle at 50% 0%,#f7fff2 0,#eaf8df 36%,#d8f3dc 100%);overscroll-behavior:none;user-select:none;-webkit-user-select:none;padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom)}
+    button{font:inherit;cursor:pointer;touch-action:manipulation}
+    button:disabled{cursor:default;opacity:.58}
+    .app{width:min(100%,900px);margin:0 auto;padding:12px 0 28px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 2px 14px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-icon{display:grid;place-items:center;width:49px;height:49px;border-radius:17px;background:#fff;box-shadow:0 4px 0 #bfdcc1;font-size:29px;flex:none}
+    h1{font-size:clamp(20px,4vw,27px);line-height:1.05;letter-spacing:.02em;margin:0;font-weight:900;color:var(--leaf-dark)}.subtitle{font-size:11px;color:var(--muted);margin-top:5px;font-weight:700;letter-spacing:.08em}
+    .top-actions{display:flex;gap:7px}.tiny-btn{border:2px solid #c8dfc7;background:#ffffffc9;color:var(--leaf-dark);border-radius:13px;padding:9px 11px;font-weight:800;font-size:12px;box-shadow:0 3px 0 #c8dfc7;white-space:nowrap}
+    .score-card{background:var(--cream);border:3px solid #fff;border-radius:25px;padding:16px 18px 14px;box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden}.score-card:before,.score-card:after{content:"✦";position:absolute;color:#ffe28a;font-size:25px;top:12px}.score-card:before{left:16px}.score-card:after{right:16px}
+    .score-label{font-size:12px;color:var(--muted);font-weight:900;letter-spacing:.16em}.score{font-size:clamp(35px,8vw,58px);font-weight:1000;line-height:1.1;color:var(--leaf-dark);font-variant-numeric:tabular-nums;letter-spacing:-.04em;margin:5px 0 2px;overflow-wrap:anywhere}.score-sub{font-size:12px;color:var(--muted);font-weight:700}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat{background:#ffffffbd;border:2px solid white;border-radius:17px;text-align:center;padding:10px 5px;min-width:0}.stat .emoji{font-size:19px;display:block;margin-bottom:2px}.stat .num{font-size:16px;font-weight:950;color:var(--leaf-dark);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.stat .cap{font-size:10px;color:var(--muted);font-weight:800;margin-top:2px}
+    .resources{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 13px}.resource{background:#fffdf5;border:2px solid #fff;border-radius:15px;padding:9px 6px;text-align:center;box-shadow:0 3px 0 #d2e6cf}.resource .fruit{font-size:20px}.resource .amount{font-size:15px;font-weight:1000;color:var(--leaf-dark);margin:1px 0}.resource .label{font-size:10px;color:var(--muted);font-weight:800}
+    .game-layout{display:grid;grid-template-columns:1fr 1fr;gap:13px;align-items:start}.side-stack{display:flex;flex-direction:column;gap:13px;min-width:0}.panel{background:#ffffffc9;border:2px solid #fff;border-radius:24px;padding:15px;box-shadow:var(--shadow);min-width:0}.section-title{font-size:16px;font-weight:950;color:var(--leaf-dark);margin:0 0 12px;display:flex;align-items:center;gap:7px}
+    .farm-panel{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden;min-height:410px}.farm-panel:before{content:"";position:absolute;width:265px;height:265px;border-radius:50%;background:#d8f3dc;top:62px;left:50%;transform:translateX(-50%);z-index:0}.farm-panel>*{position:relative;z-index:1}.farm-topline{font-size:12px;font-weight:900;color:var(--leaf-light);margin:0 0 3px}.melon-button{border:0;background:transparent;margin:13px 0 9px;padding:0;width:min(74%,250px);aspect-ratio:1;display:grid;place-items:center;position:relative;filter:drop-shadow(0 10px 0 rgba(27,67,50,.11));transition:transform .08s ease}.melon-button:active{transform:scale(.94) rotate(-2deg)}.melon-emoji{font-size:clamp(110px,23vw,182px);line-height:1;display:block;filter:saturate(1.08);transform:rotate(-7deg);pointer-events:none}.melon-button .tap-hint{position:absolute;bottom:4px;background:var(--gold);border:3px solid #fff;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:950;color:#694b00;box-shadow:0 4px 0 #e9b83f;white-space:nowrap}.click-help{font-size:12px;color:var(--muted);font-weight:750;margin:3px 0 10px}.power-pill{background:#edf8df;border:2px solid #d5ecc9;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900;color:var(--leaf-dark);max-width:100%}
+    .fruit-rain{position:absolute!important;inset:0;pointer-events:none;overflow:hidden;z-index:5!important}.float-text{position:absolute;font-weight:1000;font-size:22px;color:var(--melon);text-shadow:0 2px 0 white,2px 0 0 white,-2px 0 0 white;animation:float-up .8s ease-out forwards;white-space:nowrap}@keyframes float-up{0%{opacity:0;transform:translate(-50%,0) scale(.65)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-95px) scale(1.2)}}
+    .shop-panel{padding:15px 12px}.shop-title-row{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:10px}.shop-title-row .section-title{margin:0}.shop-tag{background:#fff0b8;color:#805d00;border-radius:99px;font-weight:900;font-size:10px;padding:5px 7px;white-space:nowrap}
+    .shop-list{display:flex;flex-direction:column;gap:8px}.shop-item{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;align-items:center;padding:9px;border-radius:16px;background:#fff;border:2px solid #e3eedf;transition:border-color .12s;min-width:0}.shop-item.can-buy{border-color:#a4d69f;box-shadow:0 3px 0 #d7ecd4}.shop-item.locked{background:#f1f2eb;border-color:#e2e5db}.shop-emoji{width:42px;height:42px;display:grid;place-items:center;background:#f2f9e9;border-radius:13px;font-size:25px}.item-main{min-width:0}.item-name{font-size:13px;font-weight:950;line-height:1.25}.item-desc{font-size:10px;color:var(--muted);font-weight:750;margin-top:3px;line-height:1.35}.item-bottom{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-top:7px}.item-cost{font-size:11px;font-weight:950;color:#ad5a18;white-space:nowrap}.buy-btn{border:0;border-radius:10px;padding:7px 9px;background:#d7ead0;color:#57714e;font-size:11px;font-weight:950;white-space:nowrap;box-shadow:0 3px 0 #c2dcb8;min-width:58px}.buy-btn.ready{background:var(--leaf);color:white;box-shadow:0 3px 0 var(--leaf-dark)}.buy-btn:active{transform:translateY(2px);box-shadow:none}
+    .lab-panel{padding:15px 12px}.lab-intro{font-size:11px;color:var(--muted);font-weight:750;line-height:1.55;margin:-5px 0 10px}.upgrade-list{display:grid;grid-template-columns:1fr;gap:8px}.upgrade-card{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;align-items:center;background:#fff;border:2px solid #e3eedf;border-radius:16px;padding:9px}.upgrade-card.ready-card{border-color:#a4d69f;box-shadow:0 3px 0 #d7ecd4}.upgrade-card.locked{background:#f1f2eb;border-color:#e2e5db}.upgrade-card .shop-emoji{font-size:25px}.upgrade-level{font-size:10px;font-weight:900;color:#467256;margin-top:2px}.upgrade-actions{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:7px}.upgrade-cost{font-size:11px;color:#805d00;font-weight:950;white-space:nowrap}.upgrade-desc{font-size:10px;color:var(--muted);font-weight:750;line-height:1.4;margin-top:3px}.buy-btn.upgrade-ready{background:#8b5fbf;color:white;box-shadow:0 3px 0 #68418f}.upgrade-note{font-size:10px;color:#8b5fbf;font-weight:850;margin-top:4px}
+    .lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:13px}.achievement{display:flex;align-items:center;gap:10px;background:#fffdf3;border:2px solid white;padding:12px;border-radius:18px;min-width:0}.achievement-icon{font-size:27px;flex:none}.achievement-title{font-size:12px;font-weight:950}.achievement-desc{font-size:10px;color:var(--muted);margin-top:3px;font-weight:750;line-height:1.4}.progress-wrap{margin-top:11px;background:#d9ead4;border-radius:999px;height:9px;overflow:hidden}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#70c66b,#e2c453);border-radius:999px;transition:width .2s}.milestone-text{font-size:10px;color:var(--muted);font-weight:800;margin-top:6px}
+    .rebirth-card{grid-column:1/-1;display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:11px;align-items:center;background:linear-gradient(135deg,#f7f0ff,#fffdf3);border:2px solid white;padding:14px;border-radius:20px;box-shadow:var(--shadow)}.rebirth-icon{font-size:32px;text-align:center}.rebirth-copy{min-width:0}.rebirth-title{font-size:14px;font-weight:1000;color:#68418f}.rebirth-desc{font-size:11px;font-weight:750;line-height:1.5;color:#6d6479;margin-top:3px}.rebirth-stat{font-size:11px;font-weight:950;color:#68418f;margin-top:4px}.rebirth-btn{border:0;border-radius:13px;background:#b49ade;color:white;font-size:12px;font-weight:1000;padding:11px 13px;box-shadow:0 4px 0 #8b70b5;white-space:nowrap}.rebirth-btn.ready{background:#8b5fbf;box-shadow:0 4px 0 #68418f}.rebirth-btn:active{transform:translateY(2px);box-shadow:none}
+    .notice{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--leaf-dark);color:white;padding:12px 17px;border-radius:999px;font-size:13px;font-weight:900;box-shadow:0 7px 24px #173d2d44;z-index:50;transition:.25s;max-width:90vw;text-align:center}.notice.show{opacity:1;transform:translate(-50%,0)}.footer{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#557563;font-size:10px;font-weight:750;padding:15px 4px 3px}.fruit-pips{letter-spacing:3px;font-size:15px;white-space:nowrap}
+    .modal-backdrop{position:fixed;inset:0;background:#12251db0;z-index:60;display:none;align-items:center;justify-content:center;padding:20px}.modal-backdrop.show{display:flex}.modal{width:min(100%,430px);max-height:min(88vh,680px);overflow:auto;background:#fffdf3;border:3px solid white;border-radius:26px;padding:23px;box-shadow:0 15px 50px #0003;text-align:center}.modal h2{margin:0 0 10px;color:var(--leaf-dark);font-size:23px}.modal p{color:var(--muted);font-size:13px;line-height:1.7;font-weight:700}.modal-actions{display:flex;gap:9px;justify-content:center;margin-top:17px;flex-wrap:wrap}.modal-actions button{border:0;border-radius:13px;padding:11px 15px;font-weight:900}.cancel-btn{background:#e9f2e5;color:var(--leaf-dark)}.danger-btn{background:#ffe1df;color:#a32c34}.confirm-rebirth-btn{background:#8b5fbf;color:#fff}
+    @media(max-width:680px){body{padding-left:10px;padding-right:10px}.app{padding-top:7px}.brand-icon{width:43px;height:43px;border-radius:14px;font-size:25px}.subtitle{font-size:10px}.tiny-btn{padding:8px 9px;font-size:11px}.game-layout{grid-template-columns:1fr}.farm-panel{min-height:350px}.farm-panel:before{width:245px;height:245px;top:52px}.melon-button{width:min(62%,225px);margin-top:8px}.melon-emoji{font-size:clamp(130px,42vw,178px)}.shop-panel,.lab-panel{padding:14px}.shop-list{display:grid;grid-template-columns:1fr 1fr}.shop-item{grid-template-columns:36px minmax(0,1fr);gap:7px;padding:8px}.shop-emoji{width:36px;height:36px;font-size:22px;border-radius:12px}.item-name{font-size:12px}.item-desc{font-size:10px}.item-bottom{align-items:flex-start;flex-direction:column}.buy-btn{width:100%;padding:7px}.upgrade-card{grid-template-columns:36px minmax(0,1fr);gap:7px;padding:8px}.upgrade-actions{align-items:flex-start;flex-direction:column}.upgrade-actions .buy-btn{width:100%}.lower-grid{grid-template-columns:1fr}.rebirth-card{grid-column:auto;grid-template-columns:40px minmax(0,1fr)}.rebirth-btn{grid-column:1/-1;width:100%}.score-card{padding:14px}.score-card:before{left:12px}.score-card:after{right:12px}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="brand"><div class="brand-icon">🍉</div><div><h1>すいかクリッカー</h1><div class="subtitle">TAP! GROW! REBIRTH!</div></div></div>
+      <div class="top-actions"><button class="tiny-btn" id="saveBtn">💾 セーブ</button><button class="tiny-btn" id="resetBtn">↻ リセット</button></div>
+    </header>
+
+    <section class="score-card" aria-live="polite">
+      <div class="score-label">🍉 すいかポイント 🍉</div>
+      <div class="score" id="score">0</div>
+      <div class="score-sub">すいかが主役！ポイントを集めて強化しよう</div>
+    </section>
+
+    <section class="stats" aria-label="ゲームの統計">
+      <div class="stat"><span class="emoji">👆</span><div class="num" id="tapPower">+1</div><div class="cap">タップでもらえる</div></div>
+      <div class="stat"><span class="emoji">⚡</span><div class="num" id="perSecond">0</div><div class="cap">🍉 毎秒ポイント</div></div>
+      <div class="stat"><span class="emoji">✨</span><div class="num" id="rebirthMultiplier">×1.0</div><div class="cap">転生ボーナス</div></div>
+    </section>
+
+    <section class="resources" aria-label="アップグレード用フルーツ">
+      <div class="resource"><div class="fruit">🍍</div><div class="amount" id="stockPineapple">0</div><div class="label">パイナップル</div></div>
+      <div class="resource"><div class="fruit">🍎</div><div class="amount" id="stockApple">0</div><div class="label">りんご</div></div>
+      <div class="resource"><div class="fruit">🍇</div><div class="amount" id="stockGrape">0</div><div class="label">ぶどう</div></div>
+    </section>
+
+    <section class="game-layout">
+      <div class="panel farm-panel" id="farm-panel">
+        <div class="fruit-rain" id="fruitRain"></div>
+        <p class="farm-topline">＼ すいかをタップ！ ／</p>
+        <button class="melon-button" id="melonButton" aria-label="すいかをタップしてポイントをゲット">
+          <span class="melon-emoji">🍉</span><span class="tap-hint">タップ！</span>
+        </button>
+        <div class="click-help">タップするほど すいかが育つよ</div>
+        <div class="power-pill" id="farmLevel">🌱 すいか畑 レベル 1</div>
+      </div>
+
+      <div class="side-stack">
+        <div class="panel shop-panel">
+          <div class="shop-title-row"><h2 class="section-title">🛒 すいか農園ショップ</h2><span class="shop-tag">🍉で購入</span></div>
+          <div class="shop-list" id="shopList">
+            <article class="shop-item" data-id="melonfarm"><div class="shop-emoji">🌱</div><div class="item-main"><div class="item-name">すいか畑</div><div class="item-desc">すいかポイントを自動生産</div><div class="item-bottom"><span class="item-cost">🍉 100</span><button class="buy-btn" data-buy="melonfarm">買う</button></div></div></article>
+            <article class="shop-item" data-id="pineappleFarm"><div class="shop-emoji">🍍</div><div class="item-main"><div class="item-name">パイナップル農園</div><div class="item-desc">強化に使う🍍を育てる</div><div class="item-bottom"><span class="item-cost">🍉 40</span><button class="buy-btn" data-buy="pineappleFarm">買う</button></div></div></article>
+            <article class="shop-item locked" data-id="appleFarm"><div class="shop-emoji">🍎</div><div class="item-main"><div class="item-name">りんご農園</div><div class="item-desc">パイン強化Lv.1で解放</div><div class="item-bottom"><span class="item-cost">🍉 250</span><button class="buy-btn" data-buy="appleFarm">ロック中</button></div></div></article>
+            <article class="shop-item locked" data-id="grapeFarm"><div class="shop-emoji">🍇</div><div class="item-main"><div class="item-name">ぶどう農園</div><div class="item-desc">りんご強化Lv.1で解放</div><div class="item-bottom"><span class="item-cost">🍉 1,200</span><button class="buy-btn" data-buy="grapeFarm">ロック中</button></div></div></article>
+            <article class="shop-item" data-id="tapupgrade"><div class="shop-emoji">💪</div><div class="item-main"><div class="item-name">タップ強化</div><div class="item-desc">タップの基本パワー +1</div><div class="item-bottom"><span class="item-cost">🍉 50</span><button class="buy-btn" data-buy="tapupgrade">買う</button></div></div></article>
+            <article class="shop-item" data-id="golden"><div class="shop-emoji">🌟</div><div class="item-main"><div class="item-name">黄金のすいか畑</div><div class="item-desc">たくさんの🍉ポイントを自動生産</div><div class="item-bottom"><span class="item-cost">🍉 2,500</span><button class="buy-btn" data-buy="golden">買う</button></div></div></article>
+          </div>
+        </div>
+
+        <div class="panel lab-panel">
+          <div class="shop-title-row"><h2 class="section-title">🧪 フルーツ強化ラボ</h2><span class="shop-tag">倍率アップ！</span></div>
+          <p class="lab-intro">🍍で最初の強化 → 🍎でさらに強化 → 🍇で最強をめざそう！</p>
+          <div class="upgrade-list" id="upgradeList">
+            <article class="upgrade-card" data-upgrade-card="pineapple"><div class="shop-emoji">🍍</div><div class="item-main"><div class="item-name">パイナップル強化</div><div class="upgrade-level" id="pineLevel">レベル 0</div><div class="upgrade-desc">タップとすいか生産が2倍！</div><div class="upgrade-actions"><span class="upgrade-cost" id="pineCost">🍍 3</span><button class="buy-btn" data-upgrade="pineapple">強化する</button></div></div></article>
+            <article class="upgrade-card locked" data-upgrade-card="apple"><div class="shop-emoji">🍎</div><div class="item-main"><div class="item-name">りんご強化</div><div class="upgrade-level" id="appleLevel">レベル 0</div><div class="upgrade-desc">すいか生産が2.5倍！</div><div class="upgrade-actions"><span class="upgrade-cost" id="appleCost">🍎 3</span><button class="buy-btn" data-upgrade="apple">ロック中</button></div><div class="upgrade-note" id="appleNote">パイン強化Lv.1＋りんご農園が必要</div></div></article>
+            <article class="upgrade-card locked" data-upgrade-card="grape"><div class="shop-emoji">🍇</div><div class="item-main"><div class="item-name">ぶどう強化</div><div class="upgrade-level" id="grapeLevel">レベル 0</div><div class="upgrade-desc">すいか生産が3倍！</div><div class="upgrade-actions"><span class="upgrade-cost" id="grapeCost">🍇 3</span><button class="buy-btn" data-upgrade="grape">ロック中</button></div><div class="upgrade-note" id="grapeNote">りんご強化Lv.1＋ぶどう農園が必要</div></div></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lower-grid">
+      <div class="achievement"><div class="achievement-icon" id="goalIcon">🎯</div><div style="flex:1;min-width:0"><div class="achievement-title" id="goalTitle">めざせ！100ポイント</div><div class="achievement-desc" id="goalDesc">まずはすいかをタップしよう。</div><div class="progress-wrap"><div class="progress-fill" id="goalProgress"></div></div><div class="milestone-text" id="goalCount">0 / 100</div></div></div>
+      <div class="achievement"><div class="achievement-icon">🍍🍎🍇</div><div style="min-width:0"><div class="achievement-title">フルーツコレクション</div><div class="achievement-desc" id="collectionText">農園を買って、強化用フルーツを集めよう！</div><div class="achievement-desc" id="lifetimeText">これまでの累計：0 🍉</div></div></div>
+      <div class="rebirth-card">
+        <div class="rebirth-icon">🌌</div>
+        <div class="rebirth-copy">
+          <div class="rebirth-title">転生の祭壇</div>
+          <div class="rebirth-desc" id="rebirthDesc">この周回で10,000ポイント稼ぐと転生できるよ。転生すると今の農園はリセットされるけど、永続ボーナスが手に入る！</div>
+          <div class="rebirth-stat" id="rebirthStat">転生 0回 ・ 永続ボーナス ×1.0</div>
+        </div>
+        <button class="rebirth-btn" id="rebirthBtn">🔒 あと 10,000</button>
+      </div>
+    </section>
+
+    <div class="footer"><span>🌿 あそんだ記録はこの端末に保存</span><span class="fruit-pips">🍉 🍍 🍎 🍇</span></div>
+  </main>
+
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+  <div class="modal-backdrop" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetHeading">
+    <div class="modal"><h2 id="resetHeading">ゲームをリセットする？</h2><p>ポイント、農園、フルーツ、強化、転生ボーナスをすべて消して最初から始めるよ。<br>この操作は元に戻せません。</p><div class="modal-actions"><button class="cancel-btn" id="cancelReset">やめる</button><button class="danger-btn" id="confirmReset">全部リセット</button></div></div>
+  </div>
+  <div class="modal-backdrop" id="rebirthModal" role="dialog" aria-modal="true" aria-labelledby="rebirthHeading">
+    <div class="modal"><h2 id="rebirthHeading">🌌 転生する？</h2><p id="rebirthModalText">今の農園を手放して、永続ボーナスを手に入れよう！</p><div class="modal-actions"><button class="cancel-btn" id="cancelRebirth">まだ続ける</button><button class="confirm-rebirth-btn" id="confirmRebirth">転生する！</button></div></div>
+  </div>
+
+  <script>
+  (()=>{
+    'use strict';
+    const SAVE_KEY='suika-clicker-save-v1';
+    const REBIRTH_REQUIREMENT=10000;
+    const shop={
+      melonfarm:{name:'すいか畑',cost:100,growth:1.18,rate:6,emoji:'🌱',desc:'すいかポイントを自動生産'},
+      pineappleFarm:{name:'パイナップル農園',cost:40,growth:1.45,fruit:'pineapple',fruitRate:.25,emoji:'🍍',desc:'強化に使うパイナップルを育てる'},
+      appleFarm:{name:'りんご農園',cost:250,growth:1.5,fruit:'apple',fruitRate:.16,emoji:'🍎',desc:'強化に使うりんごを育てる',unlock:()=>state.upgrades.pineapple>=1},
+      grapeFarm:{name:'ぶどう農園',cost:1200,growth:1.6,fruit:'grape',fruitRate:.12,emoji:'🍇',desc:'強化に使うぶどうを育てる',unlock:()=>state.upgrades.apple>=1},
+      tapupgrade:{name:'タップ強化',cost:50,growth:1.65,tap:1,emoji:'💪',desc:'タップの基本パワー +1'},
+      golden:{name:'黄金のすいか畑',cost:2500,growth:1.22,rate:80,emoji:'🌟',desc:'すいかポイントを大量生産'}
+    };
+    const upgradeData={
+      pineapple:{name:'パイナップル強化',fruit:'pineapple',emoji:'🍍',base:3,growth:1.75,multiplier:2,desc:'タップとすいか生産が2倍！',unlocked:()=> (state.owned.pineappleFarm||0)>0},
+      apple:{name:'りんご強化',fruit:'apple',emoji:'🍎',base:3,growth:1.9,multiplier:2.5,desc:'すいか生産が2.5倍！',unlocked:()=>state.upgrades.pineapple>=1&&(state.owned.appleFarm||0)>0,requirement:'パイン強化Lv.1＋りんご農園が必要'},
+      grape:{name:'ぶどう強化',fruit:'grape',emoji:'🍇',base:3,growth:2.1,multiplier:3,desc:'すいか生産が3倍！',unlocked:()=>state.upgrades.apple>=1&&(state.owned.grapeFarm||0)>0,requirement:'りんご強化Lv.1＋ぶどう農園が必要'}
+    };
+    const goals=[
+      {n:100,title:'めざせ！100ポイント',desc:'まずはすいかをタップしよう。',icon:'🎯'},
+      {n:1000,title:'フルーツ見習い！',desc:'農園で自動生産をはじめよう。',icon:'🍍'},
+      {n:10000,title:'フルーツ王国！',desc:'転生できるくらい稼ごう！',icon:'👑'},
+      {n:100000,title:'すいかレジェンド！',desc:'すごい！伝説の農園主だ！',icon:'🏆'}
+    ];
+    const fresh=()=>({version:2,points:0,total:0,lifetimeTotal:0,tap:1,legacyRate:0,owned:{melonfarm:0,pineappleFarm:0,appleFarm:0,grapeFarm:0,tapupgrade:0,golden:0},stock:{pineapple:0,apple:0,grape:0},upgrades:{pineapple:0,apple:0,grape:0},rebirths:0,rebirthShards:0,lastTime:Date.now()});
+    let state=fresh(),noticeTimer;
+    const $=id=>document.getElementById(id);
+    const fmt=n=>Math.floor(Math.max(0,Number(n)||0)).toLocaleString('ja-JP');
+    const finite=n=>Number.isFinite(Number(n))?Number(n):0;
+    function upgradeMultiplier(){return Math.pow(2,state.upgrades.pineapple||0)*Math.pow(2.5,state.upgrades.apple||0)*Math.pow(3,state.upgrades.grape||0)*(1+(state.rebirthShards||0)*.5)}
+    function rebirthMultiplier(){return 1+(state.rebirthShards||0)*.5}
+    function rate(){return ((shop.melonfarm.rate*(state.owned.melonfarm||0))+(shop.golden.rate*(state.owned.golden||0))+(state.legacyRate||0))*upgradeMultiplier()}
+    function nextCost(id){const item=shop[id];return Math.ceil(item.cost*Math.pow(item.growth||1.17,state.owned[id]||0))}
+    function upgradeCost(id){const item=upgradeData[id];return Math.ceil(item.base*Math.pow(item.growth,state.upgrades[id]||0))}
+    function rebirthReward(){return Math.max(1,Math.floor(Math.sqrt(Math.max(0,state.total)/REBIRTH_REQUIREMENT)))}
+    function save(showMessage=false){state.lastTime=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));if(showMessage)toast('💾 セーブしたよ！')}catch(e){if(showMessage)toast('この端末には保存できなかったよ')}}
+    function normalizeSave(parsed){
+      const base=fresh();
+      if(!parsed||typeof parsed!=='object')return base;
+      if(parsed.version===1){
+        const old=parsed.owned||{};
+        const oldRun=Math.max(0,finite(parsed.total));
+        base.points=Math.max(0,finite(parsed.points));base.total=oldRun;base.lifetimeTotal=Math.max(oldRun,finite(parsed.lifetimeTotal));base.tap=Math.max(1,finite(parsed.tap)||1);
+        base.legacyRate=Math.max(0,(old.apple||0)*1+(old.pineapple||0)*5+(old.fruitstand||0)*40);
+        base.owned={...base.owned,melonfarm:Math.max(0,finite(old.melonfarm)),pineappleFarm:Math.max(0,finite(old.pineapple)),appleFarm:Math.max(0,finite(old.apple)),tapupgrade:Math.max(0,finite(old.tapupgrade)),golden:Math.max(0,finite(old.golden))};
+        base.lastTime=finite(parsed.lastTime)||Date.now();
+        return base;
+      }
+      if(parsed.version===2){
+        return {...base,...parsed,owned:{...base.owned,...(parsed.owned||{})},stock:{...base.stock,...(parsed.stock||{})},upgrades:{...base.upgrades,...(parsed.upgrades||{})},points:Math.max(0,finite(parsed.points)),total:Math.max(0,finite(parsed.total)),lifetimeTotal:Math.max(0,finite(parsed.lifetimeTotal)),tap:Math.max(1,finite(parsed.tap)||1),lastTime:finite(parsed.lastTime)||Date.now()};
+      }
+      return base;
+    }
+    function applyElapsed(seconds){
+      const elapsed=Math.max(0,Math.min(8*60*60,seconds));
+      const gained=rate()*elapsed;
+      if(gained>0){state.points+=gained;state.total+=gained;state.lifetimeTotal+=gained}
+      state.stock.pineapple+=(state.owned.pineappleFarm||0)*shop.pineappleFarm.fruitRate*elapsed;
+      state.stock.apple+=(state.owned.appleFarm||0)*shop.appleFarm.fruitRate*elapsed;
+      state.stock.grape+=(state.owned.grapeFarm||0)*shop.grapeFarm.fruitRate*elapsed;
+      return gained;
+    }
+    function load(){
+      try{
+        const raw=localStorage.getItem(SAVE_KEY);if(!raw)return 0;
+        const parsed=JSON.parse(raw);state=normalizeSave(parsed);
+        const elapsed=Math.max(0,Math.min(8*60*60,(Date.now()-(parsed.lastTime||Date.now()))/1000));
+        const offline=applyElapsed(elapsed);state.lastTime=Date.now();return offline;
+      }catch(e){state=fresh();return 0}
+    }
+    function toast(text){const el=$('notice');el.textContent=text;el.classList.add('show');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>el.classList.remove('show'),2400)}
+    function renderShop(){
+      Object.keys(shop).forEach(id=>{
+        const el=document.querySelector(`[data-id="${id}"]`),btn=document.querySelector(`[data-buy="${id}"]`);if(!el||!btn)return;
+        const item=shop[id],cost=nextCost(id),owned=state.owned[id]||0,unlocked=!item.unlock||item.unlock();
+        el.querySelector('.item-cost').textContent='🍉 '+fmt(cost);
+        if(item.fruit){el.querySelector('.item-desc').textContent=`毎秒 +${item.fruitRate} ${item.emoji}（強化用）`}
+        else if(item.tap){el.querySelector('.item-desc').textContent=`タップの基本パワー +1（いま基本 +${fmt(state.tap)}）`}
+        else{el.querySelector('.item-desc').textContent=`毎秒 +${fmt(item.rate)} 🍉ポイント`}
+        el.classList.toggle('locked',!unlocked);el.classList.toggle('can-buy',unlocked&&state.points>=cost);btn.disabled=!unlocked;btn.textContent=!unlocked?'ロック中':owned>0?`買う · ${owned}個`:'買う';btn.classList.toggle('ready',unlocked&&state.points>=cost);
+        if(!unlocked){el.querySelector('.item-desc').textContent=id==='appleFarm'?'パイン強化Lv.1で解放':id==='grapeFarm'?'りんご強化Lv.1で解放':item.desc}
+        btn.setAttribute('aria-label',unlocked?`${item.name}を${fmt(cost)}すいかポイントで購入`:`${item.name}はまだロック中`);
+      });
+    }
+    function renderUpgrades(){
+      Object.keys(upgradeData).forEach(id=>{
+        const item=upgradeData[id],card=document.querySelector(`[data-upgrade-card="${id}"]`),btn=document.querySelector(`[data-upgrade="${id}"]`),level=state.upgrades[id]||0,cost=upgradeCost(id),unlocked=item.unlocked();
+        $(id==='pineapple'?'pineLevel':id==='apple'?'appleLevel':'grapeLevel').textContent=`レベル ${level}`;
+        $(id==='pineapple'?'pineCost':id==='apple'?'appleCost':'grapeCost').textContent=`${item.emoji} ${fmt(cost)}`;
+        card.classList.toggle('locked',!unlocked);card.classList.toggle('ready-card',unlocked&&state.stock[item.fruit]>=cost);
+        btn.disabled=!unlocked;btn.textContent=!unlocked?'ロック中':`強化する · Lv.${level+1}`;btn.classList.toggle('upgrade-ready',unlocked&&state.stock[item.fruit]>=cost);
+        const note=$(id==='pineapple'?'pineNote':id==='apple'?'appleNote':'grapeNote');
+        if(note){note.textContent=unlocked?`強化するとすいか生産 ×${item.multiplier}（現在の強化Lv. ${level}）`:item.requirement||'パイナップル農園を買うと解放';note.style.display=unlocked?'block':'none'}
+        btn.setAttribute('aria-label',unlocked?`${item.name}を${cost}${item.emoji}で強化`:`${item.name}はまだロック中`);
+      });
+    }
+    function render(){
+      $('score').textContent=fmt(state.points);$('tapPower').textContent='+'+fmt(state.tap*upgradeMultiplier());$('perSecond').textContent=fmt(rate());$('rebirthMultiplier').textContent='×'+rebirthMultiplier().toFixed(1);
+      $('stockPineapple').textContent=fmt(state.stock.pineapple);$('stockApple').textContent=fmt(state.stock.apple);$('stockGrape').textContent=fmt(state.stock.grape);
+      $('farmLevel').textContent=`🌱 すいか畑 レベル ${1+Math.floor(state.total/500)}`;
+      renderShop();renderUpgrades();
+      const goal=goals.find(g=>state.total<g.n)||goals[goals.length-1],previous=goals[goals.indexOf(goal)-1]?.n||0,completed=state.total>=goals[goals.length-1].n;
+      $('goalIcon').textContent=completed?'🏆':goal.icon;$('goalTitle').textContent=completed?'すいかレジェンド達成！':goal.title;$('goalDesc').textContent=completed?'最高のフルーツ王国ができたね！':goal.desc;$('goalProgress').style.width=Math.min(100,Math.max(0,(state.total-previous)/(goal.n-previous)*100))+'%';$('goalCount').textContent=completed?`${fmt(state.total)} ポイント！`:`${fmt(Math.min(state.total,goal.n))} / ${fmt(goal.n)}`;
+      const fruits=[];if(state.owned.pineappleFarm)fruits.push(`🍍 農園 ${state.owned.pineappleFarm}`);if(state.owned.appleFarm)fruits.push(`🍎 農園 ${state.owned.appleFarm}`);if(state.owned.grapeFarm)fruits.push(`🍇 農園 ${state.owned.grapeFarm}`);if(state.owned.melonfarm)fruits.push(`🍉 畑 ${state.owned.melonfarm}`);
+      $('collectionText').textContent=fruits.length?fruits.join(' ・ '):'農園を買って、強化用フルーツを集めよう！';$('lifetimeText').textContent=`これまでの累計：${fmt(state.lifetimeTotal)} 🍉`;
+      const remaining=Math.max(0,REBIRTH_REQUIREMENT-state.total),can=state.total>=REBIRTH_REQUIREMENT,reward=rebirthReward();
+      $('rebirthBtn').textContent=can?`🌌 転生して +${reward}しずく`:`🔒 あと ${fmt(remaining)}`;$('rebirthBtn').classList.toggle('ready',can);$('rebirthBtn').disabled=!can;
+      $('rebirthDesc').textContent=can?`転生すると農園・フルーツ・強化レベルがリセット。代わりに転生のしずくを${reward}個獲得し、永続ボーナスが上がるよ！`:`この周回で${fmt(REBIRTH_REQUIREMENT)}ポイント稼ぐと転生できるよ。転生で農園はリセットされるけど、永続ボーナスが手に入る！`;
+      $('rebirthStat').textContent=`転生 ${fmt(state.rebirths)}回 ・ しずく ${fmt(state.rebirthShards)}個 ・ 永続ボーナス ×${rebirthMultiplier().toFixed(1)}`;
+    }
+    function addPoints(n){state.points+=n;state.total+=n;state.lifetimeTotal+=n;render()}
+    function spawnFloat(text,x,y){const parent=$('fruitRain'),el=document.createElement('span');el.className='float-text';el.textContent=text;el.style.left=x+'px';el.style.top=y+'px';parent.appendChild(el);setTimeout(()=>el.remove(),850)}
+    function generateFruit(seconds=1){state.stock.pineapple+=(state.owned.pineappleFarm||0)*shop.pineappleFarm.fruitRate*seconds;state.stock.apple+=(state.owned.appleFarm||0)*shop.appleFarm.fruitRate*seconds;state.stock.grape+=(state.owned.grapeFarm||0)*shop.grapeFarm.fruitRate*seconds}
+
+    $('melonButton').addEventListener('click',e=>{
+      const amount=state.tap*upgradeMultiplier();addPoints(amount);
+      const box=$('fruitRain').getBoundingClientRect(),rect=$('melonButton').getBoundingClientRect();
+      const px=Number.isFinite(e.clientX)&&e.clientX>0?e.clientX:rect.left+rect.width/2,py=Number.isFinite(e.clientY)&&e.clientY>0?e.clientY:rect.top+rect.height/2;
+      const x=Math.max(16,Math.min(box.width-24,px-box.left)),y=Math.max(20,py-box.top-10);spawnFloat('+'+fmt(amount),x,y);
+      if(state.total>=100&&(state.total-amount)<100)toast('🎉 100ポイント達成！農園ショップを見てみよう');if(state.total>=1000&&(state.total-amount)<1000)toast('🍍 フルーツ強化への道が開けてきたよ！');if(state.total>=REBIRTH_REQUIREMENT&&(state.total-amount)<REBIRTH_REQUIREMENT)toast('🌌 転生できるようになったよ！');
+    });
+    $('shopList').addEventListener('click',e=>{
+      const btn=e.target.closest('[data-buy]');if(!btn)return;const id=btn.dataset.buy,item=shop[id];if(!item)return;if(item.unlock&&!item.unlock()){toast(id==='appleFarm'?'🍍 パイン強化Lv.1でりんご農園が解放！':'🍎 りんご強化Lv.1でぶどう農園が解放！');return}
+      const cost=nextCost(id);if(state.points<cost){toast(`あと ${fmt(cost-state.points)} 🍉ポイント必要だよ！`);return}
+      state.points-=cost;state.owned[id]=(state.owned[id]||0)+1;if(item.tap)state.tap+=item.tap;render();save();toast(`${item.emoji} ${item.name}を購入したよ！`);
+    });
+    $('upgradeList').addEventListener('click',e=>{
+      const btn=e.target.closest('[data-upgrade]');if(!btn)return;const id=btn.dataset.upgrade,item=upgradeData[id];if(!item)return;
+      if(!item.unlocked()){toast(item.requirement||'🍍 パイナップル農園を先に買おう！');return}
+      const cost=upgradeCost(id);if(state.stock[item.fruit]<cost){toast(`あと ${fmt(cost-state.stock[item.fruit])} ${item.emoji} 必要だよ！`);return}
+      state.stock[item.fruit]-=cost;state.upgrades[id]=(state.upgrades[id]||0)+1;render();save();toast(`${item.emoji} ${item.name} Lv.${state.upgrades[id]}！ すいかがパワーアップ！`);
+    });
+    $('saveBtn').addEventListener('click',()=>save(true));
+    $('resetBtn').addEventListener('click',()=>$('resetModal').classList.add('show'));
+    $('cancelReset').addEventListener('click',()=>$('resetModal').classList.remove('show'));
+    $('confirmReset').addEventListener('click',()=>{state=fresh();save();render();$('resetModal').classList.remove('show');toast('🌱 すべてリセットしたよ！新しいすいか畑を育てよう')});
+    $('resetModal').addEventListener('click',e=>{if(e.target===$('resetModal'))$('resetModal').classList.remove('show')});
+    $('rebirthBtn').addEventListener('click',()=>{if(state.total<REBIRTH_REQUIREMENT)return;const reward=rebirthReward();$('rebirthModalText').textContent=`今回の累計 ${fmt(state.total)} 🍉 で、転生のしずくを ${reward} 個獲得！今のポイント・農園・フルーツ・強化Lv.はリセットされるけれど、永続ボーナスが ×${(rebirthMultiplier()+reward*.5).toFixed(1)} になるよ。転生する？`;$('rebirthModal').classList.add('show')});
+    $('cancelRebirth').addEventListener('click',()=>$('rebirthModal').classList.remove('show'));
+    $('confirmRebirth').addEventListener('click',()=>{if(state.total<REBIRTH_REQUIREMENT){$('rebirthModal').classList.remove('show');return}const reward=rebirthReward(),life=state.lifetimeTotal,rebirths=state.rebirths+1,shards=state.rebirthShards+reward;state={...fresh(),lifetimeTotal:life,rebirths,rebirthShards:shards};save();render();$('rebirthModal').classList.remove('show');toast(`🌌 転生成功！しずく +${reward}、永続ボーナス ×${rebirthMultiplier().toFixed(1)}！`)});
+    $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal'))$('rebirthModal').classList.remove('show')});
+
+    const offline=load();render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
+    setInterval(()=>{const income=rate();if(income>0){state.points+=income;state.total+=income;state.lifetimeTotal+=income}generateFruit(1);render()},1000);
+    setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
+    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+  })();
+  </script>
+</body>
+</html>
