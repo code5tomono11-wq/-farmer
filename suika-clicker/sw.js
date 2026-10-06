@@ -1,4 +1,4 @@
-const CACHE_NAME = 'suika-clicker-v8';
+const CACHE_NAME = 'suika-clicker-v9';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
