@@ -1,0 +1,11 @@
+{
+  "name": "suika-clicker-v11",
+  "version": "11.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
