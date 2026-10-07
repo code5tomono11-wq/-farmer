@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: suika-clicker-v11
-    runtime: node
-    buildCommand: npm install
-    startCommand: npm start
-    envVars:
-      - key: ADMIN_PASSWORD
-        sync: false
