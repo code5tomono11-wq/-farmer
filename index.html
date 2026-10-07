@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <title>すいかクリッカー</title>
-  <!-- Ver.12: 転生パワーアップ -->
+  <!-- Ver.13: 転生パワーアップ -->
   <style>
     :root{--leaf:#2d6a4f;--leaf-dark:#1b4332;--leaf-light:#40916c;--cream:#fffdf3;--melon:#e63946;--gold:#ffcf56;--ink:#22352d;--muted:#6a7b70;--line:#d8e8d6;--shadow:0 8px 0 rgba(27,67,50,.10),0 15px 30px rgba(27,67,50,.08)}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -148,9 +148,9 @@
       <div class="panel">
         <h2 class="section-title">📜 ミッション</h2>
         <p class="lab-intro">条件を達成したら「報酬GET」を押してポイントを受け取ろう！</p>
-        <div class="mission"><div><div class="mission-text">🍉 すいかを50回タップ</div><div class="mission-reward" data-mission-reward="clicks">報酬：100ポイント</div></div><button class="buy-btn" data-mission="clicks">挑戦中</button></div>
-        <div class="mission"><div><div class="mission-text">🌱 すいか畑を3個買う</div><div class="mission-reward" data-mission-reward="farms">報酬：200ポイント</div></div><button class="buy-btn" data-mission="farms">挑戦中</button></div>
-        <div class="mission"><div><div class="mission-text">✨ 累計1,000ポイント獲得</div><div class="mission-reward">報酬：🍍×5</div></div><button class="buy-btn" data-mission="total">挑戦中</button></div>
+        <div class="mission"><div><div class="mission-text" id="missionText1">🍉 すいかを30回タップ</div><div class="mission-reward" id="missionReward1">報酬：100ポイント</div></div><button class="buy-btn" data-mission-slot="0">挑戦中</button></div>
+        <div class="mission"><div><div class="mission-text" id="missionText2">🌱 すいか畑を3個買う</div><div class="mission-reward" id="missionReward2">報酬：100ポイント</div></div><button class="buy-btn" data-mission-slot="1">挑戦中</button></div>
+        <div class="mission"><div><div class="mission-text" id="missionText3">✨ 累計ポイントを増やす</div><div class="mission-reward" id="missionReward3">報酬：🍍×5</div></div><button class="buy-btn" data-mission-slot="2">挑戦中</button></div>
       </div>
     </section>
 
@@ -169,6 +169,17 @@
       </div>
     </section>
 
+
+    <section class="panel" id="dragonPanel">
+      <h2 class="section-title">🐉 すいかドラゴン</h2>
+      <p class="lab-intro" id="dragonUnlockText">累計1,000,000ポイントでドラゴン研究所が解放されるよ！</p>
+      <div id="dragonContent" style="display:none">
+        <div class="achievement"><div class="achievement-icon" id="dragonIcon">🥚</div><div style="flex:1;min-width:0"><div class="achievement-title" id="dragonTitle">すいかの卵 Lv.1</div><div class="achievement-desc" id="dragonDesc">フルーツを食べさせて育てよう！</div><div class="progress-wrap"><div class="progress-fill" id="dragonProgress"></div></div><div class="milestone-text" id="dragonExpText">0 / 100 EXP</div></div></div>
+        <div class="tool-row" style="margin-top:10px"><button class="tool-btn" data-dragon-feed="pineapple">🍍 パインを食べさせる</button><button class="tool-btn" data-dragon-feed="apple">🍎 りんごを食べさせる</button><button class="tool-btn" data-dragon-feed="grape">🍇 ぶどうを食べさせる</button></div>
+        <div class="tool-status" id="dragonAuraText">オーラ：まだ選択できないよ</div>
+        <div class="tool-row" id="dragonAuraButtons"></div>
+      </div>
+    </section>
 
     <section class="tools-grid">
       <div class="tool-card">
@@ -227,6 +238,7 @@
   </div>
 
   <script>
+  window.SUIKA_API_BASE=window.SUIKA_API_BASE||'https://language-xrb2.onrender.com';
   (()=>{
     'use strict';
     const SAVE_KEY='suika-clicker-save-v1';
@@ -402,7 +414,14 @@
       $('rebirthStat').textContent=`転生 ${fmt(state.rebirths)}回 ・ しずく ${fmt(state.rebirthShards)}個 ・ 永続ボーナス ×${rebirthMultiplier().toFixed(1)}${keepPointRate()>0?` ・ 貯金 ${Math.round(keepPointRate()*100)}%`:''}`;
       const activePerks=Object.keys(perkData).filter(id=>perkLevel(id)>0).map(id=>`${perkData[id].icon}${perkData[id].name} Lv.${perkLevel(id)}`);$('perkSummary').textContent=activePerks.length?'永続スキル：'+activePerks.join(' ・ '):'永続スキル：まだ選択していないよ';
       const today=new Date().toISOString().slice(0,10);$('dailyBtn').disabled=state.dailyClaim===today;$('dailyBtn').textContent=state.dailyClaim===today?'✅ 今日のボーナス受取済み':'🎁 今日のログインボーナスを受け取る';$('goldenBtn').disabled=!state.goldenReady;$('goldenBtn').textContent=state.goldenReady?'✨ 黄金のすいかをタップ！':'✨ 黄金のすいかを待とう…';$('eventHint').textContent=state.goldenReady?'今だ！タップしてボーナスをゲット！':'黄金のすいかはときどき出現するよ！';$('streakText').textContent=`🍉 すいかタップ回数：${fmt(state.clicks)}回`;
-      const missionReady={clicks:state.clicks>=50,farms:(state.owned.melonfarm||0)>=3,total:state.total>=1000};const missionRewards={clicks:Math.floor(100*(1+Math.min(.75,perkLevel('mission')*.15))),farms:Math.floor(200*(1+Math.min(.75,perkLevel('mission')*.15)))};document.querySelectorAll('[data-mission-reward]').forEach(el=>{const id=el.dataset.missionReward;el.textContent=`報酬：${fmt(missionRewards[id]||0)}ポイント`});document.querySelectorAll('[data-mission]').forEach(btn=>{const id=btn.dataset.mission,claimed=!!state.claimedMissions[id],ready=missionReady[id];btn.disabled=claimed||!ready;btn.textContent=claimed?'受取済み':ready?'報酬GET':'挑戦中';btn.classList.toggle('ready',ready&&!claimed);});
+      const missions=currentMissions();missions.forEach((m,i)=>{const n=i+1;const progress=Math.min(m.target,missionProgress(m));const claimed=!!state.claimedMissions[m.id];const ready=progress>=m.target;
+        $('missionText'+n).textContent=m.text;
+        $('missionReward'+n).textContent=`報酬：${fmt(missionReward(m))}ポイント`;
+        const b=document.querySelector(`[data-mission-slot=\"${i}\"]`);if(b){b.disabled=claimed||!ready;b.textContent=claimed?'受取済み':ready?'報酬GET':`${fmt(progress)} / ${fmt(m.target)}`;b.classList.toggle('ready',ready&&!claimed)}
+      });
+      const [gmin,gmax]=goldenRange();$('eventHint').textContent=state.goldenReady?`今だ！黄金倍率 ×${gmin}〜×${gmax}（スキル込みでさらにアップ）！`:`黄金のすいかはときどき出現するよ！現在の倍率帯 ×${gmin}〜×${gmax}`;
+      if($('dragonPanel')){const unlocked=dragonUnlocked();$('dragonUnlockText').textContent=unlocked?'ドラゴンを育てて、タップ・農園・黄金スイカなどを強化しよう！':`累計1,000,000ポイントまであと ${fmt(Math.max(0,1000000-(state.lifetimeTotal||0)))}ポイント！`;$('dragonContent').style.display=unlocked?'block':'none';if(unlocked){const lv=state.dragonLevel||1,exp=state.dragonExp||0,need=dragonExpNeed(lv);const icons=['🥚','🐲','🐉','👑','🌌'];$('dragonIcon').textContent=lv>=30?icons[4]:lv>=20?icons[3]:lv>=10?icons[2]:lv>=5?icons[1]:icons[0];$('dragonTitle').textContent=`すいかドラゴン Lv.${lv}`;$('dragonDesc').textContent=lv>=30?'超越すいかドラゴン！すべての力を引き出した！':lv>=20?'王竜すいかへ進化！':lv>=10?'黄金すいかドラゴンへ進化！':'フルーツを食べさせて育てよう！';$('dragonProgress').style.width=`${Math.min(100,exp/need*100)}%`;$('dragonExpText').textContent=`${fmt(exp)} / ${fmt(need)} EXP`;const aura=state.dragonAura||'';$('dragonAuraText').textContent=aura?`現在のオーラ：${dragonAuras.find(x=>x[0]===aura)?.[1]||aura}`:'オーラ：1つ選んで装備できるよ';$('dragonAuraButtons').innerHTML=dragonAuras.map(([id,name,desc])=>`<button class="tool-btn ${aura===id?'gold':''}" data-aura="${id}">${name}<br><small>${desc}</small></button>`).join('');$('dragonAuraButtons').querySelectorAll('[data-aura]').forEach(b=>b.onclick=()=>{state.dragonAura=b.dataset.aura;save();render()})}}
+
     }
     function renderRebirthOptions(){
       const host=$('rebirthOptions');
@@ -459,8 +478,29 @@
     $('confirmReset').addEventListener('click',()=>{state=fresh();save();render();$('resetModal').classList.remove('show');toast('🌱 すべてリセットしたよ！新しいすいか畑を育てよう')});
     $('resetModal').addEventListener('click',e=>{if(e.target===$('resetModal'))$('resetModal').classList.remove('show')});
     $('dailyBtn').addEventListener('click',()=>{const today=new Date().toISOString().slice(0,10);if(state.dailyClaim===today)return;const bonus=Math.max(50,Math.min(250,Math.floor(50+rate()*.5)));state.dailyClaim=today;const awarded=addPoints(bonus);save();render();toast(`🎁 ログインボーナス +${fmt(awarded)}ポイント！`)});
-    $('goldenBtn').addEventListener('click',()=>{if(!state.goldenReady)return;state.goldenReady=false;const baseBonus=Math.max(75,Math.min(400,Math.floor(100+rate()*.8+state.tap)));const bonus=Math.floor(baseBonus*(1+Math.min(.80,perkLevel('golden')*.08)));const awarded=addPoints(bonus);state.goldenNext=Date.now()+Math.max(20000,35000+Math.random()*45000-Math.min(15,perkLevel('goldspeed')*3)*1000);save();render();toast(`✨ 黄金のすいか！ +${fmt(awarded)}ポイント！`)});
-    document.querySelectorAll('[data-mission]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.mission;if(state.claimedMissions[id])return;const ready={clicks:state.clicks>=50,farms:(state.owned.melonfarm||0)>=3,total:state.total>=1000}[id];if(!ready)return;state.claimedMissions[id]=true;if(id==='clicks')addPoints(Math.floor(100*(1+Math.min(.75,perkLevel('mission')*.15))));else if(id==='farms')addPoints(Math.floor(200*(1+Math.min(.75,perkLevel('mission')*.15))));else state.stock.pineapple+=5;save();render();toast(id==='total'?'🍍 パイナップルを5個ゲット！':'🎉 ミッション報酬ゲット！')}));
+    function exactPoints(n){const actual=Math.max(0,Math.floor(Number(n)||0));state.points+=actual;state.total+=actual;state.lifetimeTotal+=actual;return actual}
+    function missionTier(){const p=state.lifetimeTotal||0;if(p<1000)return 0;if(p<10000)return 1;if(p<50000)return 2;if(p<250000)return 3;if(p<1000000)return 4;return 5}
+    const missionTiers=[
+      [{id:'tap30',text:'🍉 すいかを30回タップ',type:'clicks',target:30,reward:100},{id:'farm3',text:'🌱 すいか畑を3個買う',type:'farms',target:3,reward:150},{id:'points500',text:'✨ この周回で500ポイント稼ぐ',type:'total',target:500,reward:200}],
+      [{id:'tap100',text:'🍉 すいかを100回タップ',type:'clicks',target:100,reward:500},{id:'farm5',text:'🌱 すいか畑を5個買う',type:'farms',target:5,reward:700},{id:'points3000',text:'✨ この周回で3,000ポイント稼ぐ',type:'total',target:3000,reward:1000}],
+      [{id:'tap500',text:'🍉 すいかを500回タップ',type:'clicks',target:500,reward:2000},{id:'farm10',text:'🌱 すいか畑を10個買う',type:'farms',target:10,reward:3000},{id:'fruit10',text:'🍍 強化用フルーツを10個集める',type:'fruit',target:10,reward:5000}],
+      [{id:'tap1000',text:'🍉 すいかを1,000回タップ',type:'clicks',target:1000,reward:10000},{id:'farm20',text:'🌱 すいか畑を20個買う',type:'farms',target:20,reward:15000},{id:'fruit30',text:'🍍🍎🍇 フルーツを30個集める',type:'fruit',target:30,reward:25000}],
+      [{id:'tap2500',text:'🍉 すいかを2,500回タップ',type:'clicks',target:2500,reward:50000},{id:'farm50',text:'🌱 すいか畑を50個買う',type:'farms',target:50,reward:75000},{id:'fruit100',text:'🍍🍎🍇 フルーツを100個集める',type:'fruit',target:100,reward:100000}],
+      [{id:'tap5000',text:'🍉 すいかを5,000回タップ',type:'clicks',target:5000,reward:500000},{id:'farm100',text:'🌱 すいか畑を100個買う',type:'farms',target:100,reward:750000},{id:'fruit300',text:'🍍🍎🍇 フルーツを300個集める',type:'fruit',target:300,reward:1000000}]
+    ];
+    function currentMissions(){return missionTiers[missionTier()]}
+    function missionProgress(m){if(m.type==='clicks')return state.clicks||0;if(m.type==='farms')return state.owned.melonfarm||0;if(m.type==='fruit')return (state.stock.pineapple||0)+(state.stock.apple||0)+(state.stock.grape||0);if(m.type==='total')return state.total||0;return 0}
+    function missionReward(m){return Math.floor(m.reward*(1+Math.min(.75,perkLevel('mission')*.15)))}
+    function goldenRange(){const p=state.lifetimeTotal||0;if(p<10000)return [1,2];if(p<100000)return [2,4];if(p<1000000)return [3,6];return [5,10]}
+    function goldenMultiplier(){const [min,max]=goldenRange();const roll=min+Math.random()*(max-min);return roll*(1+Math.min(.80,perkLevel('golden')*.08))}
+    function dragonUnlocked(){return (state.lifetimeTotal||0)>=1000000}
+    const dragonAuras=[['power','🔥 焼けるすいか','タップ・自動生産 ×1.25'],['gold','✨ 黄金の眼','黄金スイカ報酬 ×1.50'],['farm','🌱 豊穣の翼','農園生産 ×1.50'],['luck','🍀 幸運の牙','クリティカル率 +10%'],['rebirth','🌌 転生の息吹','転生ボーナス +10%']];
+    function dragonExpNeed(lv){return Math.floor(100*Math.pow(1.6,Math.max(0,lv-1)))}
+    function dragonFeed(type){if(!dragonUnlocked())return;const values={pineapple:10,apple:25,grape:50};const v=values[type]||0;if((state.stock[type]||0)<=0){toast('そのフルーツが足りないよ！');return}state.stock[type]--;state.dragonExp=(state.dragonExp||0)+v;while((state.dragonLevel||1)<30&&state.dragonExp>=dragonExpNeed(state.dragonLevel||1)){state.dragonExp-=dragonExpNeed(state.dragonLevel||1);state.dragonLevel=(state.dragonLevel||1)+1;toast(`🐉 ドラゴンがLv.${state.dragonLevel}に成長！`)}save();render()}
+    $('goldenBtn').addEventListener('click',()=>{if(!state.goldenReady)return;state.goldenReady=false;const baseBonus=Math.max(75,Math.min(400,Math.floor(100+rate()*.8+state.tap)));const mult=goldenMultiplier();const bonus=Math.floor(baseBonus*mult);const awarded=addPoints(bonus);state.goldenNext=Date.now()+Math.max(20000,35000+Math.random()*45000-Math.min(15,perkLevel('goldspeed')*3)*1000);save();render();toast(`✨ 黄金のすいか！ ×${mult.toFixed(1)} → +${fmt(awarded)}ポイント！`)});
+    document.querySelectorAll('[data-mission-slot]').forEach(btn=>btn.addEventListener('click',()=>{const slot=Number(btn.dataset.missionSlot),m=currentMissions()[slot],id=m.id;if(!m||state.claimedMissions[id])return;if(missionProgress(m)<m.target)return;state.claimedMissions[id]=true;const reward=missionReward(m);if(m.type==='fruit'){state.stock.pineapple=(state.stock.pineapple||0)+Math.max(1,Math.floor(reward/5000))}else exactPoints(reward);save();render();toast(m.type==='fruit'?`🎉 ミッション達成！🍍フルーツを受け取ったよ！`:`🎉 ミッション達成！ +${fmt(reward)}ポイント！`)}));
+    document.querySelectorAll('[data-dragon-feed]').forEach(btn=>btn.addEventListener('click',()=>dragonFeed(btn.dataset.dragonFeed)));
+
     $('rebirthBtn').addEventListener('click',()=>{if(state.total<rebirthRequirement())return;const reward=rebirthReward();selectedRebirthPerk='';$('rebirthModalText').textContent=`転生のしずくを ${reward} 個獲得！今回は${upcomingRebirth()}回目の転生。農園・フルーツ・強化Lv.はリセットされるけど、選んだ永続スキルは残るよ。条件を満たすスキルを1つ選んでね。`;renderRebirthOptions();$('rebirthModal').classList.add('show')});
     $('cancelRebirth').addEventListener('click',()=>$('rebirthModal').classList.remove('show'));
     $('rebirthOptions').addEventListener('click',e=>{const btn=e.target.closest('[data-perk]');if(!btn||btn.disabled)return;const id=btn.dataset.perk;if(!skillAvailable(id))return;selectedRebirthPerk=id;renderRebirthOptions()});
@@ -534,11 +574,11 @@
     $('redeemModal').addEventListener('click',e=>{if(e.target===$('redeemModal'))$('redeemModal').classList.remove('show')});
     $('redeemBtn').addEventListener('click',async()=>{
       const code=($('redeemCode').value||'').trim().toUpperCase();if(!code){$('redeemStatus').textContent='コードを入力してね';return}
-      try{const res=await fetch(apiUrl('/api/redeem'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});const data=await res.json();if(!res.ok)throw new Error(data.error||'redeem');const amount=Math.floor(Number(data.amount)||0);if(data.type==='points')addPoints(amount);else if(data.type==='shards'){state.rebirthShards+=amount;render();save()}else if(['pineapple','apple','grape'].includes(data.type)){state.stock[data.type]+=amount;render();save()}$('redeemStatus').textContent=`🎉 ${rewardLabel(data.type,amount)}を受け取ったよ！`;$('redeemCode').value='';toast('🎁 コード報酬を受け取ったよ！')}catch(e){$('redeemStatus').textContent='❌ '+e.message}
+      try{const res=await fetch(apiUrl('/api/redeem'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});const data=await res.json();if(!res.ok)throw new Error(data.error||'redeem');const amount=Math.floor(Number(data.amount)||0);if(data.type==='points'){exactPoints(amount);render();save()}else if(data.type==='shards'){state.rebirthShards+=amount;render();save()}else if(['pineapple','apple','grape'].includes(data.type)){state.stock[data.type]+=amount;render();save()}$('redeemStatus').textContent=`🎉 ${rewardLabel(data.type,amount)}を受け取ったよ！`;$('redeemCode').value='';toast('🎁 コード報酬を受け取ったよ！')}catch(e){$('redeemStatus').textContent='❌ '+e.message}
     });
     setTimeout(refreshRanking,800);
 
-    const offline=load();render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
+    const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
     setInterval(()=>{const income=rate();if(income>0){state.points+=income;state.total+=income;state.lifetimeTotal+=income}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
     if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
