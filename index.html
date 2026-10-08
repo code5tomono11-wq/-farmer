@@ -174,7 +174,7 @@
           <div class="rebirth-stat" id="rebirthStat">0年待ち ・ 永久お金 0 ・ ボーナス ×1.0</div>
           <div class="perk-summary" id="perkSummary">永続スキル：まだ選択していないよ</div>
         </div>
-        <button type="button" class="rebirth-btn" id="rebirthBtn" onclick="event.preventDefault(); window.performYearWait();">🔒 あと 10,000</button>
+        <button type="button" class="rebirth-btn" id="rebirthBtn" onclick="return window.__suikaYearWait(event);">🔒 あと 10,000</button>
       </div>
     </section>
 
@@ -204,7 +204,7 @@
       <h2>⏳ 一年待つと、すべてがお金になる</h2>
       <div class="year-desc" id="yearConversionText">今の🍉ポイント・フルーツ・製品を💴に換算して、次の一年へ進むよ。💴とお金の強化は消えないよ。</div>
       <div class="year-stat" id="yearConversionPreview">一年待つ準備中…</div>
-      <button type="button" class="year-btn" id="yearWaitBtn" onclick="event.preventDefault(); window.performYearWait();">🔒 一年待つ</button>
+      <button type="button" class="year-btn" id="yearWaitBtn" onclick="return window.__suikaYearWait(event);">🔒 一年待つ</button>
     </section>
 
     <section class="panel" id="dragonPanel">
@@ -608,20 +608,6 @@
       toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴${skillText}、しずく +${reward}！`);
     }
 
-    // 通常のイベント登録より先に捕まえる「確実な」クリック処理。
-    // 後ろのコードで別のJavaScriptエラーが起きても、一年待つだけは動くようにする。
-    document.addEventListener('click',e=>{
-      const btn=e.target.closest?.('#yearWaitBtn, #rebirthBtn');
-      if(!btn)return;
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      try{
-        window.performYearWait();
-      }catch(err){
-        console.error('yearWait error',err);
-        toast('⚠️ 一年待ち処理でエラーが発生したよ');
-      }
-    },true);
         $('cancelRebirth').addEventListener('click',()=>$('rebirthModal').classList.remove('show'));
     $('rebirthOptions').addEventListener('click',e=>{const btn=e.target.closest('[data-perk]');if(!btn||btn.disabled)return;const id=btn.dataset.perk;if(!skillAvailable(id))return;selectedRebirthPerk=id;renderRebirthOptions()});
     $('confirmRebirth').addEventListener('click',()=>{if(!selectedRebirthPerk){const first=Object.keys(perkData).find(skillAvailable);if(first)selectedRebirthPerk=first}if(!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk)){toast('今の条件ではそのスキルは選べないよ！');return}if(state.total<rebirthRequirement()){$('rebirthModal').classList.remove('show');return}const reward=rebirthReward(),conversion=conversionValue(),life=state.lifetimeTotal,rebirths=state.rebirths+1,shards=state.rebirthShards+reward,perks={...state.rebirthPerks};perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;const keepMoney=state.money||0;const moneyUpgrades={...state.moneyUpgrades};const dragonLevel=state.dragonLevel||1,dragonExp=state.dragonExp||0,dragonAura=state.dragonAura||'';state={...fresh(),lifetimeTotal:life,rebirths,yearCount:(state.yearCount||0)+1,rebirthShards:shards,rebirthPerks:perks,money:keepMoney+conversion,moneyUpgrades,dragonLevel,dragonExp,dragonAura};state.tap+=perkLevel('tap')*2;save();render();$('rebirthModal').classList.remove('show');toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴、${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}、しずく +${reward}！`)});
@@ -705,5 +691,89 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal'))$
     if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=14').catch(()=>{}))}
   })();
   </script>
+
+<script>
+/* ===== Ver.15: 一年待つを完全独立化 =====
+   既存のイベント登録に依存せず、ボタン自身から直接呼び出す。
+*/
+(function(){
+  function runYearWait(e){
+    if(e){
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    try{
+      if(typeof window.performYearWait !== 'function'){
+        alert('一年待つ機能の読み込みに失敗しました。ページを再読み込みしてください。');
+        return false;
+      }
+
+      // 条件判定もここで明示。条件不足なら必ず画面に出す。
+      if(typeof state === 'undefined' || typeof rebirthRequirement !== 'function'){
+        alert('ゲームデータの読み込みが完了していません。ページを再読み込みしてください。');
+        return false;
+      }
+
+      const need=Number(rebirthRequirement());
+      const now=Number(state.total)||0;
+
+      if(now < need){
+        if(typeof toast==='function'){
+          toast('🔒 あと '+fmt(Math.max(0,need-now))+'ポイント必要だよ！');
+        }else{
+          alert('あと '+Math.max(0,need-now)+'ポイント必要だよ！');
+        }
+        return false;
+      }
+
+      // ここだけで実行。二重実行防止。
+      if(window.__suikaYearWaitBusy) return false;
+      window.__suikaYearWaitBusy=true;
+
+      window.performYearWait();
+
+      setTimeout(function(){
+        window.__suikaYearWaitBusy=false;
+      },500);
+
+    }catch(err){
+      window.__suikaYearWaitBusy=false;
+      console.error('Ver.15 year wait error:',err);
+      alert('一年待つ処理でエラーが発生しました。\\n'+(err&&err.message?err.message:err));
+    }
+    return false;
+  }
+
+  window.__suikaYearWait=runYearWait;
+
+  function bind(){
+    ['yearWaitBtn','rebirthBtn'].forEach(function(id){
+      const b=document.getElementById(id);
+      if(!b)return;
+
+      b.disabled=false;
+      b.removeAttribute('disabled');
+      b.style.pointerEvents='auto';
+      b.style.position='relative';
+      b.style.zIndex='1000';
+      b.onclick=runYearWait;
+
+      // iPad等のタッチ環境でも直接実行。
+      b.ontouchend=function(e){
+        e.preventDefault();
+        runYearWait(e);
+      };
+    });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',bind);
+  }else{
+    bind();
+  }
+})();
+</script>
+
 </body>
 </html>
