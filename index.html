@@ -7,11 +7,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="すいかクリッカー">
-  <meta name="description" content="すいかをタップ！パイナップル・りんご・ぶどうで強化して、転生してもっと強くなろう！">
+  <meta name="description" content="すいかをタップ！パイナップル・りんご・ぶどうで強化して、一年待ってお金を増やし、もっと強くなろう！">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <title>すいかクリッカー</title>
-  <!-- Ver.13: 転生パワーアップ -->
+  <!-- Ver.14: 一年待つ・お金の原理・製品経済 -->
   <style>
     :root{--leaf:#2d6a4f;--leaf-dark:#1b4332;--leaf-light:#40916c;--cream:#fffdf3;--melon:#e63946;--gold:#ffcf56;--ink:#22352d;--muted:#6a7b70;--line:#d8e8d6;--shadow:0 8px 0 rgba(27,67,50,.10),0 15px 30px rgba(27,67,50,.08)}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -50,6 +50,8 @@
     .lab-locked{background:#f5f0fa;border:2px dashed #c9b8e2;border-radius:18px;padding:18px 14px;text-align:center;color:#695780}.lab-lock-icon{font-size:36px;margin-bottom:5px}.lab-lock-title{font-size:14px;font-weight:1000;color:#68418f}.lab-locked p{font-size:11px;font-weight:750;line-height:1.55;margin:7px 0 11px}.lab-unlock-progress{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:950;color:#68418f}.rebirth-option.maxed{opacity:.55;background:#f1f0f4;border-color:#d6d1df}.rebirth-selection-summary{margin-top:10px!important;padding:10px;border-radius:12px;background:#f2eaff;color:#68418f!important;font-size:12px!important;font-weight:900!important}.confirm-rebirth-btn:disabled{opacity:.45;filter:grayscale(1);cursor:not-allowed}
     .modal-backdrop{position:fixed;inset:0;background:#12251db0;z-index:60;display:none;align-items:center;justify-content:center;padding:20px}.modal-backdrop.show{display:flex}.modal{width:min(100%,430px);max-height:min(88vh,680px);overflow:auto;background:#fffdf3;border:3px solid white;border-radius:26px;padding:23px;box-shadow:0 15px 50px #0003;text-align:center}.modal h2{margin:0 0 10px;color:var(--leaf-dark);font-size:23px}.modal p{color:var(--muted);font-size:13px;line-height:1.7;font-weight:700}.modal-actions{display:flex;gap:9px;justify-content:center;margin-top:17px;flex-wrap:wrap}.modal-actions button{border:0;border-radius:13px;padding:11px 15px;font-weight:900}.cancel-btn{background:#e9f2e5;color:var(--leaf-dark)}.danger-btn{background:#ffe1df;color:#a32c34}.confirm-rebirth-btn{background:#8b5fbf;color:#fff}
     @media(max-width:680px){.extra-grid{grid-template-columns:1fr}body{padding-left:10px;padding-right:10px}.app{padding-top:7px}.brand-icon{width:43px;height:43px;border-radius:14px;font-size:25px}.subtitle{font-size:10px}.tiny-btn{padding:8px 9px;font-size:11px}.game-layout{grid-template-columns:1fr}.farm-panel{min-height:350px}.farm-panel:before{width:245px;height:245px;top:52px}.melon-button{width:min(62%,225px);margin-top:8px}.melon-emoji{font-size:clamp(130px,42vw,178px)}.shop-panel,.lab-panel{padding:14px}.shop-list{display:grid;grid-template-columns:1fr 1fr}.shop-item{grid-template-columns:36px minmax(0,1fr);gap:7px;padding:8px}.shop-emoji{width:36px;height:36px;font-size:22px;border-radius:12px}.item-name{font-size:12px}.item-desc{font-size:10px}.item-bottom{align-items:flex-start;flex-direction:column}.buy-btn{width:100%;padding:7px}.upgrade-card{grid-template-columns:36px minmax(0,1fr);gap:7px;padding:8px}.upgrade-actions{align-items:flex-start;flex-direction:column}.upgrade-actions .buy-btn{width:100%}.lower-grid{grid-template-columns:1fr}.rebirth-card{grid-column:auto;grid-template-columns:40px minmax(0,1fr)}.rebirth-btn{grid-column:1/-1;width:100%}.score-card{padding:14px}.score-card:before{left:12px}.score-card:after{right:12px}}
+
+    .money-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}.money-box{background:linear-gradient(135deg,#fff7cf,#fffdf3);border:2px solid #fff;border-radius:17px;padding:10px;text-align:center;box-shadow:0 3px 0 #eadca6}.money-box .big{font-size:20px;font-weight:1000;color:#805d00;overflow-wrap:anywhere}.money-box .small{font-size:10px;color:#7b6d4a;font-weight:850;margin-top:2px}.economy-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:13px}.product-list{display:grid;grid-template-columns:1fr;gap:8px}.product-card,.money-upgrade{background:#fff;border:2px solid #e3eedf;border-radius:16px;padding:10px}.product-card.ready,.money-upgrade.ready{border-color:#dfc05c;box-shadow:0 3px 0 #f0df9b}.product-row{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;align-items:center}.product-icon{width:42px;height:42px;border-radius:13px;background:#fff8dd;display:grid;place-items:center;font-size:25px}.product-name,.money-upgrade-name{font-size:12px;font-weight:1000}.product-desc,.money-upgrade-desc{font-size:10px;color:var(--muted);font-weight:750;line-height:1.4;margin-top:3px}.product-stock{font-size:11px;color:#805d00;font-weight:950;margin-top:4px}.money-upgrade-row{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-top:7px}.money-cost{font-size:10px;color:#805d00;font-weight:950}.year-card{background:linear-gradient(135deg,#eef6ff,#fffdf3);border:2px solid #fff;border-radius:20px;padding:14px;box-shadow:var(--shadow);margin-top:13px}.year-card h2{margin:0 0 7px;font-size:16px;color:#4d5687;font-weight:1000}.year-desc{font-size:11px;color:#66718a;font-weight:750;line-height:1.5}.year-stat{font-size:11px;color:#4d5687;font-weight:950;margin-top:7px}.year-btn{margin-top:9px;width:100%;border:0;border-radius:13px;background:#7489c8;color:#fff;font-size:12px;font-weight:1000;padding:11px 13px;box-shadow:0 4px 0 #596da9}.year-btn.ready{background:#556fc0;box-shadow:0 4px 0 #40569c}.year-btn:active{transform:translateY(2px);box-shadow:none}.copy-code-btn{width:100%;margin-top:8px}.money-upgrade-list{display:grid;grid-template-columns:1fr;gap:8px}@media(max-width:680px){.money-strip{grid-template-columns:1fr 1fr}.economy-grid{grid-template-columns:1fr}.year-card{margin-top:8px}}
     @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
   
     .tools-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:13px}.tool-card{background:#ffffffc9;border:2px solid #fff;border-radius:20px;padding:14px;box-shadow:var(--shadow)}.tool-card .section-title{margin-bottom:7px}.tool-card p{font-size:10px;color:var(--muted);font-weight:750;line-height:1.5;margin:5px 0 9px}.tool-btn{border:0;border-radius:12px;padding:10px 12px;font-size:11px;font-weight:950;background:#e9f2e5;color:var(--leaf-dark);box-shadow:0 3px 0 #cfe0ca}.tool-btn.primary{background:#68418f;color:#fff;box-shadow:0 3px 0 #4e2f6e}.tool-btn.gold{background:#ffe08a;color:#684b00;box-shadow:0 3px 0 #e6bb52}.tool-row{display:flex;gap:7px;flex-wrap:wrap}.tool-input,.tool-select,.tool-textarea{width:100%;border:2px solid #dbe7d8;border-radius:11px;padding:9px;background:#fff;font:inherit;font-size:11px;font-weight:750;color:var(--ink);outline:none}.tool-input:focus,.tool-select:focus,.tool-textarea:focus{border-color:#8b5fbf}.tool-textarea{min-height:110px;resize:vertical;user-select:text;-webkit-user-select:text}.tool-status{font-size:10px;color:#68418f;font-weight:900;line-height:1.5;margin-top:7px;overflow-wrap:anywhere}.rank-list{display:flex;flex-direction:column;gap:6px;margin-top:9px}.rank-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:7px;align-items:center;background:#fff;border:2px solid #e3eedf;border-radius:11px;padding:7px}.rank-no{font-size:14px;font-weight:1000;color:#68418f;text-align:center}.rank-name{font-size:11px;font-weight:950;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rank-score{font-size:11px;color:#557563;font-weight:950;white-space:nowrap}.admin-note{background:#fff7e4;border:2px dashed #e4c66e;border-radius:12px;padding:8px;font-size:10px;color:#735700;font-weight:800;line-height:1.45;margin-top:8px}.footer-admin{border:0;background:transparent;color:#6c5d79;font-size:10px;font-weight:850;text-decoration:underline;text-decoration-style:dotted;padding:2px}.modal.wide{width:min(100%,620px);text-align:left}.modal.wide h2{text-align:center}.modal.wide .modal-actions{justify-content:center}.modal-section{background:#f7f4fb;border-radius:15px;padding:11px;margin-top:10px}.modal-section h3{margin:0 0 7px;font-size:12px;color:#68418f}.admin-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:20px;letter-spacing:.08em;font-weight:1000;color:#68418f;background:#fff;border:2px solid #d9c7ef;border-radius:12px;padding:11px;text-align:center;margin-top:8px;overflow-wrap:anywhere}.copy-chip{font-size:10px;color:#557563;font-weight:850;margin-top:5px;text-align:center}
@@ -67,19 +69,25 @@
     <section class="score-card" aria-live="polite">
       <div class="score-label">🍉 すいかポイント 🍉</div>
       <div class="score" id="score">0</div>
-      <div class="score-sub">すいかが主役！買うほど価格が上がるから計画的に育てよう</div>
+      <div class="score-sub">すいかを育てて製品に加工し、売って永久に残るお金を増やそう</div>
     </section>
 
     <section class="stats" aria-label="ゲームの統計">
       <div class="stat"><span class="emoji">👆</span><div class="num" id="tapPower">+1</div><div class="cap">タップでもらえる</div></div>
       <div class="stat"><span class="emoji">⚡</span><div class="num" id="perSecond">0</div><div class="cap">🍉 毎秒ポイント</div></div>
-      <div class="stat"><span class="emoji">✨</span><div class="num" id="rebirthMultiplier">×1.0</div><div class="cap">転生ボーナス</div></div>
+      <div class="stat"><span class="emoji">💴</span><div class="num" id="moneyStat">0</div><div class="cap">永久お金</div></div>
     </section>
 
     <section class="resources" aria-label="アップグレード用フルーツ">
       <div class="resource"><div class="fruit">🍍</div><div class="amount" id="stockPineapple">0</div><div class="label">パイナップル</div></div>
       <div class="resource"><div class="fruit">🍎</div><div class="amount" id="stockApple">0</div><div class="label">りんご</div></div>
       <div class="resource"><div class="fruit">🍇</div><div class="amount" id="stockGrape">0</div><div class="label">ぶどう</div></div>
+    </section>
+
+    <section class="money-strip" aria-label="永久通貨">
+      <div class="money-box"><div class="big" id="money">0</div><div class="small">💴 永久お金</div></div>
+      <div class="money-box"><div class="big" id="yearCount">0年</div><div class="small">⏳ 待った年数</div></div>
+      <div class="money-box"><div class="big" id="saleMultiplier">×1.00</div><div class="small">🏪 販売倍率</div></div>
     </section>
 
     <section class="game-layout">
@@ -112,19 +120,19 @@
             <article class="shop-item locked" data-id="bigmelonfarm"><div class="shop-emoji">🍉</div><div class="item-main"><div class="item-name">大玉すいか農園</div><div class="item-desc">すいか畑を2個買うと解放</div><div class="item-bottom"><span class="item-cost">🍉 900</span><button class="buy-btn" data-buy="bigmelonfarm">ロック中</button></div></div></article>
             <article class="shop-item locked" data-id="greenhouse"><div class="shop-emoji">🏡</div><div class="item-main"><div class="item-name">温室すいか農園</div><div class="item-desc">大玉すいか農園を買うと解放</div><div class="item-bottom"><span class="item-cost">🍉 5,500</span><button class="buy-btn" data-buy="greenhouse">ロック中</button></div></div></article>
             <article class="shop-item locked" data-id="hydroponic"><div class="shop-emoji">💧</div><div class="item-main"><div class="item-name">水耕すいか農園</div><div class="item-desc">温室すいか農園を2個買うと解放</div><div class="item-bottom"><span class="item-cost">🍉 25,000</span><button class="buy-btn" data-buy="hydroponic">ロック中</button></div></div></article>
-            <article class="shop-item locked" data-id="skyfarm"><div class="shop-emoji">☁️</div><div class="item-main"><div class="item-name">空中すいか農園</div><div class="item-desc">1回転生すると解放</div><div class="item-bottom"><span class="item-cost">🍉 100,000</span><button class="buy-btn" data-buy="skyfarm">ロック中</button></div></div></article>
-            <article class="shop-item locked" data-id="moonfarm"><div class="shop-emoji">🌙</div><div class="item-main"><div class="item-name">月面すいか農園</div><div class="item-desc">転生3回＋強化ラボ解放で解放</div><div class="item-bottom"><span class="item-cost">🍉 400,000</span><button class="buy-btn" data-buy="moonfarm">ロック中</button></div></div></article>
+            <article class="shop-item locked" data-id="skyfarm"><div class="shop-emoji">☁️</div><div class="item-main"><div class="item-name">空中すいか農園</div><div class="item-desc">1回一年待つと解放</div><div class="item-bottom"><span class="item-cost">🍉 100,000</span><button class="buy-btn" data-buy="skyfarm">ロック中</button></div></div></article>
+            <article class="shop-item locked" data-id="moonfarm"><div class="shop-emoji">🌙</div><div class="item-main"><div class="item-name">月面すいか農園</div><div class="item-desc">一年待ち3回＋強化ラボ解放で解放</div><div class="item-bottom"><span class="item-cost">🍉 400,000</span><button class="buy-btn" data-buy="moonfarm">ロック中</button></div></div></article>
           </div>
         </div>
 
         <div class="panel lab-panel">
           <div class="shop-title-row"><h2 class="section-title">🧪 フルーツ強化ラボ</h2><span class="shop-tag">倍率アップ！</span></div>
-          <p class="lab-intro">🍍で強化 → 🍎で大強化 → 🍇で超強化！ラボは転生3回＋累計250,000ポイントで解放。農園も少しずつ増やしていこう。</p>
+          <p class="lab-intro">🍍で強化 → 🍎で大強化 → 🍇で超強化！ラボは一年待ち3回＋累計250,000ポイントで解放。農園も少しずつ増やしていこう。</p>
           <div class="lab-locked" id="labLocked">
             <div class="lab-lock-icon">🔒</div>
             <div class="lab-lock-title">強化ラボはまだ封印中</div>
-            <p>転生を3回して、累計250,000ポイントを目指そう！ラボが解放されると、高額な🍍・🍎・🍇農園も順番に購入できるよ。</p>
-            <div class="lab-unlock-progress"><span id="labRebirthProgress">🌌 転生 0 / 3回</span><span id="labLifetimeProgress">🍉 累計 0 / 250,000</span></div>
+            <p>一年待ちを3回して、累計250,000ポイントを目指そう！ラボが解放されると、高額な🍍・🍎・🍇農園も順番に購入できるよ。</p>
+            <div class="lab-unlock-progress"><span id="labRebirthProgress">🌌 一年待ち 0 / 3回</span><span id="labLifetimeProgress">🍉 累計 0 / 250,000</span></div>
           </div>
           <div class="upgrade-list" id="upgradeList" style="display:none">
             <article class="upgrade-card" data-upgrade-card="pineapple"><div class="shop-emoji">🍍</div><div class="item-main"><div class="item-name">パイナップル強化</div><div class="upgrade-level" id="pineLevel">レベル 0</div><div class="upgrade-desc">タップ・生産 +10%（最大Lv.5）</div><div class="upgrade-actions"><span class="upgrade-cost" id="pineCost">🍍 3</span><button class="buy-btn" data-upgrade="pineapple">強化する</button></div></div></article>
@@ -158,17 +166,45 @@
       <div class="achievement"><div class="achievement-icon" id="goalIcon">🎯</div><div style="flex:1;min-width:0"><div class="achievement-title" id="goalTitle">めざせ！100ポイント</div><div class="achievement-desc" id="goalDesc">まずはすいかをタップしよう。</div><div class="progress-wrap"><div class="progress-fill" id="goalProgress"></div></div><div class="milestone-text" id="goalCount">0 / 100</div></div></div>
       <div class="achievement"><div class="achievement-icon">🍍🍎🍇</div><div style="min-width:0"><div class="achievement-title">フルーツコレクション</div><div class="achievement-desc" id="collectionText">農園を買って、強化用フルーツを集めよう！</div><div class="achievement-desc" id="lifetimeText">これまでの累計：0 🍉</div></div></div>
       <div class="rebirth-card">
-        <div class="rebirth-icon">🌌</div>
+        <div class="rebirth-icon">⏳</div>
         <div class="rebirth-copy">
-          <div class="rebirth-title">転生の祭壇</div>
-          <div class="rebirth-desc" id="rebirthDesc">この周回で10,000ポイント稼ぐと転生できるよ。最初の転生から大型スキルツリーを育てて、自分だけのビルドを作ろう！</div>
-          <div class="rebirth-stat" id="rebirthStat">転生 0回 ・ 永続ボーナス ×1.0</div>
+          <div class="rebirth-title">一年待つ</div>
+          <div class="rebirth-desc" id="rebirthDesc">この年で10,000ポイント稼ぐと一年待てるよ。待つとポイント・フルーツ・製品などがすべてお金に変換され、お金は次の年にも残るよ。</div>
+          <div class="rebirth-stat" id="rebirthStat">0年待ち ・ 永久お金 0 ・ ボーナス ×1.0</div>
           <div class="perk-summary" id="perkSummary">永続スキル：まだ選択していないよ</div>
         </div>
         <button class="rebirth-btn" id="rebirthBtn">🔒 あと 10,000</button>
       </div>
     </section>
 
+
+    <section class="economy-grid">
+      <div class="panel">
+        <div class="shop-title-row"><h2 class="section-title">🏭 製品加工所</h2><span class="shop-tag">🍉を製品化</span></div>
+        <p class="lab-intro">すいかポイントを使って製品を作り、売って💴永久お金にしよう。お金は「一年待つ」でも消えないよ。</p>
+        <div class="product-list">
+          <div class="product-card" data-product="juice"><div class="product-row"><div class="product-icon">🥤</div><div><div class="product-name">スイカジュース</div><div class="product-desc">🍉 100ポイント → 製品1個</div><div class="product-stock" id="productStockJuice">在庫 0 ・ 売価 150💴</div><div class="tool-row"><button class="tool-btn" data-craft-product="juice">作る</button><button class="tool-btn gold" data-sell-product="juice">売る</button></div></div></div></div>
+          <div class="product-card" data-product="jam"><div class="product-row"><div class="product-icon">🍓</div><div><div class="product-name">スイカジャム</div><div class="product-desc">🍉 500ポイント → 製品1個</div><div class="product-stock" id="productStockJam">在庫 0 ・ 売価 800💴</div><div class="tool-row"><button class="tool-btn" data-craft-product="jam">作る</button><button class="tool-btn gold" data-sell-product="jam">売る</button></div></div></div></div>
+          <div class="product-card" data-product="syrup"><div class="product-row"><div class="product-icon">🧃</div><div><div class="product-name">高級スイカシロップ</div><div class="product-desc">🍉 2,000ポイント → 製品1個</div><div class="product-stock" id="productStockSyrup">在庫 0 ・ 売価 3,600💴</div><div class="tool-row"><button class="tool-btn" data-craft-product="syrup">作る</button><button class="tool-btn gold" data-sell-product="syrup">売る</button></div></div></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="shop-title-row"><h2 class="section-title">💴 お金の原理</h2><span class="shop-tag">永続強化</span></div>
+        <p class="lab-intro">💴を使って割合強化を買おう。これらの強化は一年待っても消えないよ。</p>
+        <div class="money-upgrade-list">
+          <div class="money-upgrade" data-money-upgrade-card="sale"><div class="money-upgrade-name">🏪 販売力</div><div class="money-upgrade-desc" id="moneyUpgradeSaleDesc">製品の売価 +10%</div><div class="money-upgrade-row"><span class="money-cost" id="moneyUpgradeSaleCost">💴 1,000</span><button class="tool-btn" data-money-upgrade="sale">強化</button></div></div>
+          <div class="money-upgrade" data-money-upgrade-card="conversion"><div class="money-upgrade-name">🔁 資産変換</div><div class="money-upgrade-desc" id="moneyUpgradeConversionDesc">一年待つときの換金 +10%</div><div class="money-upgrade-row"><span class="money-cost" id="moneyUpgradeConversionCost">💴 2,000</span><button class="tool-btn" data-money-upgrade="conversion">強化</button></div></div>
+          <div class="money-upgrade" data-money-upgrade-card="factory"><div class="money-upgrade-name">🏭 大量生産</div><div class="money-upgrade-desc" id="moneyUpgradeFactoryDesc">製品の材料コスト -5%</div><div class="money-upgrade-row"><span class="money-cost" id="moneyUpgradeFactoryCost">💴 2,500</span><button class="tool-btn" data-money-upgrade="factory">強化</button></div></div>
+          <div class="money-upgrade" data-money-upgrade-card="interest"><div class="money-upgrade-name">📈 お金の循環</div><div class="money-upgrade-desc" id="moneyUpgradeInterestDesc">永久お金の収入・換金 +5%</div><div class="money-upgrade-row"><span class="money-cost" id="moneyUpgradeInterestCost">💴 5,000</span><button class="tool-btn" data-money-upgrade="interest">強化</button></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="year-card">
+      <h2>⏳ 一年待つと、すべてがお金になる</h2>
+      <div class="year-desc" id="yearConversionText">今の🍉ポイント・フルーツ・製品を💴に換算して、次の一年へ進むよ。💴とお金の強化は消えないよ。</div>
+      <div class="year-stat" id="yearConversionPreview">一年待つ準備中…</div>
+      <button class="year-btn" id="yearWaitBtn">🔒 一年待つ</button>
+    </section>
 
     <section class="panel" id="dragonPanel">
       <h2 class="section-title">🐉 すいかドラゴン</h2>
@@ -205,15 +241,15 @@
 
   <div class="notice" id="notice" role="status" aria-live="polite"></div>
   <div class="modal-backdrop" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetHeading">
-    <div class="modal"><h2 id="resetHeading">ゲームをリセットする？</h2><p>ポイント、農園、フルーツ、強化、転生ボーナスをすべて消して最初から始めるよ。<br>この操作は元に戻せません。</p><div class="modal-actions"><button class="cancel-btn" id="cancelReset">やめる</button><button class="danger-btn" id="confirmReset">全部リセット</button></div></div>
+    <div class="modal"><h2 id="resetHeading">ゲームをリセットする？</h2><p>ポイント、農園、フルーツ、製品、お金、強化などをすべて消して最初から始めるよ。<br>この操作は元に戻せません。</p><div class="modal-actions"><button class="cancel-btn" id="cancelReset">やめる</button><button class="danger-btn" id="confirmReset">全部リセット</button></div></div>
   </div>
   <div class="modal-backdrop" id="rebirthModal" role="dialog" aria-modal="true" aria-labelledby="rebirthHeading">
-    <div class="modal"><h2 id="rebirthHeading">🌌 大型スキルツリーを育てよう！</h2><p id="rebirthModalText">転生すると農園・ポイント・フルーツがリセット！ただし、次の転生で1ポイント使って30個の永続スキルから1つ選べるよ。最初の転生からスキルツリーに入れるよ。</p>
-      <div class="skill-tree-note">🌱 序盤からタップ・農園を伸ばし、中盤で「転生しても50%のポイントを残す」を取れるようにしたよ。最後まで待つ必要はないよ！</div>
+    <div class="modal"><h2 id="rebirthHeading">⏳ 一年待って経済を成長させよう！</h2><p id="rebirthModalText">一年待つと農園・ポイント・フルーツ・製品がリセットされる代わりに、永久お金が残るよ。今回の一年待ちで永続スキルを1つ強化できるよ。</p>
+      <div class="skill-tree-note">🌱 序盤からタップ・農園を伸ばして、💴お金の原理も強化できるよ。</div>
       <div class="rebirth-options skill-tree" id="rebirthOptions"></div>
       <p class="rebirth-selection-summary" id="rebirthSelectionSummary">まだ未選択だよ。上げたい能力を1つタップしてね。</p>
-      <p class="rebirth-help">選べるのは転生1回につき1種類。各能力にはレベル上限があるよ。</p>
-      <div class="modal-actions"><button class="cancel-btn" id="cancelRebirth">まだ続ける</button><button class="confirm-rebirth-btn" id="confirmRebirth">このスキルで転生！</button></div>
+      <p class="rebirth-help">選べるのは一年待つ1回につき1種類。各能力にはレベル上限があるよ。</p>
+      <div class="modal-actions"><button class="cancel-btn" id="cancelRebirth">まだ待たない</button><button class="confirm-rebirth-btn" id="confirmRebirth">このスキルで一年待つ！</button></div>
     </div>
   </div>
 
@@ -229,7 +265,7 @@
     <div class="modal wide"><h2 id="adminHeading">🔐 管理者モード</h2>
       <div class="admin-note">この管理者機能の「1回限りコード」はサーバー側で使用済みにする方式。GitHub Pagesだけでは安全にできないので、このVer.11はRenderなどのNode.jsサーバーで動かしてね。</div>
       <div id="adminLoginView" class="modal-section"><h3>管理者ログイン</h3><input class="tool-input" id="adminPassword" type="password" placeholder="管理者パスワード"><div class="modal-actions"><button class="tool-btn primary" id="adminLoginBtn">ログイン</button><button class="cancel-btn" id="closeAdmin1">閉じる</button></div><div class="tool-status" id="adminLoginStatus"></div></div>
-      <div id="adminPanelView" class="modal-section" style="display:none"><h3>🎫 1回限りコード発行</h3><div class="tool-row"><select class="tool-select" id="adminRewardType"><option value="points">🍉 すいかポイント</option><option value="shards">💧 転生のしずく</option><option value="pineapple">🍍 パイナップル</option><option value="apple">🍎 りんご</option><option value="grape">🍇 ぶどう</option></select><input class="tool-input" id="adminRewardAmount" type="number" min="1" max="100000000" value="100" placeholder="数量"></div><div class="modal-actions"><button class="tool-btn primary" id="createCodeBtn">🎟️ コードを発行</button><button class="tool-btn" id="rankingAdminBtn">📊 ランキング確認</button><button class="cancel-btn" id="closeAdmin2">閉じる</button></div><div id="createdCode" class="admin-code" style="display:none"></div><div id="createdCodeHint" class="copy-chip" style="display:none">このコードは1回使われると無効になるよ。</div><div class="tool-status" id="adminStatus"></div></div>
+      <div id="adminPanelView" class="modal-section" style="display:none"><h3>🎫 1回限りコード発行</h3><div class="tool-row"><select class="tool-select" id="adminRewardType"><option value="points">🍉 すいかポイント</option><option value="shards">💧 転生のしずく</option><option value="pineapple">🍍 パイナップル</option><option value="apple">🍎 りんご</option><option value="grape">🍇 ぶどう</option><option value="money">💴 永久お金</option></select><input class="tool-input" id="adminRewardAmount" type="number" min="1" max="100000000" value="100" placeholder="数量"></div><div class="modal-actions"><button class="tool-btn primary" id="createCodeBtn">🎟️ コードを発行</button><button class="tool-btn" id="rankingAdminBtn">📊 ランキング確認</button><button class="cancel-btn" id="closeAdmin2">閉じる</button></div><div id="createdCode" class="admin-code" style="display:none"></div><button class="tool-btn gold copy-code-btn" id="copyCreatedCodeBtn" style="display:none">📋 発行コードをコピー</button><div id="createdCodeHint" class="copy-chip" style="display:none">このコードは1回使われると無効になるよ。</div><div class="tool-status" id="adminStatus"></div></div>
     </div>
   </div>
 
@@ -242,12 +278,13 @@
   (()=>{
     'use strict';
     const SAVE_KEY='suika-clicker-save-v1';
-    const REBIRTH_REQUIREMENT=10000; // 初回転生の必要ポイント
+    const REBIRTH_REQUIREMENT=10000; // 初回の一年待ちに必要なポイント
+    const MONEY_POINT_RATE=1; // 1🍉ポイント=1💴を基本換金価値にする
     const LAB_UNLOCK_REBIRTHS=3;
     const LAB_UNLOCK_LIFETIME=250000;
     const shop={
       melonfarm:{name:'すいか畑',cost:100,growth:1.42,rate:3.5,emoji:'🌱',desc:'すいかポイントを自動生産'},
-      pineappleFarm:{name:'パイナップル農園',cost:25000,growth:1.80,fruit:'pineapple',fruitRate:.20,emoji:'🍍',desc:'強化に使うパイナップルを育てる',unlock:()=>labUnlocked(),unlockText:'🧪 転生3回＋累計250,000ポイントで強化ラボを解放！'},
+      pineappleFarm:{name:'パイナップル農園',cost:25000,growth:1.80,fruit:'pineapple',fruitRate:.20,emoji:'🍍',desc:'強化に使うパイナップルを育てる',unlock:()=>labUnlocked(),unlockText:'🧪 一年待ち3回＋累計250,000ポイントで強化ラボを解放！'},
       pineappleFarm2:{name:'パイナップル温室',cost:180000,growth:1.90,fruit:'pineapple',fruitRate:.45,emoji:'🌴',desc:'🍍をたくさん育てる',unlock:()=>labUnlocked()&&(state.owned.pineappleFarm||0)>=3,unlockText:'🧪 ラボ解放後、🍍パイナップル農園を3個買うと解放！'},
       pineappleFarm3:{name:'王様パイナップル農園',cost:1200000,growth:1.95,fruit:'pineapple',fruitRate:.95,emoji:'👑',desc:'高級パイナップルを生産',unlock:()=>labUnlocked()&&(state.owned.pineappleFarm2||0)>=2,unlockText:'🧪 ラボ解放後、🌴パイナップル温室を2個買うと解放！'},
       appleFarm:{name:'りんご農園',cost:120000,growth:1.90,fruit:'apple',fruitRate:.11,emoji:'🍎',desc:'強化に使うりんごを育てる',unlock:()=>labUnlocked()&&state.upgrades.pineapple>=1,unlockText:'🧪 ラボ解放後、🍍パイナップル強化Lv.1で解放！'},
@@ -261,21 +298,23 @@
       bigmelonfarm:{name:'大玉すいか農園',cost:900,growth:1.52,rate:9,emoji:'🍉',desc:'大きなすいかを育てて自動生産',unlock:()=> (state.owned.melonfarm||0)>=2,unlockText:'🌱 先に普通のすいか畑を2個買おう！'},
       greenhouse:{name:'温室すいか農園',cost:5500,growth:1.56,rate:30,emoji:'🏡',desc:'温室で年中すいかを生産',unlock:()=> (state.owned.bigmelonfarm||0)>=1,unlockText:'🍉 先に大玉すいか農園を1個買おう！'},
       hydroponic:{name:'水耕すいか農園',cost:25000,growth:1.60,rate:90,emoji:'💧',desc:'水耕栽培ですいかを効率生産',unlock:()=> (state.owned.greenhouse||0)>=2,unlockText:'🏡 温室すいか農園を2個買うと解放！'},
-      skyfarm:{name:'空中すいか農園',cost:100000,growth:1.65,rate:260,emoji:'☁️',desc:'空中農園からすいかを自動生産',unlock:()=> (state.rebirths||0)>=1,unlockText:'🌌 1回転生すると解放されるよ！'},
-      moonfarm:{name:'月面すいか農園',cost:400000,growth:1.70,rate:700,emoji:'🌙',desc:'月面農園からすいかを自動生産',unlock:()=> (state.rebirths||0)>=3&&labUnlocked(),unlockText:'🌌 転生3回と強化ラボの解放が必要だよ！'}
+      skyfarm:{name:'空中すいか農園',cost:100000,growth:1.65,rate:260,emoji:'☁️',desc:'空中農園からすいかを自動生産',unlock:()=> (state.rebirths||0)>=1,unlockText:'🌌 1回一年待つと解放されるよ！'},
+      moonfarm:{name:'月面すいか農園',cost:400000,growth:1.70,rate:700,emoji:'🌙',desc:'月面農園からすいかを自動生産',unlock:()=> (state.rebirths||0)>=3&&labUnlocked(),unlockText:'🌌 一年待ち3回と強化ラボの解放が必要だよ！'}
     };
     const upgradeData={
       pineapple:{name:'パイナップル強化',fruit:'pineapple',emoji:'🍍',base:40,growth:1.85,bonusPerLevel:.10,maxLevel:5,desc:'タップ・生産 +10%（上限Lv.5）',unlocked:()=> (state.owned.pineappleFarm||0)>0},
       apple:{name:'りんご強化',fruit:'apple',emoji:'🍎',base:60,growth:1.90,bonusPerLevel:.15,maxLevel:4,desc:'タップ・生産 +15%（上限Lv.4）',unlocked:()=>state.upgrades.pineapple>=1&&(state.owned.appleFarm||0)>0,requirement:'パイン強化Lv.1＋りんご農園が必要'},
       grape:{name:'ぶどう強化',fruit:'grape',emoji:'🍇',base:80,growth:1.95,bonusPerLevel:.20,maxLevel:3,desc:'タップ・生産 +20%（上限Lv.3）',unlocked:()=>state.upgrades.apple>=1&&(state.owned.grapeFarm||0)>0,requirement:'りんご強化Lv.1＋ぶどう農園が必要'}
     };
+    const productData={juice:{name:'スイカジュース',emoji:'🥤',cost:100,sell:150},jam:{name:'スイカジャム',emoji:'🍓',cost:500,sell:800},syrup:{name:'高級スイカシロップ',emoji:'🧃',cost:2000,sell:3600}};
+    const moneyUpgradeData={sale:{name:'販売力',icon:'🏪',max:10,base:1000,growth:1.65,bonus:.10},conversion:{name:'資産変換',icon:'🔁',max:10,base:2000,growth:1.70,bonus:.10},factory:{name:'大量生産',icon:'🏭',max:10,base:2500,growth:1.75,bonus:.05},interest:{name:'お金の循環',icon:'📈',max:10,base:5000,growth:1.80,bonus:.05}};
     const goals=[
       {n:100,title:'めざせ！100ポイント',desc:'まずはすいかをタップしよう。',icon:'🎯'},
       {n:1000,title:'フルーツ見習い！',desc:'農園で自動生産をはじめよう。',icon:'🍍'},
       {n:10000,title:'フルーツ王国！',desc:'転生できるくらい稼ごう！',icon:'👑'},
       {n:250000,title:'すいかレジェンド！',desc:'転生を重ねて、強化ラボの封印を解こう！',icon:'🏆'}
     ];
-    const fresh=()=>({version:5,points:0,total:0,lifetimeTotal:0,tap:1,legacyRate:0,owned:{melonfarm:0,pineappleFarm:0,pineappleFarm2:0,pineappleFarm3:0,appleFarm:0,appleFarm2:0,appleFarm3:0,grapeFarm:0,grapeFarm2:0,grapeFarm3:0,tapupgrade:0,golden:0,bigmelonfarm:0,greenhouse:0,hydroponic:0,skyfarm:0,moonfarm:0},stock:{pineapple:0,apple:0,grape:0},upgrades:{pineapple:0,apple:0,grape:0},rebirths:0,rebirthShards:0,rebirthPerks:{tap:0,farm:0,fruit:0,lab:0,start:0,luck:0,golden:0,coupon:0,offline:0,labcost:0,mission:0,goldspeed:0,shard:0,combo:0,crit:0,tapburst:0,tapmaster:0,farmking:0,farmcost:0,idleplus:0,fruitluck:0,labpower:0,labshortcut:0,startmaster:0,keep:0,keepplus:0,rebirthboost:0,shardmaster:0,rebirthdiscount:0,eternal:0},clicks:0,claimedMissions:{},dailyClaim:'',goldenReady:false,goldenNext:Date.now()+35000,lastTime:Date.now()});
+    const fresh=()=>({version:6,points:0,total:0,lifetimeTotal:0,tap:1,legacyRate:0,owned:{melonfarm:0,pineappleFarm:0,pineappleFarm2:0,pineappleFarm3:0,appleFarm:0,appleFarm2:0,appleFarm3:0,grapeFarm:0,grapeFarm2:0,grapeFarm3:0,tapupgrade:0,golden:0,bigmelonfarm:0,greenhouse:0,hydroponic:0,skyfarm:0,moonfarm:0},stock:{pineapple:0,apple:0,grape:0},products:{juice:0,jam:0,syrup:0},upgrades:{pineapple:0,apple:0,grape:0},rebirths:0,rebirthShards:0,rebirthPerks:{tap:0,farm:0,fruit:0,lab:0,start:0,luck:0,golden:0,coupon:0,offline:0,labcost:0,mission:0,goldspeed:0,shard:0,combo:0,crit:0,tapburst:0,tapmaster:0,farmking:0,farmcost:0,idleplus:0,fruitluck:0,labpower:0,labshortcut:0,startmaster:0,keep:0,keepplus:0,rebirthboost:0,shardmaster:0,rebirthdiscount:0,eternal:0},money:0,yearCount:0,moneyUpgrades:{sale:0,conversion:0,factory:0,interest:0},clicks:0,claimedMissions:{},dailyClaim:'',goldenReady:false,goldenNext:Date.now()+35000,lastTime:Date.now(),dragonLevel:1,dragonExp:0,dragonAura:''});
     let state=fresh(),noticeTimer,selectedRebirthPerk='';
     const perkData={
       tap:{name:'タップの極意',icon:'⚡',branch:'⚡ タップ',tier:1,next:'タップ基本力 +2',maxLevel:10,summary:'タップ+',describe:lv=>`タップ基本力 +${lv*2}`},
@@ -299,19 +338,19 @@
       labpower:{name:'超研究',icon:'🔬',branch:'🍎 フルーツ・ラボ',tier:3,minRebirths:5,requires:['lab'],next:'ラボ倍率 +8%',maxLevel:5,summary:'超研究+',describe:lv=>`ラボ倍率 +${lv*8}%`},
       labshortcut:{name:'近道研究',icon:'🚀',branch:'🍎 フルーツ・ラボ',tier:4,minRebirths:7,requires:['labpower'],next:'ラボ解放に必要な累計ポイント -50,000',maxLevel:4,summary:'ラボ近道+',describe:lv=>`ラボ累計条件 -${lv*50000}`},
 
-      start:{name:'王国の貯金',icon:'💰',branch:'💰 王国',tier:1,minRebirths:1,next:'転生後の開始ポイント +250',maxLevel:10,summary:'開始+',describe:lv=>`開始ポイント +${lv*500}`},
+      start:{name:'王国の貯金',icon:'💰',branch:'💰 王国',tier:1,minRebirths:1,next:'一年待ち後の開始ポイント +250',maxLevel:10,summary:'開始+',describe:lv=>`開始ポイント +${lv*500}`},
       golden:{name:'黄金のごほうび',icon:'🌟',branch:'💰 王国',tier:1,minRebirths:1,requires:['start'],next:'黄金のすいか報酬 +8%',maxLevel:10,summary:'黄金+',describe:lv=>`黄金報酬 +${Math.min(80,lv*8)}%`},
       mission:{name:'ミッション名人',icon:'🎯',branch:'💰 王国',tier:2,minRebirths:2,requires:['start'],next:'ミッション報酬 +15%',maxLevel:5,summary:'任務+',describe:lv=>`ミッション報酬 +${Math.min(75,lv*15)}%`},
       goldspeed:{name:'黄金探知機',icon:'⏱️',branch:'💰 王国',tier:2,minRebirths:3,requires:['golden'],next:'黄金の待ち時間 -5秒',maxLevel:5,summary:'黄金短縮+',describe:lv=>`黄金待ち時間 -${lv*5}秒`},
-      keep:{name:'転生銀行',icon:'🏦',branch:'💰 王国',tier:2,minRebirths:2,requires:['start'],next:'転生してもポイントの50%を残す',maxLevel:1,summary:'半分貯金',describe:lv=>lv?'ポイント50%を次周回へ':'未取得'},
+      keep:{name:'転生銀行',icon:'🏦',branch:'💰 王国',tier:2,minRebirths:2,requires:['start'],next:'一年待ってもポイントの50%を残す',maxLevel:1,summary:'半分貯金',describe:lv=>lv?'ポイント50%を次周回へ':'未取得'},
       startmaster:{name:'王国基金',icon:'💎',branch:'💰 王国',tier:3,minRebirths:4,requires:['keep'],next:'開始ポイント +500',maxLevel:5,summary:'基金+',describe:lv=>`開始ポイント +${lv*500}`},
 
       shard:{name:'しずくの器',icon:'💧',branch:'🌌 転生',tier:1,minRebirths:1,next:'2レベルごとに転生のしずく +1',maxLevel:6,summary:'しずく+',describe:lv=>`追加しずく +${Math.floor(Math.min(6,lv)/2)}個/転生`},
-      rebirthboost:{name:'転生の力',icon:'🌌',branch:'🌌 転生',tier:1,minRebirths:2,requires:['shard'],next:'転生ボーナス +5%',maxLevel:10,summary:'転生+',describe:lv=>`転生ボーナス +${lv*5}%`},
-      shardmaster:{name:'しずく職人',icon:'💦',branch:'🌌 転生',tier:2,minRebirths:3,requires:['shard'],next:'転生時のしずく +2個',maxLevel:5,summary:'しずく強化+',describe:lv=>`転生しずく +${lv*2}個`},
-      rebirthdiscount:{name:'転生の近道',icon:'🌀',branch:'🌌 転生',tier:2,minRebirths:3,requires:['rebirthboost'],next:'転生必要ポイント -8%',maxLevel:5,summary:'転生短縮+',describe:lv=>`転生必要ポイント -${lv*8}%`},
+      rebirthboost:{name:'転生の力',icon:'🌌',branch:'🌌 転生',tier:1,minRebirths:2,requires:['shard'],next:'一年待ちボーナス +5%',maxLevel:10,summary:'転生+',describe:lv=>`一年待ちボーナス +${lv*5}%`},
+      shardmaster:{name:'しずく職人',icon:'💦',branch:'🌌 転生',tier:2,minRebirths:3,requires:['shard'],next:'一年待ち時のしずく +2個',maxLevel:5,summary:'しずく強化+',describe:lv=>`転生しずく +${lv*2}個`},
+      rebirthdiscount:{name:'転生の近道',icon:'🌀',branch:'🌌 転生',tier:2,minRebirths:3,requires:['rebirthboost'],next:'一年待つ必要ポイント -8%',maxLevel:5,summary:'転生短縮+',describe:lv=>`一年待つ必要ポイント -${lv*8}%`},
       keepplus:{name:'巨大貯金庫',icon:'🏛️',branch:'🌌 転生',tier:3,minRebirths:6,requires:['keep'],next:'さらに25%を残す（合計75%）',maxLevel:1,summary:'75%貯金',describe:lv=>lv?'合計75%を次周回へ':'未取得'},
-      eternal:{name:'永遠の王国',icon:'♾️',branch:'🌌 転生',tier:4,minRebirths:9,requires:['keepplus','shardmaster'],next:'転生ボーナス上限 +25%',maxLevel:2,summary:'永遠+',describe:lv=>`転生ボーナス上限が +${lv*25}%`}
+      eternal:{name:'永遠の王国',icon:'♾️',branch:'🌌 転生',tier:4,minRebirths:9,requires:['keepplus','shardmaster'],next:'一年待ちボーナス上限 +25%',maxLevel:2,summary:'永遠+',describe:lv=>`一年待ちボーナス上限が +${lv*25}%`}
     };
     function perkLevel(id){return Math.max(0,finite((state.rebirthPerks||{})[id]));}
     const $=id=>document.getElementById(id);
@@ -323,17 +362,26 @@
     function labUnlocked(){return (state.rebirths||0)>=LAB_UNLOCK_REBIRTHS&&(state.lifetimeTotal||0)>=labRequiredLifetime()}
     function scaledGain(n){n=Math.max(0,finite(n));return n<=500?n:500+80*Math.log10(1+(n-500)/500)}
     function effectiveOwned(n){n=Math.max(0,finite(n));return Math.min(50,n<=10?n:10+1.5*Math.sqrt(n-10))}
-    function upgradeMultiplier(){const labIsOpen=labUnlocked(),pine=labIsOpen?Math.min(.5,(state.upgrades.pineapple||0)*.10):0,apple=labIsOpen?Math.min(.6,(state.upgrades.apple||0)*.15):0,grape=labIsOpen?Math.min(.6,(state.upgrades.grape||0)*.20):0,labBonus=labIsOpen?1+Math.min(.75+perkLevel('labpower')*.08,perkLevel('lab')*.05+perkLevel('labpower')*.08):1,tapBonus=1+perkLevel('combo')*.08+perkLevel('tapburst')*.15+perkLevel('tapmaster')*.10;return (1+pine+apple+grape)*rebirthMultiplier()*labBonus*tapBonus}
-    function rebirthMultiplier(){const cap=1+perkLevel('eternal')*.25;const byRebirth=(state.rebirths||0)*.03;const byShards=(state.rebirthShards||0)*.01;const bySkill=perkLevel('rebirthboost')*.05;return Math.min(cap,1+byRebirth+byShards+bySkill)}
+    function upgradeMultiplier(){const labIsOpen=labUnlocked(),dragonBoost=dragonPowerMultiplier(),powerAura=state.dragonAura==='power'?1.25:1,pine=labIsOpen?Math.min(.5,(state.upgrades.pineapple||0)*.10):0,apple=labIsOpen?Math.min(.6,(state.upgrades.apple||0)*.15):0,grape=labIsOpen?Math.min(.6,(state.upgrades.grape||0)*.20):0,labBonus=labIsOpen?1+Math.min(.75+perkLevel('labpower')*.08,perkLevel('lab')*.05+perkLevel('labpower')*.08):1,tapBonus=1+perkLevel('combo')*.08+perkLevel('tapburst')*.15+perkLevel('tapmaster')*.10;return (1+pine+apple+grape)*rebirthMultiplier()*labBonus*tapBonus*dragonBoost*powerAura}
+    function rebirthMultiplier(){const cap=1+perkLevel('eternal')*.25;const aura=state.dragonAura==='rebirth'?1.10:1;const byRebirth=(state.rebirths||0)*.03;const byShards=(state.rebirthShards||0)*.01;const bySkill=perkLevel('rebirthboost')*.05;return Math.min(cap,1+byRebirth+byShards+bySkill)*aura}
     function rebirthRequirement(){const discount=Math.min(.25,perkLevel('rebirthdiscount')*.05);return Math.floor(REBIRTH_REQUIREMENT*Math.pow(1.5,Math.min(state.rebirths||0,15))*(1-discount))}
-    function rate(){const farmRate=Object.entries(shop).reduce((sum,[id,item])=>sum+(item.rate||0)*effectiveOwned(state.owned[id]||0),0);const raw=farmRate+Math.min(50,state.legacyRate||0);return scaledGain(raw*upgradeMultiplier()*(1+Math.min(.80,perkLevel('farm')*.08)+perkLevel('farmking')*.15))}
+    function rate(){const farmAura=state.dragonAura==='farm'?1.5:1;const farmRate=Object.entries(shop).reduce((sum,[id,item])=>sum+(item.rate||0)*effectiveOwned(state.owned[id]||0),0);const raw=farmRate+Math.min(50,state.legacyRate||0);return scaledGain(raw*upgradeMultiplier()*farmAura*(1+Math.min(.80,perkLevel('farm')*.08)+perkLevel('farmking')*.15))}
     function nextCost(id){const item=shop[id],discount=Math.min(.65,perkLevel('coupon')*.05+perkLevel('farmcost')*.03);return Math.ceil(item.cost*Math.pow(item.growth||1.17,state.owned[id]||0)*(1-discount))}
     function upgradeCost(id){const item=upgradeData[id],discount=Math.min(.48,perkLevel('labcost')*.08);return Math.ceil(item.base*Math.pow(item.growth,state.upgrades[id]||0)*(1-discount))}
     function rebirthReward(){return 2+(state.total>=rebirthRequirement()*3?2:0)+Math.floor(perkLevel('shard')/2)+perkLevel('shardmaster')*2}
     function keepPointRate(){return Math.min(.75,(perkLevel('keep')?0.50:0)+(perkLevel('keepplus')?0.25:0))}
-    function critChance(){return Math.min(.40,perkLevel('luck')*.03)}
+    function critChance(){return Math.min(.50,perkLevel('luck')*.03+(state.dragonAura==='luck'?.10:0))}
     function critMultiplier(){return 2+perkLevel('crit')*.40}
     function fruitMultiplier(){return 1+Math.min(.80,perkLevel('fruit')*.08)+Math.min(.75,perkLevel('fruitluck')*.15)}
+    function moneyUpgradeLevel(id){return Math.max(0,Math.floor(finite((state.moneyUpgrades||{})[id])))}
+    function moneyUpgradeCost(id){const u=moneyUpgradeData[id];return Math.ceil(u.base*Math.pow(u.growth,moneyUpgradeLevel(id)))}
+    function productMaterialMultiplier(){return Math.max(.45,1-moneyUpgradeLevel('factory')*moneyUpgradeData.factory.bonus)}
+    function productSaleMultiplier(){return 1+moneyUpgradeLevel('sale')*moneyUpgradeData.sale.bonus}
+    function moneyConversionMultiplier(){return (1+moneyUpgradeLevel('conversion')*moneyUpgradeData.conversion.bonus)*(1+moneyUpgradeLevel('interest')*moneyUpgradeData.interest.bonus)}
+    function moneyEarnedFromSale(base){return Math.floor(base*productSaleMultiplier()*(1+moneyUpgradeLevel('interest')*moneyUpgradeData.interest.bonus))}
+    function productValue(id){const p=productData[id];return moneyEarnedFromSale(p.sell)}
+    function conversionValue(){let value=Math.max(0,state.points)*MONEY_POINT_RATE;value+=(state.stock.pineapple||0)*500+(state.stock.apple||0)*800+(state.stock.grape||0)*1200;Object.keys(productData).forEach(id=>value+=(state.products?.[id]||0)*productValue(id));Object.keys(shop).forEach(id=>{const it=shop[id],owned=state.owned?.[id]||0;if(owned)value+=Math.floor((it.cost||0)*owned*.25)});return Math.floor(value*moneyConversionMultiplier())}
+    function dragonPowerMultiplier(){const lv=Math.max(1,Math.floor(state.dragonLevel||1));return 1+Math.min(.60,(lv-1)*.02)}
     function save(showMessage=false){state.lastTime=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));if(showMessage)toast('💾 セーブしたよ！')}catch(e){if(showMessage)toast('この端末には保存できなかったよ')}}
     function compressOldBalance(n,floor=20000){n=Math.max(0,finite(n));floor=Math.max(1,finite(floor));if(n<=floor)return n;return floor+6000*Math.log10(n/floor)}
     function normalizeSave(parsed){
@@ -348,9 +396,9 @@
         base.lastTime=finite(parsed.lastTime)||Date.now();
         return base;
       }
-      if(parsed.version===2||parsed.version===3||parsed.version===4||parsed.version===5){
+      if(parsed.version===2||parsed.version===3||parsed.version===4||parsed.version===5||parsed.version===6){
         const oldBalance=parsed.version<4;
-        return {...base,...parsed,version:5,rebirthPerks:{...base.rebirthPerks,...(parsed.rebirthPerks||{})},claimedMissions:{...base.claimedMissions,...(parsed.claimedMissions||{})},owned:{...base.owned,...(parsed.owned||{})},stock:{...base.stock,...(parsed.stock||{})},upgrades:{...base.upgrades,...(parsed.upgrades||{})},points:Math.max(0,oldBalance?compressOldBalance(parsed.points):finite(parsed.points)),total:Math.max(0,oldBalance?compressOldBalance(parsed.total,REBIRTH_REQUIREMENT*Math.pow(1.5,Math.min(parsed.rebirths||0,15))):finite(parsed.total)),lifetimeTotal:Math.max(0,finite(parsed.lifetimeTotal)),tap:Math.max(1,finite(parsed.tap)||1),lastTime:finite(parsed.lastTime)||Date.now()};
+        return {...base,...parsed,version:6,rebirthPerks:{...base.rebirthPerks,...(parsed.rebirthPerks||{})},claimedMissions:{...base.claimedMissions,...(parsed.claimedMissions||{})},owned:{...base.owned,...(parsed.owned||{})},stock:{...base.stock,...(parsed.stock||{})},products:{...base.products,...(parsed.products||{})},moneyUpgrades:{...base.moneyUpgrades,...(parsed.moneyUpgrades||{})},money:Math.max(0,finite(parsed.money)),yearCount:Math.max(0,finite(parsed.yearCount)),dragonLevel:Math.max(1,finite(parsed.dragonLevel)||1),dragonExp:Math.max(0,finite(parsed.dragonExp)),dragonAura:String(parsed.dragonAura||''),points:Math.max(0,oldBalance?compressOldBalance(parsed.points):finite(parsed.points)),total:Math.max(0,oldBalance?compressOldBalance(parsed.total,REBIRTH_REQUIREMENT*Math.pow(1.5,Math.min(parsed.rebirths||0,15))):finite(parsed.total)),lifetimeTotal:Math.max(0,finite(parsed.lifetimeTotal)),tap:Math.max(1,finite(parsed.tap)||1),lastTime:finite(parsed.lastTime)||Date.now()};
       }
       return base;
     }
@@ -399,19 +447,19 @@
       });
     }
     function render(){
-      $('score').textContent=fmt(state.points);$('tapPower').textContent='+'+fmt(state.tap*upgradeMultiplier());$('perSecond').textContent=fmt(rate());$('rebirthMultiplier').textContent='×'+rebirthMultiplier().toFixed(1);
+      $('score').textContent=fmt(state.points);$('tapPower').textContent='+'+fmt(state.tap*upgradeMultiplier());$('perSecond').textContent=fmt(rate());$('moneyStat').textContent=fmt(state.money);$('money').textContent=fmt(state.money);$('yearCount').textContent=fmt(state.yearCount)+'年';$('saleMultiplier').textContent='×'+productSaleMultiplier().toFixed(2);
       $('stockPineapple').textContent=fmt(state.stock.pineapple);$('stockApple').textContent=fmt(state.stock.apple);$('stockGrape').textContent=fmt(state.stock.grape);
       $('farmLevel').textContent=`🍉 すいか王国レベル ${1+Math.floor(state.total/500)} ・ 農園 ${fmt(['melonfarm','golden','bigmelonfarm','greenhouse','hydroponic','skyfarm','moonfarm'].reduce((sum,id)=>sum+(state.owned[id]||0),0))}個`;
       renderShop();renderUpgrades();
-      const labOpen=labUnlocked();$('labLocked').style.display=labOpen?'none':'block';$('upgradeList').style.display=labOpen?'grid':'none';$('labRebirthProgress').textContent=`🌌 転生 ${fmt(Math.min(state.rebirths,LAB_UNLOCK_REBIRTHS))} / ${LAB_UNLOCK_REBIRTHS}回`; $('labLifetimeProgress').textContent=`🍉 累計 ${fmt(Math.min(state.lifetimeTotal,labRequiredLifetime()))} / ${fmt(labRequiredLifetime())}`;
+      const labOpen=labUnlocked();$('labLocked').style.display=labOpen?'none':'block';$('upgradeList').style.display=labOpen?'grid':'none';$('labRebirthProgress').textContent=`🌌 一年待ち ${fmt(Math.min(state.rebirths,LAB_UNLOCK_REBIRTHS))} / ${LAB_UNLOCK_REBIRTHS}回`; $('labLifetimeProgress').textContent=`🍉 累計 ${fmt(Math.min(state.lifetimeTotal,labRequiredLifetime()))} / ${fmt(labRequiredLifetime())}`;
       const goal=goals.find(g=>state.total<g.n)||goals[goals.length-1],previous=goals[goals.indexOf(goal)-1]?.n||0,completed=state.total>=goals[goals.length-1].n;
       $('goalIcon').textContent=completed?'🏆':goal.icon;$('goalTitle').textContent=completed?'すいかレジェンド達成！':goal.title;$('goalDesc').textContent=completed?'最高のフルーツ王国ができたね！':goal.desc;$('goalProgress').style.width=Math.min(100,Math.max(0,(state.total-previous)/(goal.n-previous)*100))+'%';$('goalCount').textContent=completed?`${fmt(state.total)} ポイント！`:`${fmt(Math.min(state.total,goal.n))} / ${fmt(goal.n)}`;
       const fruits=[];if(state.owned.pineappleFarm)fruits.push(`🍍 農園 ${state.owned.pineappleFarm}`);if(state.owned.appleFarm)fruits.push(`🍎 農園 ${state.owned.appleFarm}`);if(state.owned.grapeFarm)fruits.push(`🍇 農園 ${state.owned.grapeFarm}`);if(state.owned.melonfarm)fruits.push(`🍉 畑 ${state.owned.melonfarm}`);
       $('collectionText').textContent=fruits.length?fruits.join(' ・ '):'農園を買って、強化用フルーツを集めよう！';$('lifetimeText').textContent=`これまでの累計：${fmt(state.lifetimeTotal)} 🍉`;
       const need=rebirthRequirement(),remaining=Math.max(0,need-state.total),can=state.total>=need,reward=rebirthReward();
-      $('rebirthBtn').textContent=can?`🌌 転生して +${reward}しずく`:`🔒 あと ${fmt(remaining)}`;$('rebirthBtn').classList.toggle('ready',can);$('rebirthBtn').disabled=!can;
-      $('rebirthDesc').textContent=can?`転生すると農園・フルーツ・強化レベルがリセット。代わりに転生のしずくを${reward}個獲得し、永続ボーナスが上がるよ！`:`この周回で${fmt(need)}ポイント稼ぐと転生できるよ。転生を重ねるほど必要ポイントも少しずつ増えるよ。` ;
-      $('rebirthStat').textContent=`転生 ${fmt(state.rebirths)}回 ・ しずく ${fmt(state.rebirthShards)}個 ・ 永続ボーナス ×${rebirthMultiplier().toFixed(1)}${keepPointRate()>0?` ・ 貯金 ${Math.round(keepPointRate()*100)}%`:''}`;
+      $('rebirthBtn').textContent=can?`⏳ 一年待つ！ +${fmt(reward)}しずく`:`🔒 あと ${fmt(remaining)}`;$('rebirthBtn').classList.toggle('ready',can);$('rebirthBtn').disabled=!can;
+      $('rebirthDesc').textContent=can?`一年待つと現在の資産が💴お金に換算され、農園・フルーツ・強化レベルが次の年へリセット。💴は消えず、しずく${reward}個と永続スキルも残るよ！`:`この年で${fmt(need)}ポイント稼ぐと一年待てるよ。待つ回数に応じて必要ポイントも増えるよ。` ;
+      $('rebirthStat').textContent=`${fmt(state.yearCount)}年待ち ・ 永久お金 ${fmt(state.money)} ・ しずく ${fmt(state.rebirthShards)} ・ ボーナス ×${rebirthMultiplier().toFixed(1)}`;
       const activePerks=Object.keys(perkData).filter(id=>perkLevel(id)>0).map(id=>`${perkData[id].icon}${perkData[id].name} Lv.${perkLevel(id)}`);$('perkSummary').textContent=activePerks.length?'永続スキル：'+activePerks.join(' ・ '):'永続スキル：まだ選択していないよ';
       const today=new Date().toISOString().slice(0,10);$('dailyBtn').disabled=state.dailyClaim===today;$('dailyBtn').textContent=state.dailyClaim===today?'✅ 今日のボーナス受取済み':'🎁 今日のログインボーナスを受け取る';$('goldenBtn').disabled=!state.goldenReady;$('goldenBtn').textContent=state.goldenReady?'✨ 黄金のすいかをタップ！':'✨ 黄金のすいかを待とう…';$('eventHint').textContent=state.goldenReady?'今だ！タップしてボーナスをゲット！':'黄金のすいかはときどき出現するよ！';$('streakText').textContent=`🍉 すいかタップ回数：${fmt(state.clicks)}回`;
       const missions=currentMissions();missions.forEach((m,i)=>{const n=i+1;const progress=Math.min(m.target,missionProgress(m));const claimed=!!state.claimedMissions[m.id];const ready=progress>=m.target;
@@ -421,6 +469,10 @@
       });
       const [gmin,gmax]=goldenRange();$('eventHint').textContent=state.goldenReady?`今だ！黄金倍率 ×${gmin}〜×${gmax}（スキル込みでさらにアップ）！`:`黄金のすいかはときどき出現するよ！現在の倍率帯 ×${gmin}〜×${gmax}`;
       if($('dragonPanel')){const unlocked=dragonUnlocked();$('dragonUnlockText').textContent=unlocked?'ドラゴンを育てて、タップ・農園・黄金スイカなどを強化しよう！':`累計1,000,000ポイントまであと ${fmt(Math.max(0,1000000-(state.lifetimeTotal||0)))}ポイント！`;$('dragonContent').style.display=unlocked?'block':'none';if(unlocked){const lv=state.dragonLevel||1,exp=state.dragonExp||0,need=dragonExpNeed(lv);const icons=['🥚','🐲','🐉','👑','🌌'];$('dragonIcon').textContent=lv>=30?icons[4]:lv>=20?icons[3]:lv>=10?icons[2]:lv>=5?icons[1]:icons[0];$('dragonTitle').textContent=`すいかドラゴン Lv.${lv}`;$('dragonDesc').textContent=lv>=30?'超越すいかドラゴン！すべての力を引き出した！':lv>=20?'王竜すいかへ進化！':lv>=10?'黄金すいかドラゴンへ進化！':'フルーツを食べさせて育てよう！';$('dragonProgress').style.width=`${Math.min(100,exp/need*100)}%`;$('dragonExpText').textContent=`${fmt(exp)} / ${fmt(need)} EXP`;const aura=state.dragonAura||'';$('dragonAuraText').textContent=aura?`現在のオーラ：${dragonAuras.find(x=>x[0]===aura)?.[1]||aura}`:'オーラ：1つ選んで装備できるよ';$('dragonAuraButtons').innerHTML=dragonAuras.map(([id,name,desc])=>`<button class="tool-btn ${aura===id?'gold':''}" data-aura="${id}">${name}<br><small>${desc}</small></button>`).join('');$('dragonAuraButtons').querySelectorAll('[data-aura]').forEach(b=>b.onclick=()=>{state.dragonAura=b.dataset.aura;save();render()})}}
+      Object.keys(productData).forEach(id=>{const stock=state.products?.[id]||0,el=$('productStock'+id.charAt(0).toUpperCase()+id.slice(1));if(el)el.textContent=`在庫 ${fmt(stock)} ・ 売価 ${fmt(productValue(id))}💴`;});
+      Object.entries(moneyUpgradeData).forEach(([id,u])=>{const lv=moneyUpgradeLevel(id),cost=moneyUpgradeCost(id),btn=document.querySelector(`[data-money-upgrade="${id}"]`),card=document.querySelector(`[data-money-upgrade-card="${id}"]`),cap=id.charAt(0).toUpperCase()+id.slice(1),costEl=$('moneyUpgrade'+cap+'Cost'),descEl=$('moneyUpgrade'+cap+'Desc'),canMoney=state.money>=cost&&lv<u.max;if(costEl)costEl.textContent=lv>=u.max?'MAX':`💴 ${fmt(cost)}`;if(descEl){const pct=Math.round(u.bonus*100*lv);descEl.textContent=id==='sale'?`製品の売価 +${pct}%（Lv.${lv}/${u.max}）`:id==='conversion'?`一年待つときの換金 +${pct}%（Lv.${lv}/${u.max}）`:id==='factory'?`製品の材料コスト -${pct}%（Lv.${lv}/${u.max}）`:`永久お金の収入・換金 +${pct}%（Lv.${lv}/${u.max}）`}if(btn){btn.disabled=!canMoney;btn.textContent=lv>=u.max?'MAX':'強化';btn.classList.toggle('gold',canMoney)}if(card)card.classList.toggle('ready',canMoney)});
+      const preview=Math.max(0,conversionValue());$('yearConversionPreview').textContent=`次に一年待つと +${fmt(preview)}💴（現在の資産を換算）`;$('yearWaitBtn').disabled=state.total<rebirthRequirement();$('yearWaitBtn').classList.toggle('ready',state.total>=rebirthRequirement());$('yearWaitBtn').textContent=state.total>=rebirthRequirement()?`⏳ 一年待つ！ → +${fmt(preview)}💴`:`🔒 一年待つまで あと ${fmt(Math.max(0,rebirthRequirement()-state.total))}`;
+
 
     }
     function renderRebirthOptions(){
@@ -439,12 +491,12 @@
             if(!p)return '<div></div>';
             const lv=perkLevel(id),maxed=lv>=p.maxLevel,available=skillAvailable(id),selected=id===selectedRebirthPerk;
             const req=(p.requires||[]).map(r=>perkData[r]?.name||r).join('・');
-            let status=maxed?`✅ Lv.${lv}/${p.maxLevel}`:selected?'⭐ 今回選択中':available?`🟢 Lv.${lv} → ${lv+1}`:`🔒 ${upcomingRebirth()<p.minRebirths?`転生${p.minRebirths}回目から`:req?'前提：'+req:'条件未達'}`;
+            let status=maxed?`✅ Lv.${lv}/${p.maxLevel}`:selected?'⭐ 今回選択中':available?`🟢 Lv.${lv} → ${lv+1}`:`🔒 ${upcomingRebirth()<p.minRebirths?`一年待ち${p.minRebirths}回目から`:req?'前提：'+req:'条件未達'}`;
             return `<button class="skill-node ${maxed?'owned':''} ${available?'available':'locked'} ${selected?'selected':''}" type="button" data-perk="${id}" ${(!available||maxed)?'disabled':''} aria-label="${p.name}"><span class="skill-node-icon">${p.icon}</span><span class="skill-node-title">${p.name}</span><span class="skill-node-desc">${p.describe(Math.min(p.maxLevel,lv+1))}</span><span class="skill-node-status">${status}</span></button>`;
           }).join('')}</div>`);
         }
         return `<section class="skill-branch"><div class="skill-branch-head"><div class="skill-branch-title">${branch}</div><span class="skill-branch-count">${ownedCount}/${entries.length} 解放</span></div>${rows.join('')}</section>`;
-      }).join('')+`<div class="skill-tree-footer">🌟 今回の転生：${upcomingRebirth()}回目 ／ 使えるのは1回につき1スキル。<br>🔑 条件を満たしたノードだけ選択でき、習得済みノードは次のレベルへ進めるよ。</div>`;
+      }).join('')+`<div class="skill-tree-footer">🌟 今回の一年待ち：${upcomingRebirth()}回目 ／ 使えるのは1回につき1スキル。<br>🔑 条件を満たしたノードだけ選択でき、習得済みノードは次のレベルへ進めるよ。</div>`;
       const selected=perkData[selectedRebirthPerk];
       $('rebirthSelectionSummary').textContent=selected?`今回上げる能力：${selected.icon} ${selected.name}（Lv.${perkLevel(selectedRebirthPerk)} → Lv.${perkLevel(selectedRebirthPerk)+1}）`:'まだ未選択だよ。上げたい能力を1つタップしてね。';
       $('confirmRebirth').disabled=!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk);
@@ -492,20 +544,24 @@
     function missionProgress(m){if(m.type==='clicks')return state.clicks||0;if(m.type==='farms')return state.owned.melonfarm||0;if(m.type==='fruit')return (state.stock.pineapple||0)+(state.stock.apple||0)+(state.stock.grape||0);if(m.type==='total')return state.total||0;return 0}
     function missionReward(m){return Math.floor(m.reward*(1+Math.min(.75,perkLevel('mission')*.15)))}
     function goldenRange(){const p=state.lifetimeTotal||0;if(p<10000)return [1,2];if(p<100000)return [2,4];if(p<1000000)return [3,6];return [5,10]}
-    function goldenMultiplier(){const [min,max]=goldenRange();const roll=min+Math.random()*(max-min);return roll*(1+Math.min(.80,perkLevel('golden')*.08))}
+    function goldenMultiplier(){const [min,max]=goldenRange();const roll=min+Math.random()*(max-min);const aura=state.dragonAura==='gold'?1.5:1;return roll*(1+Math.min(.80,perkLevel('golden')*.08))*aura*dragonPowerMultiplier()}
     function dragonUnlocked(){return (state.lifetimeTotal||0)>=1000000}
-    const dragonAuras=[['power','🔥 焼けるすいか','タップ・自動生産 ×1.25'],['gold','✨ 黄金の眼','黄金スイカ報酬 ×1.50'],['farm','🌱 豊穣の翼','農園生産 ×1.50'],['luck','🍀 幸運の牙','クリティカル率 +10%'],['rebirth','🌌 転生の息吹','転生ボーナス +10%']];
+    const dragonAuras=[['power','🔥 焼けるすいか','タップ・自動生産 ×1.25'],['gold','✨ 黄金の眼','黄金スイカ報酬 ×1.50'],['farm','🌱 豊穣の翼','農園生産 ×1.50'],['luck','🍀 幸運の牙','クリティカル率 +10%'],['rebirth','🌌 転生の息吹','一年待ちボーナス +10%']];
     function dragonExpNeed(lv){return Math.floor(100*Math.pow(1.6,Math.max(0,lv-1)))}
     function dragonFeed(type){if(!dragonUnlocked())return;const values={pineapple:10,apple:25,grape:50};const v=values[type]||0;if((state.stock[type]||0)<=0){toast('そのフルーツが足りないよ！');return}state.stock[type]--;state.dragonExp=(state.dragonExp||0)+v;while((state.dragonLevel||1)<30&&state.dragonExp>=dragonExpNeed(state.dragonLevel||1)){state.dragonExp-=dragonExpNeed(state.dragonLevel||1);state.dragonLevel=(state.dragonLevel||1)+1;toast(`🐉 ドラゴンがLv.${state.dragonLevel}に成長！`)}save();render()}
     $('goldenBtn').addEventListener('click',()=>{if(!state.goldenReady)return;state.goldenReady=false;const baseBonus=Math.max(75,Math.min(400,Math.floor(100+rate()*.8+state.tap)));const mult=goldenMultiplier();const bonus=Math.floor(baseBonus*mult);const awarded=addPoints(bonus);state.goldenNext=Date.now()+Math.max(20000,35000+Math.random()*45000-Math.min(15,perkLevel('goldspeed')*3)*1000);save();render();toast(`✨ 黄金のすいか！ ×${mult.toFixed(1)} → +${fmt(awarded)}ポイント！`)});
     document.querySelectorAll('[data-mission-slot]').forEach(btn=>btn.addEventListener('click',()=>{const slot=Number(btn.dataset.missionSlot),m=currentMissions()[slot],id=m.id;if(!m||state.claimedMissions[id])return;if(missionProgress(m)<m.target)return;state.claimedMissions[id]=true;const reward=missionReward(m);if(m.type==='fruit'){state.stock.pineapple=(state.stock.pineapple||0)+Math.max(1,Math.floor(reward/5000))}else exactPoints(reward);save();render();toast(m.type==='fruit'?`🎉 ミッション達成！🍍フルーツを受け取ったよ！`:`🎉 ミッション達成！ +${fmt(reward)}ポイント！`)}));
     document.querySelectorAll('[data-dragon-feed]').forEach(btn=>btn.addEventListener('click',()=>dragonFeed(btn.dataset.dragonFeed)));
 
+    document.querySelectorAll('[data-craft-product]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.craftProduct,p=productData[id];if(!p)return;const cost=Math.ceil(p.cost*productMaterialMultiplier());if(state.points<cost){toast(`あと ${fmt(cost-state.points)} 🍉ポイント必要だよ！`);return}state.points-=cost;state.products[id]=(state.products[id]||0)+1;render();save();toast(`${p.emoji} ${p.name}を1個作ったよ！`)}));
+    document.querySelectorAll('[data-sell-product]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.sellProduct,p=productData[id];if(!p||!(state.products?.[id]>0)){toast('売れる製品がないよ！');return}state.products[id]--;const earned=moneyEarnedFromSale(p.sell);state.money+=earned;render();save();toast(`💴 ${p.emoji} ${p.name}を売って +${fmt(earned)}円！`)}));
+    document.querySelectorAll('[data-money-upgrade]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.moneyUpgrade,u=moneyUpgradeData[id],lv=moneyUpgradeLevel(id),cost=moneyUpgradeCost(id);if(lv>=u.max)return;if(state.money<cost){toast(`あと ${fmt(cost-state.money)}💴 必要だよ！`);return}state.money-=cost;state.moneyUpgrades[id]=lv+1;render();save();toast(`💴 ${u.icon} ${u.name} Lv.${lv+1}！`)}));
+    $('yearWaitBtn').addEventListener('click',()=>{if(state.total<rebirthRequirement()){toast(`あと ${fmt(rebirthRequirement()-state.total)}ポイント必要だよ！`);return}const reward=rebirthReward();selectedRebirthPerk='';$('rebirthModalText').textContent=`一年待つと、現在の🍉ポイント・フルーツ・製品などを💴に換金するよ。今回は約 ${fmt(conversionValue())}💴が増える予定！さらに${reward}しずくを獲得して、永続スキルを1つ強化できるよ。`;renderRebirthOptions();$('rebirthModal').classList.add('show')});
     $('rebirthBtn').addEventListener('click',()=>{if(state.total<rebirthRequirement())return;const reward=rebirthReward();selectedRebirthPerk='';$('rebirthModalText').textContent=`転生のしずくを ${reward} 個獲得！今回は${upcomingRebirth()}回目の転生。農園・フルーツ・強化Lv.はリセットされるけど、選んだ永続スキルは残るよ。条件を満たすスキルを1つ選んでね。`;renderRebirthOptions();$('rebirthModal').classList.add('show')});
     $('cancelRebirth').addEventListener('click',()=>$('rebirthModal').classList.remove('show'));
     $('rebirthOptions').addEventListener('click',e=>{const btn=e.target.closest('[data-perk]');if(!btn||btn.disabled)return;const id=btn.dataset.perk;if(!skillAvailable(id))return;selectedRebirthPerk=id;renderRebirthOptions()});
-    $('confirmRebirth').addEventListener('click',()=>{if(!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk)){toast('今の条件ではそのスキルは選べないよ！');return}if(state.total<rebirthRequirement()){$('rebirthModal').classList.remove('show');return}const reward=rebirthReward(),life=state.lifetimeTotal,rebirths=state.rebirths+1,shards=state.rebirthShards+reward,perks={...state.rebirthPerks};perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;const preserved=Math.floor(state.points*keepPointRate());const startBonus=(perkLevel('start')*250)+(perkLevel('startmaster')*500);state={...fresh(),lifetimeTotal:life,rebirths,rebirthShards:shards,rebirthPerks:perks};state.tap+=perkLevel('tap')*2;state.points=Math.max(0,preserved+startBonus);save();render();$('rebirthModal').classList.remove('show');const keepMsg=keepPointRate()>0?`・貯金 ${fmt(preserved)}🍉を持ち越し`:'';toast(`🌌 転生成功！${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}、しずく +${reward}！${keepMsg}`)});
-    $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal'))$('rebirthModal').classList.remove('show')});
+    $('confirmRebirth').addEventListener('click',()=>{if(!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk)){toast('今の条件ではそのスキルは選べないよ！');return}if(state.total<rebirthRequirement()){$('rebirthModal').classList.remove('show');return}const reward=rebirthReward(),conversion=conversionValue(),life=state.lifetimeTotal,rebirths=state.rebirths+1,shards=state.rebirthShards+reward,perks={...state.rebirthPerks};perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;const keepMoney=state.money||0;const moneyUpgrades={...state.moneyUpgrades};const dragonLevel=state.dragonLevel||1,dragonExp=state.dragonExp||0,dragonAura=state.dragonAura||'';state={...fresh(),lifetimeTotal:life,rebirths,yearCount:(state.yearCount||0)+1,rebirthShards:shards,rebirthPerks:perks,money:keepMoney+conversion,moneyUpgrades,dragonLevel,dragonExp,dragonAura};state.tap+=perkLevel('tap')*2;save();render();$('rebirthModal').classList.remove('show');toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴、${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}、しずく +${reward}！`)});
+$('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal'))$('rebirthModal').classList.remove('show')});
 
 
     // ===== Ver.11: 管理者コード / ランキング / バックアップ =====
@@ -538,7 +594,7 @@
     $('closeDataModal1').addEventListener('click',()=>$('dataModal').classList.remove('show'));
     $('dataModal').addEventListener('click',e=>{if(e.target===$('dataModal'))$('dataModal').classList.remove('show')});
 
-    function rewardLabel(type,amount){return ({points:'🍉 '+fmt(amount)+'ポイント',shards:'💧 '+fmt(amount)+'しずく',pineapple:'🍍 '+fmt(amount),apple:'🍎 '+fmt(amount),grape:'🍇 '+fmt(amount)})[type]||`${type} ${fmt(amount)}`}
+    function rewardLabel(type,amount){return ({points:'🍉 '+fmt(amount)+'ポイント',shards:'💧 '+fmt(amount)+'しずく',money:'💴 '+fmt(amount)+'円',pineapple:'🍍 '+fmt(amount),apple:'🍎 '+fmt(amount),grape:'🍇 '+fmt(amount)})[type]||`${type} ${fmt(amount)}`}
     function ensurePlayerName(){
       const saved=localStorage.getItem('suika-ranking-name')||'';if(!$('rankingName').value)$('rankingName').value=saved;return ($('rankingName').value||'').trim();
     }
@@ -566,19 +622,20 @@
     $('createCodeBtn').addEventListener('click',async()=>{
       const type=$('adminRewardType').value,amount=Math.max(1,Math.floor(Number($('adminRewardAmount').value)||0));
       if(!adminToken){toast('先に管理者ログインしてね');return}
-      try{const res=await fetch(apiUrl('/api/admin/create-code'),{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify({type,amount})});const data=await res.json();if(!res.ok)throw new Error(data.error||'create');$('createdCode').textContent=data.code;$('createdCode').style.display='block';$('createdCodeHint').style.display='block';await copyText(data.code);$('adminStatus').textContent=`発行報酬：${rewardLabel(type,amount)} / コードは1回だけ使用可能`;toast('🎟️ コードを発行したよ！')}catch(e){$('adminStatus').textContent='❌ コード発行に失敗：'+e.message}
+      try{const res=await fetch(apiUrl('/api/admin/create-code'),{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify({type,amount})});const data=await res.json();if(!res.ok)throw new Error(data.error||'create');$('createdCode').textContent=data.code;$('createdCode').style.display='block';$('copyCreatedCodeBtn').style.display='block';$('createdCodeHint').style.display='block';await copyText(data.code);$('adminStatus').textContent=`発行報酬：${rewardLabel(type,amount)} / コードは1回だけ使用可能`;toast('🎟️ コードを発行したよ！')}catch(e){$('adminStatus').textContent='❌ コード発行に失敗：'+e.message}
     });
+    $('copyCreatedCodeBtn').addEventListener('click',async()=>{const ok=await copyText(($('createdCode').textContent||'').trim());toast(ok?'📋 コードをコピーしたよ！':'コピーできなかったよ。コードを長押ししてコピーしてね')});
     $('rankingAdminBtn').addEventListener('click',refreshRanking);
     $('redeemOpenBtn').addEventListener('click',()=>$('redeemModal').classList.add('show'));
     $('closeRedeem').addEventListener('click',()=>$('redeemModal').classList.remove('show'));
     $('redeemModal').addEventListener('click',e=>{if(e.target===$('redeemModal'))$('redeemModal').classList.remove('show')});
     $('redeemBtn').addEventListener('click',async()=>{
       const code=($('redeemCode').value||'').trim().toUpperCase();if(!code){$('redeemStatus').textContent='コードを入力してね';return}
-      try{const res=await fetch(apiUrl('/api/redeem'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});const data=await res.json();if(!res.ok)throw new Error(data.error||'redeem');const amount=Math.floor(Number(data.amount)||0);if(data.type==='points'){exactPoints(amount);render();save()}else if(data.type==='shards'){state.rebirthShards+=amount;render();save()}else if(['pineapple','apple','grape'].includes(data.type)){state.stock[data.type]+=amount;render();save()}$('redeemStatus').textContent=`🎉 ${rewardLabel(data.type,amount)}を受け取ったよ！`;$('redeemCode').value='';toast('🎁 コード報酬を受け取ったよ！')}catch(e){$('redeemStatus').textContent='❌ '+e.message}
+      try{const res=await fetch(apiUrl('/api/redeem'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});const data=await res.json();if(!res.ok)throw new Error(data.error||'redeem');const amount=Math.floor(Number(data.amount)||0);if(data.type==='points'){exactPoints(amount);render();save()}else if(data.type==='shards'){state.rebirthShards+=amount;render();save()}else if(data.type==='money'){state.money+=amount;render();save()}else if(['pineapple','apple','grape'].includes(data.type)){state.stock[data.type]+=amount;render();save()}$('redeemStatus').textContent=`🎉 ${rewardLabel(data.type,amount)}を受け取ったよ！`;$('redeemCode').value='';toast('🎁 コード報酬を受け取ったよ！')}catch(e){$('redeemStatus').textContent='❌ '+e.message}
     });
     setTimeout(refreshRanking,800);
 
-    const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
+    const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';state.products={...fresh().products,...(state.products||{})};state.moneyUpgrades={...fresh().moneyUpgrades,...(state.moneyUpgrades||{})};state.money=Math.max(0,finite(state.money));state.yearCount=Math.max(0,finite(state.yearCount));render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
     setInterval(()=>{const income=rate();if(income>0){state.points+=income;state.total+=income;state.lifetimeTotal+=income}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
     if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
