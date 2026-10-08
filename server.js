@@ -28,7 +28,7 @@ function cleanName(s) {
   return String(s || '').trim().replace(/[<>"'`]/g, '').slice(0, 12);
 }
 function validReward(type, amount) {
-  const types = new Set(['points', 'shards', 'pineapple', 'apple', 'grape']);
+  const types = new Set(['points', 'shards', 'money', 'pineapple', 'apple', 'grape']);
   return types.has(type) && Number.isInteger(amount) && amount > 0 && amount <= 100000000;
 }
 function adminToken(req) {
@@ -38,6 +38,8 @@ function adminToken(req) {
   return sessions.has(token) ? token : '';
 }
 
+// GitHub PagesからRender APIへ接続できるようCORSを許可
+app.use((req,res,next)=>{const origin=req.headers.origin;if(origin){res.setHeader('Access-Control-Allow-Origin',origin);res.setHeader('Vary','Origin')}res.setHeader('Access-Control-Allow-Headers','Content-Type, Authorization');res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS');if(req.method==='OPTIONS')return res.sendStatus(204);next()});
 app.use(express.json({ limit: '100kb' }));
 app.use(express.static(path.join(ROOT, 'public')));
 
@@ -95,4 +97,4 @@ app.post('/api/ranking', (req, res) => {
 });
 
 app.get('/{*splat}', (req, res) => res.sendFile(path.join(ROOT, 'public', 'index.html')));
-app.listen(PORT, '0.0.0.0', () => console.log(`すいかクリッカー Ver.11 server started on ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`すいかクリッカー Ver.14 server started on ${PORT}`));
