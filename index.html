@@ -478,29 +478,91 @@
     }
     function renderRebirthOptions(){
       const host=$('rebirthOptions');
-      const branches=[...new Set(Object.values(perkData).map(p=>p.branch))];
+      if(!host)return;
+
+      const branches=[...new Set(
+        Object.values(perkData||{})
+          .filter(p=>p && p.branch)
+          .map(p=>p.branch)
+      )];
+
       host.innerHTML=branches.map(branch=>{
-        const entries=Object.entries(perkData).filter(([,p])=>p.branch===branch).sort((a,b)=>(a[1].tier-b[1].tier)||a[0].localeCompare(b[0]));
-        const maxTier=Math.max(...entries.map(([,p])=>p.tier));
+        const entries=Object.entries(perkData||{})
+          .filter(([,p])=>p && p.branch===branch)
+          .sort((a,b)=>(Number(a[1].tier||0)-Number(b[1].tier||0))||a[0].localeCompare(b[0]));
+
+        if(!entries.length)return '';
+
+        const maxTier=Math.max(...entries.map(([,p])=>Number(p.tier||1)));
         const ownedCount=entries.filter(([id])=>perkLevel(id)>0).length;
         const rows=[];
+
         for(let tier=1;tier<=maxTier;tier++){
-          const tierEntries=entries.filter(([,p])=>p.tier===tier);
+          const tierEntries=entries.filter(([,p])=>Number(p.tier||1)===tier);
           if(!tierEntries.length)continue;
-          while(tierEntries.length<3) tierEntries.push(null);
-          rows.push(`<div class="skill-row">${tierEntries.map(entry=>{
-            if(!entry)return '<div></div>';
-            const [id,p]=entry;
-            const lv=perkLevel(id),maxed=lv>=p.maxLevel,available=skillAvailable(id),selected=id===selectedRebirthPerk;
-            const req=(p.requires||[]).map(r=>perkData[r]?.name||r).join('・');
-            let status=maxed?`✅ Lv.${lv}/${p.maxLevel}`:selected?'⭐ 今回選択中':available?`🟢 Lv.${lv} → ${lv+1}`:`🔒 ${upcomingRebirth()<p.minRebirths?`一年待ち${p.minRebirths}回目から`:req?'前提：'+req:'条件未達'}`;
-            return `<button class="skill-node ${maxed?'owned':''} ${available?'available':'locked'} ${selected?'selected':''}" type="button" data-perk="${id}" ${(!available||maxed)?'disabled':''} aria-label="${p.name}"><span class="skill-node-icon">${p.icon}</span><span class="skill-node-title">${p.name}</span><span class="skill-node-desc">${p.describe(Math.min(p.maxLevel,lv+1))}</span><span class="skill-node-status">${status}</span></button>`;
+
+          const cells=tierEntries.slice(0,3);
+          while(cells.length<3)cells.push(null);
+
+          rows.push(`<div class="skill-row">${cells.map(entry=>{
+            if(entry===null)return '<div class="skill-node-empty" aria-hidden="true"></div>';
+
+            const id=entry[0];
+            const p=entry[1];
+            if(!id || !p)return '<div class="skill-node-empty" aria-hidden="true"></div>';
+
+            const lv=perkLevel(id);
+            const maxed=lv>=Number(p.maxLevel||0);
+            const available=skillAvailable(id);
+            const selected=id===selectedRebirthPerk;
+            const req=(Array.isArray(p.requires)?p.requires:[])
+              .map(r=>perkData?.[r]?.name||r)
+              .join('・');
+
+            let status='';
+            if(maxed){
+              status=`✅ Lv.${lv}/${p.maxLevel}`;
+            }else if(selected){
+              status='⭐ 今回選択中';
+            }else if(available){
+              status=`🟢 Lv.${lv} → ${lv+1}`;
+            }else{
+              status=`🔒 ${upcomingRebirth()<Number(p.minRebirths||1)
+                ? `一年待ち${p.minRebirths}回目から`
+                : req ? '前提：'+req : '条件未達'}`;
+            }
+
+            const describe=typeof p.describe==='function'
+              ? p.describe(Math.min(Number(p.maxLevel||0),lv+1))
+              : '';
+
+            return `<button class="skill-node ${maxed?'owned':''} ${available?'available':'locked'} ${selected?'selected':''}" type="button" data-perk="${id}" ${(!available||maxed)?'disabled':''} aria-label="${p.name||id}">
+              <span class="skill-node-icon">${p.icon||'⭐'}</span>
+              <span class="skill-node-title">${p.name||id}</span>
+              <span class="skill-node-desc">${describe}</span>
+              <span class="skill-node-status">${status}</span>
+            </button>`;
           }).join('')}</div>`);
         }
-        return `<section class="skill-branch"><div class="skill-branch-head"><div class="skill-branch-title">${branch}</div><span class="skill-branch-count">${ownedCount}/${entries.length} 解放</span></div>${rows.join('')}</section>`;
-      }).join('')+`<div class="skill-tree-footer">🌟 今回の一年待ち：${upcomingRebirth()}回目 ／ 使えるのは1回につき1スキル。<br>🔑 条件を満たしたノードだけ選択でき、習得済みノードは次のレベルへ進めるよ。</div>`;
-      const selected=perkData[selectedRebirthPerk];
-      $('rebirthSelectionSummary').textContent=selected?`今回上げる能力：${selected.icon} ${selected.name}（Lv.${perkLevel(selectedRebirthPerk)} → Lv.${perkLevel(selectedRebirthPerk)+1}）`:'まだ未選択だよ。上げたい能力を1つタップしてね。';
+
+        return `<section class="skill-branch">
+          <div class="skill-branch-head">
+            <div class="skill-branch-title">${branch}</div>
+            <span class="skill-branch-count">${ownedCount}/${entries.length} 解放</span>
+          </div>
+          ${rows.join('')}
+        </section>`;
+      }).join('')+
+      `<div class="skill-tree-footer">
+        🌟 今回の一年待ち：${upcomingRebirth()}回目 ／ 使えるのは1回につき1スキル。<br>
+        🔑 条件を満たしたノードだけ選択でき、習得済みノードは次のレベルへ進めるよ。
+      </div>`;
+
+      const selected=selectedRebirthPerk ? perkData?.[selectedRebirthPerk] : null;
+      $('rebirthSelectionSummary').textContent=selected
+        ? `今回上げる能力：${selected.icon} ${selected.name}（Lv.${perkLevel(selectedRebirthPerk)} → Lv.${perkLevel(selectedRebirthPerk)+1}）`
+        : 'まだ未選択だよ。上げたい能力を1つタップしてね。';
+
       $('confirmRebirth').disabled=!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk);
     }
     function addPoints(n){const actual=scaledGain(n);state.points+=actual;state.total+=actual;state.lifetimeTotal+=actual;render();return actual}
@@ -575,7 +637,9 @@
       const rebirths=state.rebirths+1;
       const shards=state.rebirthShards+reward;
       const perks={...state.rebirthPerks};
-      perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;
+      if(selectedRebirthPerk && perkData[selectedRebirthPerk]){
+        perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;
+      }
 
       const keepMoney=state.money||0;
       const moneyUpgrades={...state.moneyUpgrades};
