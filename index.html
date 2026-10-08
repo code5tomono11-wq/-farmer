@@ -1,6 +1,7 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" translate="no">
 <head>
+  <meta name="google" content="notranslate">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <meta name="theme-color" content="#d8f3dc">
@@ -11,7 +12,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <title>すいかクリッカー</title>
-  <!-- Ver.14: 一年待つ・お金の原理・製品経済 -->
+  <!-- Ver.14.1: 一年待つ・お金の原理・製品経済 -->
   <style>
     :root{--leaf:#2d6a4f;--leaf-dark:#1b4332;--leaf-light:#40916c;--cream:#fffdf3;--melon:#e63946;--gold:#ffcf56;--ink:#22352d;--muted:#6a7b70;--line:#d8e8d6;--shadow:0 8px 0 rgba(27,67,50,.10),0 15px 30px rgba(27,67,50,.08)}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -59,7 +60,7 @@
 
   </style>
 </head>
-<body>
+<body translate="no">
   <main class="app">
     <header>
       <div class="brand"><div class="brand-icon">🍉</div><div><h1>すいかクリッカー</h1><div class="subtitle">TAP! GROW! REBIRTH!</div></div></div>
@@ -471,7 +472,7 @@
       if($('dragonPanel')){const unlocked=dragonUnlocked();$('dragonUnlockText').textContent=unlocked?'ドラゴンを育てて、タップ・農園・黄金スイカなどを強化しよう！':`累計1,000,000ポイントまであと ${fmt(Math.max(0,1000000-(state.lifetimeTotal||0)))}ポイント！`;$('dragonContent').style.display=unlocked?'block':'none';if(unlocked){const lv=state.dragonLevel||1,exp=state.dragonExp||0,need=dragonExpNeed(lv);const icons=['🥚','🐲','🐉','👑','🌌'];$('dragonIcon').textContent=lv>=30?icons[4]:lv>=20?icons[3]:lv>=10?icons[2]:lv>=5?icons[1]:icons[0];$('dragonTitle').textContent=`すいかドラゴン Lv.${lv}`;$('dragonDesc').textContent=lv>=30?'超越すいかドラゴン！すべての力を引き出した！':lv>=20?'王竜すいかへ進化！':lv>=10?'黄金すいかドラゴンへ進化！':'フルーツを食べさせて育てよう！';$('dragonProgress').style.width=`${Math.min(100,exp/need*100)}%`;$('dragonExpText').textContent=`${fmt(exp)} / ${fmt(need)} EXP`;const aura=state.dragonAura||'';$('dragonAuraText').textContent=aura?`現在のオーラ：${dragonAuras.find(x=>x[0]===aura)?.[1]||aura}`:'オーラ：1つ選んで装備できるよ';$('dragonAuraButtons').innerHTML=dragonAuras.map(([id,name,desc])=>`<button class="tool-btn ${aura===id?'gold':''}" data-aura="${id}">${name}<br><small>${desc}</small></button>`).join('');$('dragonAuraButtons').querySelectorAll('[data-aura]').forEach(b=>b.onclick=()=>{state.dragonAura=b.dataset.aura;save();render()})}}
       Object.keys(productData).forEach(id=>{const stock=state.products?.[id]||0,el=$('productStock'+id.charAt(0).toUpperCase()+id.slice(1));if(el)el.textContent=`在庫 ${fmt(stock)} ・ 売価 ${fmt(productValue(id))}💴`;});
       Object.entries(moneyUpgradeData).forEach(([id,u])=>{const lv=moneyUpgradeLevel(id),cost=moneyUpgradeCost(id),btn=document.querySelector(`[data-money-upgrade="${id}"]`),card=document.querySelector(`[data-money-upgrade-card="${id}"]`),cap=id.charAt(0).toUpperCase()+id.slice(1),costEl=$('moneyUpgrade'+cap+'Cost'),descEl=$('moneyUpgrade'+cap+'Desc'),canMoney=state.money>=cost&&lv<u.max;if(costEl)costEl.textContent=lv>=u.max?'MAX':`💴 ${fmt(cost)}`;if(descEl){const pct=Math.round(u.bonus*100*lv);descEl.textContent=id==='sale'?`製品の売価 +${pct}%（Lv.${lv}/${u.max}）`:id==='conversion'?`一年待つときの換金 +${pct}%（Lv.${lv}/${u.max}）`:id==='factory'?`製品の材料コスト -${pct}%（Lv.${lv}/${u.max}）`:`永久お金の収入・換金 +${pct}%（Lv.${lv}/${u.max}）`}if(btn){btn.disabled=!canMoney;btn.textContent=lv>=u.max?'MAX':'強化';btn.classList.toggle('gold',canMoney)}if(card)card.classList.toggle('ready',canMoney)});
-      const preview=Math.max(0,conversionValue());$('yearConversionPreview').textContent=`次に一年待つと +${fmt(preview)}💴（現在の資産を換算）`;$('yearWaitBtn').disabled=state.total<rebirthRequirement();$('yearWaitBtn').classList.toggle('ready',state.total>=rebirthRequirement());$('yearWaitBtn').textContent=state.total>=rebirthRequirement()?`⏳ 一年待つ！ → +${fmt(preview)}💴`:`🔒 一年待つまで あと ${fmt(Math.max(0,rebirthRequirement()-state.total))}`;
+      const preview=Math.max(0,conversionValue());$('yearConversionPreview').textContent=`次に一年待つと +${fmt(preview)}💴（現在の資産を換算）`;$('yearWaitBtn').disabled=false;$('yearWaitBtn').classList.toggle('ready',state.total>=rebirthRequirement());$('yearWaitBtn').textContent=state.total>=rebirthRequirement()?`⏳ 一年待つ！ → +${fmt(preview)}💴`:`🔒 一年待つまで あと ${fmt(Math.max(0,rebirthRequirement()-state.total))}`;
 
 
     }
@@ -487,8 +488,9 @@
           const tierEntries=entries.filter(([,p])=>p.tier===tier);
           if(!tierEntries.length)continue;
           while(tierEntries.length<3) tierEntries.push(null);
-          rows.push(`<div class="skill-row">${tierEntries.map(([id,p])=>{
-            if(!p)return '<div></div>';
+          rows.push(`<div class="skill-row">${tierEntries.map(entry=>{
+            if(!entry)return '<div></div>';
+            const [id,p]=entry;
             const lv=perkLevel(id),maxed=lv>=p.maxLevel,available=skillAvailable(id),selected=id===selectedRebirthPerk;
             const req=(p.requires||[]).map(r=>perkData[r]?.name||r).join('・');
             let status=maxed?`✅ Lv.${lv}/${p.maxLevel}`:selected?'⭐ 今回選択中':available?`🟢 Lv.${lv} → ${lv+1}`:`🔒 ${upcomingRebirth()<p.minRebirths?`一年待ち${p.minRebirths}回目から`:req?'前提：'+req:'条件未達'}`;
@@ -556,11 +558,73 @@
     document.querySelectorAll('[data-craft-product]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.craftProduct,p=productData[id];if(!p)return;const cost=Math.ceil(p.cost*productMaterialMultiplier());if(state.points<cost){toast(`あと ${fmt(cost-state.points)} 🍉ポイント必要だよ！`);return}state.points-=cost;state.products[id]=(state.products[id]||0)+1;render();save();toast(`${p.emoji} ${p.name}を1個作ったよ！`)}));
     document.querySelectorAll('[data-sell-product]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.sellProduct,p=productData[id];if(!p||!(state.products?.[id]>0)){toast('売れる製品がないよ！');return}state.products[id]--;const earned=moneyEarnedFromSale(p.sell);state.money+=earned;render();save();toast(`💴 ${p.emoji} ${p.name}を売って +${fmt(earned)}円！`)}));
     document.querySelectorAll('[data-money-upgrade]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.moneyUpgrade,u=moneyUpgradeData[id],lv=moneyUpgradeLevel(id),cost=moneyUpgradeCost(id);if(lv>=u.max)return;if(state.money<cost){toast(`あと ${fmt(cost-state.money)}💴 必要だよ！`);return}state.money-=cost;state.moneyUpgrades[id]=lv+1;render();save();toast(`💴 ${u.icon} ${u.name} Lv.${lv+1}！`)}));
-    $('yearWaitBtn').addEventListener('click',()=>{if(state.total<rebirthRequirement()){toast(`あと ${fmt(rebirthRequirement()-state.total)}ポイント必要だよ！`);return}const reward=rebirthReward();selectedRebirthPerk='';$('rebirthModalText').textContent=`一年待つと、現在の🍉ポイント・フルーツ・製品などを💴に換金するよ。今回は約 ${fmt(conversionValue())}💴が増える予定！さらに${reward}しずくを獲得して、永続スキルを1つ強化できるよ。`;renderRebirthOptions();$('rebirthModal').classList.add('show')});
-    $('rebirthBtn').addEventListener('click',()=>{if(state.total<rebirthRequirement())return;const reward=rebirthReward();selectedRebirthPerk='';$('rebirthModalText').textContent=`転生のしずくを ${reward} 個獲得！今回は${upcomingRebirth()}回目の転生。農園・フルーツ・強化Lv.はリセットされるけど、選んだ永続スキルは残るよ。条件を満たすスキルを1つ選んでね。`;renderRebirthOptions();$('rebirthModal').classList.add('show')});
+    function performYearWait(){
+      if(state.total<rebirthRequirement()){
+        toast(`あと ${fmt(rebirthRequirement()-state.total)}ポイント必要だよ！`);
+        return;
+      }
+      const available=Object.keys(perkData).filter(skillAvailable);
+
+      // スキルが選べない状態でも「一年待つ」自体は実行できるようにする。
+      // 選べるスキルがある場合だけ1つ自動取得する。
+      selectedRebirthPerk=available[0]||'';
+
+      const reward=rebirthReward();
+      const conversion=conversionValue();
+      const life=state.lifetimeTotal;
+      const rebirths=state.rebirths+1;
+      const shards=state.rebirthShards+reward;
+      const perks={...state.rebirthPerks};
+      perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;
+
+      const keepMoney=state.money||0;
+      const moneyUpgrades={...state.moneyUpgrades};
+      const dragonLevel=state.dragonLevel||1;
+      const dragonExp=state.dragonExp||0;
+      const dragonAura=state.dragonAura||'';
+
+      state={
+        ...fresh(),
+        lifetimeTotal:life,
+        rebirths,
+        yearCount:(state.yearCount||0)+1,
+        rebirthShards:shards,
+        rebirthPerks:perks,
+        money:keepMoney+conversion,
+        moneyUpgrades,
+        dragonLevel,
+        dragonExp,
+        dragonAura
+      };
+
+      state.tap+=perkLevel('tap')*2;
+      save();
+      render();
+      $('rebirthModal').classList.remove('show');
+
+      const skillText=selectedRebirthPerk&&perkData[selectedRebirthPerk]
+        ? `、${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}`
+        : '';
+      toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴${skillText}、しずく +${reward}！`);
+    }
+
+    // 通常のイベント登録より先に捕まえる「確実な」クリック処理。
+    // 後ろのコードで別のJavaScriptエラーが起きても、一年待つだけは動くようにする。
+    document.addEventListener('click',e=>{
+      const btn=e.target.closest?.('#yearWaitBtn');
+      if(!btn)return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      try{performYearWait()}catch(err){
+        console.error('yearWait error',err);
+        toast('⚠️ 一年待ち処理でエラーが発生したよ');
+      }
+    },true);
+    $('yearWaitBtn').addEventListener('click',performYearWait);
+    $('rebirthBtn').addEventListener('click',performYearWait);
     $('cancelRebirth').addEventListener('click',()=>$('rebirthModal').classList.remove('show'));
     $('rebirthOptions').addEventListener('click',e=>{const btn=e.target.closest('[data-perk]');if(!btn||btn.disabled)return;const id=btn.dataset.perk;if(!skillAvailable(id))return;selectedRebirthPerk=id;renderRebirthOptions()});
-    $('confirmRebirth').addEventListener('click',()=>{if(!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk)){toast('今の条件ではそのスキルは選べないよ！');return}if(state.total<rebirthRequirement()){$('rebirthModal').classList.remove('show');return}const reward=rebirthReward(),conversion=conversionValue(),life=state.lifetimeTotal,rebirths=state.rebirths+1,shards=state.rebirthShards+reward,perks={...state.rebirthPerks};perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;const keepMoney=state.money||0;const moneyUpgrades={...state.moneyUpgrades};const dragonLevel=state.dragonLevel||1,dragonExp=state.dragonExp||0,dragonAura=state.dragonAura||'';state={...fresh(),lifetimeTotal:life,rebirths,yearCount:(state.yearCount||0)+1,rebirthShards:shards,rebirthPerks:perks,money:keepMoney+conversion,moneyUpgrades,dragonLevel,dragonExp,dragonAura};state.tap+=perkLevel('tap')*2;save();render();$('rebirthModal').classList.remove('show');toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴、${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}、しずく +${reward}！`)});
+    $('confirmRebirth').addEventListener('click',()=>{if(!selectedRebirthPerk){const first=Object.keys(perkData).find(skillAvailable);if(first)selectedRebirthPerk=first}if(!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk)){toast('今の条件ではそのスキルは選べないよ！');return}if(state.total<rebirthRequirement()){$('rebirthModal').classList.remove('show');return}const reward=rebirthReward(),conversion=conversionValue(),life=state.lifetimeTotal,rebirths=state.rebirths+1,shards=state.rebirthShards+reward,perks={...state.rebirthPerks};perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;const keepMoney=state.money||0;const moneyUpgrades={...state.moneyUpgrades};const dragonLevel=state.dragonLevel||1,dragonExp=state.dragonExp||0,dragonAura=state.dragonAura||'';state={...fresh(),lifetimeTotal:life,rebirths,yearCount:(state.yearCount||0)+1,rebirthShards:shards,rebirthPerks:perks,money:keepMoney+conversion,moneyUpgrades,dragonLevel,dragonExp,dragonAura};state.tap+=perkLevel('tap')*2;save();render();$('rebirthModal').classList.remove('show');toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴、${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}、しずく +${reward}！`)});
 $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal'))$('rebirthModal').classList.remove('show')});
 
 
