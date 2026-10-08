@@ -487,8 +487,9 @@
           const tierEntries=entries.filter(([,p])=>p.tier===tier);
           if(!tierEntries.length)continue;
           while(tierEntries.length<3) tierEntries.push(null);
-          rows.push(`<div class="skill-row">${tierEntries.map(([id,p])=>{
-            if(!p)return '<div></div>';
+          rows.push(`<div class="skill-row">${tierEntries.map(entry=>{
+            if(!entry)return '<div></div>';
+            const [id,p]=entry;
             const lv=perkLevel(id),maxed=lv>=p.maxLevel,available=skillAvailable(id),selected=id===selectedRebirthPerk;
             const req=(p.requires||[]).map(r=>perkData[r]?.name||r).join('・');
             let status=maxed?`✅ Lv.${lv}/${p.maxLevel}`:selected?'⭐ 今回選択中':available?`🟢 Lv.${lv} → ${lv+1}`:`🔒 ${upcomingRebirth()<p.minRebirths?`一年待ち${p.minRebirths}回目から`:req?'前提：'+req:'条件未達'}`;
