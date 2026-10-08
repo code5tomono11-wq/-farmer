@@ -458,7 +458,7 @@
       const fruits=[];if(state.owned.pineappleFarm)fruits.push(`🍍 農園 ${state.owned.pineappleFarm}`);if(state.owned.appleFarm)fruits.push(`🍎 農園 ${state.owned.appleFarm}`);if(state.owned.grapeFarm)fruits.push(`🍇 農園 ${state.owned.grapeFarm}`);if(state.owned.melonfarm)fruits.push(`🍉 畑 ${state.owned.melonfarm}`);
       $('collectionText').textContent=fruits.length?fruits.join(' ・ '):'農園を買って、強化用フルーツを集めよう！';$('lifetimeText').textContent=`これまでの累計：${fmt(state.lifetimeTotal)} 🍉`;
       const need=rebirthRequirement(),remaining=Math.max(0,need-state.total),can=state.total>=need,reward=rebirthReward();
-      $('rebirthBtn').textContent=can?`⏳ 一年待つ！ +${fmt(reward)}しずく`:`🔒 あと ${fmt(remaining)}`;$('rebirthBtn').classList.toggle('ready',can);$('rebirthBtn').disabled=!can;
+      $('rebirthBtn').textContent=can?`⏳ 一年待つ！ +${fmt(reward)}しずく`:`🔒 あと ${fmt(remaining)}`;$('rebirthBtn').classList.toggle('ready',can);$('rebirthBtn').disabled=false;$('rebirthBtn').title=can?'クリックして一年待つ':'まだ条件不足だよ';
       $('rebirthDesc').textContent=can?`一年待つと現在の資産が💴お金に換算され、農園・フルーツ・強化レベルが次の年へリセット。💴は消えず、しずく${reward}個と永続スキルも残るよ！`:`この年で${fmt(need)}ポイント稼ぐと一年待てるよ。待つ回数に応じて必要ポイントも増えるよ。` ;
       $('rebirthStat').textContent=`${fmt(state.yearCount)}年待ち ・ 永久お金 ${fmt(state.money)} ・ しずく ${fmt(state.rebirthShards)} ・ ボーナス ×${rebirthMultiplier().toFixed(1)}`;
       const activePerks=Object.keys(perkData).filter(id=>perkLevel(id)>0).map(id=>`${perkData[id].icon}${perkData[id].name} Lv.${perkLevel(id)}`);$('perkSummary').textContent=activePerks.length?'永続スキル：'+activePerks.join(' ・ '):'永続スキル：まだ選択していないよ';
