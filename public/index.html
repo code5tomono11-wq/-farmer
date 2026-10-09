@@ -773,24 +773,8 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal'))$
         return false;
       }
 
-      // 条件判定もここで明示。条件不足なら必ず画面に出す。
-      if(typeof state === 'undefined' || typeof rebirthRequirement !== 'function'){
-        alert('ゲームデータの読み込みが完了していません。ページを再読み込みしてください。');
-        return false;
-      }
-
-      const need=Number(rebirthRequirement());
-      const now=Number(state.total)||0;
-
-      if(now < need){
-        if(typeof toast==='function'){
-          toast('🔒 あと '+fmt(Math.max(0,need-now))+'ポイント必要だよ！');
-        }else{
-          alert('あと '+Math.max(0,need-now)+'ポイント必要だよ！');
-        }
-        return false;
-      }
-
+      // state / rebirthRequirement はメインゲームのクロージャ内にある。
+      // 必要ポイント判定は同じクロージャ内の performYearWait() に任せる。
       // ここだけで実行。二重実行防止。
       if(window.__suikaYearWaitBusy) return false;
       window.__suikaYearWaitBusy=true;
