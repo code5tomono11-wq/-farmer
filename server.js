@@ -29,7 +29,7 @@ function cleanName(s) {
 }
 function validReward(type, amount) {
   const types = new Set(['points', 'shards', 'money', 'pineapple', 'apple', 'grape']);
-  return types.has(type) && Number.isInteger(amount) && amount > 0 && amount <= 100000000;
+  return types.has(type) && Number.isSafeInteger(amount) && amount > 0;
 }
 function adminToken(req) {
   const h = req.headers.authorization || '';
