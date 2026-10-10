@@ -694,59 +694,28 @@
     document.querySelectorAll('[data-craft-product]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.craftProduct,p=productData[id];if(!p)return;const cost=Math.ceil(p.cost*productMaterialMultiplier());if(state.points<cost){toast(`あと ${fmt(cost-state.points)} 🍉ポイント必要だよ！`);return}state.points-=cost;state.products[id]=(state.products[id]||0)+1;render();save();toast(`${p.emoji} ${p.name}を1個作ったよ！`)}));
     document.querySelectorAll('[data-sell-product]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.sellProduct,p=productData[id];if(!p||!(state.products?.[id]>0)){toast('売れる製品がないよ！');return}state.products[id]--;const earned=moneyEarnedFromSale(p.sell);state.money+=earned;render();save();toast(`💴 ${p.emoji} ${p.name}を売って +${fmt(earned)}円！`)}));
     document.querySelectorAll('[data-money-upgrade]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.moneyUpgrade,u=moneyUpgradeData[id],lv=moneyUpgradeLevel(id),cost=moneyUpgradeCost(id);if(lv>=u.max)return;if(state.money<cost){toast(`あと ${fmt(cost-state.money)}💴 必要だよ！`);return}state.money-=cost;state.moneyUpgrades[id]=lv+1;render();save();toast(`💴 ${u.icon} ${u.name} Lv.${lv+1}！`)}));
+    // 「一年待つ」を押した時点ではリセットしない。まずスキル選択モーダルを開き、
+    // プレイヤーがスキルを選んで「このスキルで一年待つ！」を押した時だけ実行する。
     window.performYearWait=function performYearWait(){
       if(state.total<rebirthRequirement()){
         toast(`あと ${fmt(rebirthRequirement()-state.total)}ポイント必要だよ！`);
-        return;
-      }
-      const available=Object.keys(perkData).filter(skillAvailable);
-
-      // スキルが選べない状態でも「一年待つ」自体は実行できるようにする。
-      // 選べるスキルがある場合だけ1つ自動取得する。
-      selectedRebirthPerk=available[0]||'';
-
-      const reward=rebirthReward();
-      const conversion=conversionValue();
-      const life=state.lifetimeTotal;
-      const rebirths=state.rebirths+1;
-      const shards=state.rebirthShards+reward;
-      const perks={...state.rebirthPerks};
-      if(selectedRebirthPerk && perkData[selectedRebirthPerk]){
-        perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;
+        return false;
       }
 
-      const keepMoney=state.money||0;
-      const moneyUpgrades={...state.moneyUpgrades};
-      const dragonLevel=state.dragonLevel||1;
-      const dragonExp=state.dragonExp||0;
-      const dragonAura=state.dragonAura||'';
+      const modal=$('rebirthModal');
+      modal.classList.remove('preview-only');
+      $('rebirthHeading').textContent='⏳ 一年待って経済を成長させよう！';
+      $('rebirthModalText').textContent='一年待つと農園・ポイント・フルーツ・製品がリセットされる代わりに、永久お金が残るよ。今回の一年待ちで永続スキルを1つ強化できるよ。';
+      $('cancelRebirth').textContent='まだ待たない';
+      selectedRebirthPerk='';
+      renderRebirthOptions();
+      $('confirmRebirth').disabled=true;
+      modal.classList.add('show');
+      setTimeout(drawSkillConnections,80);
+      return false;
+    };
 
-      state={
-        ...fresh(),
-        lifetimeTotal:life,
-        rebirths,
-        yearCount:(state.yearCount||0)+1,
-        rebirthShards:shards,
-        rebirthPerks:perks,
-        money:keepMoney+conversion,
-        moneyUpgrades,
-        dragonLevel,
-        dragonExp,
-        dragonAura
-      };
-
-      state.tap+=perkLevel('tap')*2;
-      save();
-      render();
-      $('rebirthModal').classList.remove('show');
-
-      const skillText=selectedRebirthPerk&&perkData[selectedRebirthPerk]
-        ? `、${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}`
-        : '';
-      toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴${skillText}、しずく +${reward}！`);
-    }
-
-        $('cancelRebirth').addEventListener('click',()=>{if($('rebirthModal').classList.contains('preview-only')){window.__suikaCloseSkillPreview();return}$('rebirthModal').classList.remove('show')});
+    $('cancelRebirth').addEventListener('click',()=>{if($('rebirthModal').classList.contains('preview-only')){window.__suikaCloseSkillPreview();return}$('rebirthModal').classList.remove('show')});
     $('rebirthOptions').addEventListener('click',e=>{const btn=e.target.closest('[data-perk]');if(!btn||btn.disabled)return;const id=btn.dataset.perk;if(!skillAvailable(id))return;selectedRebirthPerk=id;renderRebirthOptions()});
     $('confirmRebirth').addEventListener('click',()=>{if($('rebirthModal').classList.contains('preview-only'))return;if(!selectedRebirthPerk){const first=Object.keys(perkData).find(skillAvailable);if(first)selectedRebirthPerk=first}if(!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk)){toast('今の条件ではそのスキルは選べないよ！');return}if(state.total<rebirthRequirement()){$('rebirthModal').classList.remove('show');return}const reward=rebirthReward(),conversion=conversionValue(),life=state.lifetimeTotal,rebirths=state.rebirths+1,shards=state.rebirthShards+reward,perks={...state.rebirthPerks};perks[selectedRebirthPerk]=(perks[selectedRebirthPerk]||0)+1;const keepMoney=state.money||0;const moneyUpgrades={...state.moneyUpgrades};const dragonLevel=state.dragonLevel||1,dragonExp=state.dragonExp||0,dragonAura=state.dragonAura||'';state={...fresh(),lifetimeTotal:life,rebirths,yearCount:(state.yearCount||0)+1,rebirthShards:shards,rebirthPerks:perks,money:keepMoney+conversion,moneyUpgrades,dragonLevel,dragonExp,dragonAura};state.tap+=perkLevel('tap')*2;save();render();$('rebirthModal').classList.remove('show');toast(`⏳ ${state.yearCount}年目へ！ +${fmt(conversion)}💴、${perkData[selectedRebirthPerk].icon}${perkData[selectedRebirthPerk].name} Lv.${perkLevel(selectedRebirthPerk)}、しずく +${reward}！`)});
 $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){if($('rebirthModal').classList.contains('preview-only'))window.__suikaCloseSkillPreview();else $('rebirthModal').classList.remove('show')}});
