@@ -27,6 +27,30 @@ function makeCode() {
 function cleanName(s) {
   return String(s || '').trim().replace(/[<>"'`]/g, '').slice(0, 12);
 }
+function normalizeScore(value) {
+  if (typeof value === 'string') {
+    const raw = value.trim();
+    if (!/^\d{1,1000}$/.test(raw)) return null;
+    return raw.replace(/^0+(?=\d)/, '');
+  }
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return null;
+  const raw = String(Math.floor(value));
+  if (!/[eE]/.test(raw)) return raw;
+  const [mantissa, exponentText] = raw.toLowerCase().split('e');
+  const exponent = Number(exponentText);
+  const parts = mantissa.split('.');
+  const digits = parts.join('');
+  const decimalPosition = parts[0].length + exponent;
+  if (decimalPosition <= 0) return '0';
+  if (decimalPosition >= digits.length) return digits + '0'.repeat(Math.min(1000, decimalPosition - digits.length));
+  return digits.slice(0, decimalPosition);
+}
+function compareScoresDescending(a, b) {
+  const left = normalizeScore(a?.score) || '0';
+  const right = normalizeScore(b?.score) || '0';
+  const x = BigInt(left), y = BigInt(right);
+  return x > y ? -1 : x < y ? 1 : 0;
+}
 function validReward(type, amount) {
   const types = new Set(['points', 'shards', 'money', 'pineapple', 'apple', 'grape']);
   return types.has(type) && Number.isSafeInteger(amount) && amount > 0;
@@ -80,18 +104,26 @@ app.post('/api/redeem', (req, res) => {
 });
 
 app.get('/api/ranking', (req, res) => {
-  const rows = readJson(RANKING_FILE, []).sort((a, b) => b.score - a.score).slice(0, 20);
+  const stored = readJson(RANKING_FILE, []);
+  const rows = (Array.isArray(stored) ? stored : []).sort(compareScoresDescending).slice(0, 20);
   res.json({ rows });
 });
 
 app.post('/api/ranking', (req, res) => {
   const name = cleanName(req.body?.name);
-  const score = Math.floor(Number(req.body?.score || 0));
-  if (!name || score < 0 || score > Number.MAX_SAFE_INTEGER) return res.status(400).json({ error: 'ランキングデータが不正です' });
-  const rows = readJson(RANKING_FILE, []);
+  const score = normalizeScore(req.body?.score);
+  if (!name || score === null) return res.status(400).json({ error: 'ランキング名またはポイントが不正です' });
+  const stored = readJson(RANKING_FILE, []);
+  const rows = Array.isArray(stored) ? stored : [];
   const existing = rows.find(x => x.name === name);
-  if (existing) existing.score = Math.max(existing.score, score); else rows.push({ name, score, updatedAt: new Date().toISOString() });
-  rows.sort((a, b) => b.score - a.score);
+  if (existing) {
+    const oldScore = normalizeScore(existing.score) || '0';
+    existing.score = BigInt(oldScore) >= BigInt(score) ? oldScore : score;
+    existing.updatedAt = new Date().toISOString();
+  } else {
+    rows.push({ name, score, updatedAt: new Date().toISOString() });
+  }
+  rows.sort(compareScoresDescending);
   writeJson(RANKING_FILE, rows.slice(0, 100));
   res.json({ rows: rows.slice(0, 20) });
 });
