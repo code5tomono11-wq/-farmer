@@ -377,7 +377,21 @@
     };
     function perkLevel(id){return Math.max(0,finite((state.rebirthPerks||{})[id]));}
     const $=id=>document.getElementById(id);
-    const fmt=n=>Math.floor(Math.max(0,Number(n)||0)).toLocaleString('ja-JP');
+    const fmt=n=>{
+      n=Number(n);
+      if(Number.isNaN(n)||n<=0)return '0';
+      if(n===Infinity)return '∞';
+      if(!Number.isFinite(n))return '0';
+      if(n<10000)return Math.floor(n).toLocaleString('ja-JP');
+      const units=['万','億','兆','京','垓','秭','穣','溝','澗','正','載','極','恒河沙','阿僧祇','那由他','不可思議','無量大数'];
+      const group=Math.floor(Math.log10(n)/4),scaled=n/Math.pow(10000,group);
+      if(group>=1&&group<=units.length){
+        const digits=scaled>=100?4:scaled>=10?3:2;
+        return Number(scaled.toPrecision(digits)).toLocaleString('ja-JP',{maximumFractionDigits:2})+units[group-1];
+      }
+      const exp=n.toExponential(2).split('e');
+      return Number(exp[0])+'×10^'+Number(exp[1]);
+    };
     const finite=n=>Number.isFinite(Number(n))?Number(n):0;
     function upcomingRebirth(){return (state.rebirths||0)+1}
     function skillAvailable(id){const p=perkData[id];if(!p)return false;if(upcomingRebirth()<(p.minRebirths||1))return false;return (p.requires||[]).every(req=>perkLevel(req)>0)}
@@ -389,10 +403,11 @@
     function effectiveOwned(n){return Math.max(0,finite(n))}
     function upgradeMultiplier(){const labIsOpen=labUnlocked(),dragonBoost=dragonPowerMultiplier(),powerAura=state.dragonAura==='power'?1.25:1,pine=labIsOpen?(state.upgrades.pineapple||0)*.10:0,apple=labIsOpen?(state.upgrades.apple||0)*.15:0,grape=labIsOpen?(state.upgrades.grape||0)*.20:0,labBonus=labIsOpen?1+perkLevel('lab')*.05+perkLevel('labpower')*.08:1,tapBonus=1+perkLevel('combo')*.08+perkLevel('tapburst')*.15+perkLevel('tapmaster')*.10;return (1+pine+apple+grape)*rebirthMultiplier()*labBonus*tapBonus*dragonBoost*powerAura}
     function rebirthMultiplier(){const aura=state.dragonAura==='rebirth'?1.10:1;const byRebirth=(state.rebirths||0)*.03;const byShards=(state.rebirthShards||0)*.01;const bySkill=perkLevel('rebirthboost')*.05;return (1+byRebirth+byShards+bySkill)*aura}
-    function rebirthRequirement(){const discount=perkLevel('rebirthdiscount')*.05;return Math.max(1,Math.floor(REBIRTH_REQUIREMENT*Math.pow(1.5,Math.max(0,state.rebirths||0))*(1-discount)))}
+    function rebirthRequirement(){const discount=Math.pow(.92,perkLevel('rebirthdiscount'));return Math.max(1,safeCost(REBIRTH_REQUIREMENT*Math.pow(1.5,Math.max(0,state.rebirths||0))*discount))}
     function rate(){const farmAura=state.dragonAura==='farm'?1.5:1;const farmRate=Object.entries(shop).reduce((sum,[id,item])=>sum+(item.rate||0)*effectiveOwned(state.owned[id]||0),0);const raw=farmRate+Math.max(0,finite(state.legacyRate||0));return scaledGain(raw*upgradeMultiplier()*farmAura*(1+perkLevel('farm')*.08+perkLevel('farmking')*.15))}
-    function nextCost(id){const item=shop[id],discount=perkLevel('coupon')*.05+perkLevel('farmcost')*.03;return Math.ceil(item.cost*Math.pow(item.growth||1.17,state.owned[id]||0)*(1-discount))}
-    function upgradeCost(id){const item=upgradeData[id],discount=perkLevel('labcost')*.08;return Math.ceil(item.base*Math.pow(item.growth,state.upgrades[id]||0)*(1-discount))}
+    function safeCost(value){if(Number.isFinite(value))return Math.max(1,Math.ceil(value));return value>0?Number.MAX_VALUE:1}
+    function nextCost(id){const item=shop[id],discount=Math.pow(.95,perkLevel('coupon'))*Math.pow(.97,perkLevel('farmcost'));return safeCost(item.cost*Math.pow(item.growth||1.17,state.owned[id]||0)*discount)}
+    function upgradeCost(id){const item=upgradeData[id],discount=Math.pow(.92,perkLevel('labcost'));return safeCost(item.base*Math.pow(item.growth,state.upgrades[id]||0)*discount)}
     function rebirthReward(){return 2+2*Math.floor(Math.max(0,state.total)/(rebirthRequirement()*3))+Math.floor(perkLevel('shard')/2)+perkLevel('shardmaster')*2}
     function keepPointRate(){return perkLevel('keep')*.50+perkLevel('keepplus')*.25}
     function critChance(){return perkLevel('luck')*.03+(state.dragonAura==='luck'?.10:0)}
@@ -815,7 +830,7 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';state.products={...fresh().products,...(state.products||{})};state.moneyUpgrades={...fresh().moneyUpgrades,...(state.moneyUpgrades||{})};state.money=Math.max(0,finite(state.money));state.yearCount=Math.max(0,finite(state.yearCount));render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
     setInterval(()=>{const income=rate();if(income>0){state.points+=income;state.total+=income;state.lifetimeTotal+=income}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
-    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=17').catch(()=>{}))}
+    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=18').catch(()=>{}))}
   })();
   </script>
 
