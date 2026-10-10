@@ -1,4 +1,4 @@
-const CACHE_NAME = 'suika-clicker-v20';
+const CACHE_NAME = 'suika-clicker-v21';
 const STATIC_FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', event => {
