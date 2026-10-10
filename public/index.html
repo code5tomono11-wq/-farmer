@@ -39,13 +39,34 @@
     .extra-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}.event-btn{width:100%;border:0;border-radius:14px;padding:12px;background:#ffdf70;color:#624700;font-weight:1000;box-shadow:0 4px 0 #e4b84b}.event-btn:disabled{background:#e8e8df;color:#7e857b;box-shadow:none}.mission{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border:2px solid #e3eedf;border-radius:14px;padding:9px;margin-top:8px}.mission-text{font-size:11px;font-weight:850;line-height:1.4}.mission-reward{font-size:10px;color:#805d00;font-weight:900}.mission .buy-btn{min-width:76px}.rebirth-card{grid-column:1/-1;display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:11px;align-items:center;background:linear-gradient(135deg,#f7f0ff,#fffdf3);border:2px solid white;padding:14px;border-radius:20px;box-shadow:var(--shadow)}.rebirth-icon{font-size:32px;text-align:center}.rebirth-copy{min-width:0}.rebirth-title{font-size:14px;font-weight:1000;color:#68418f}.rebirth-desc{font-size:11px;font-weight:750;line-height:1.5;color:#6d6479;margin-top:3px}.rebirth-stat{font-size:11px;font-weight:950;color:#68418f;margin-top:4px}.rebirth-btn{border:0;border-radius:13px;background:#b49ade;color:white;font-size:12px;font-weight:1000;padding:11px 13px;box-shadow:0 4px 0 #8b70b5;white-space:nowrap}.rebirth-btn.ready{background:#8b5fbf;box-shadow:0 4px 0 #68418f}.rebirth-btn:active{transform:translateY(2px);box-shadow:none}.perk-summary{font-size:10px;font-weight:850;color:#68418f;line-height:1.55;margin-top:5px;overflow-wrap:anywhere}.rebirth-options{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px;text-align:left}.rebirth-option{width:100%;display:grid;grid-template-columns:35px minmax(0,1fr);gap:9px;align-items:center;text-align:left;border:2px solid #e3d8f4;background:#fff;border-radius:14px;padding:10px;color:var(--ink)}.rebirth-option.selected{border-color:#8b5fbf;background:#f2eaff;box-shadow:0 3px 0 #d4c1ee}.perk-icon{font-size:26px;text-align:center}.perk-name{font-size:12px;font-weight:1000;color:#68418f}.perk-desc{font-size:10px;color:#6d6479;font-weight:750;line-height:1.45;margin-top:2px}.perk-rank{font-size:10px;color:#8b5fbf;font-weight:900;margin-top:3px}.rebirth-help{font-size:11px!important;margin:8px 0 0!important}
     .skill-tree-note{font-size:11px;color:var(--muted);font-weight:800;line-height:1.55;margin:6px 0 0}
     .skill-tree{display:flex;flex-direction:column;gap:14px;margin-top:14px;text-align:left}
-    .skill-branch{background:#fff;border:2px solid #e6def2;border-radius:18px;padding:11px;position:relative;overflow:hidden}
-    .skill-branch-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+    .rebirth-modal{width:min(96vw,980px);max-height:92vh;padding:18px;text-align:left}
+    .rebirth-modal h2{text-align:center}
+    .rebirth-modal>p{text-align:center;margin:0 auto 10px;max-width:760px}
+    .skill-tree-legend{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px 0 12px;font-size:10px;font-weight:900;color:#6d6479}
+    .skill-legend-chip{display:inline-flex;align-items:center;gap:5px;background:#f6f2fb;border-radius:999px;padding:5px 9px}
+    .skill-tree{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:8px;isolation:isolate}
+    .skill-branch{background:linear-gradient(180deg,#fff,#fbf8ff);border:2px solid #e6def2;border-radius:18px;padding:12px;position:relative;min-width:0;overflow:visible;box-shadow:0 3px 0 #eee5fa}
+    .skill-branch-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid #eee5fa}
     .skill-branch-title{font-size:13px;font-weight:1000;color:#68418f}.skill-branch-count{font-size:10px;font-weight:900;color:#8b70b5;background:#f4ecff;border-radius:999px;padding:4px 7px;white-space:nowrap}
-    .skill-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;position:relative}
-    .skill-node{position:relative;width:100%;min-height:94px;border:2px solid #e3d8f4;background:#fbf9ff;border-radius:14px;padding:8px;text-align:left;color:var(--ink);display:flex;flex-direction:column;justify-content:flex-start;gap:3px;box-shadow:0 2px 0 #eee5fa}
-    .skill-node.available{border-color:#b7e0ad;background:#f6fff1;box-shadow:0 3px 0 #d7ecd4}.skill-node.selected{border-color:#8b5fbf;background:#f1e8ff;box-shadow:0 3px 0 #d4c1ee}.skill-node.owned{border-color:#8b5fbf;background:#f0e6ff}.skill-node.locked{background:#f1f2ed;border-color:#e1e4db;color:#8a9188;box-shadow:none}
-    .skill-node:disabled{opacity:1}.skill-node-icon{font-size:22px;line-height:1}.skill-node-title{font-size:11px;font-weight:1000;color:#68418f;line-height:1.25}.skill-node.locked .skill-node-title{color:#7a8178}.skill-node-desc{font-size:9px;font-weight:750;line-height:1.35;color:#6d6479}.skill-node-status{margin-top:auto;font-size:9px;font-weight:950;color:#8b5fbf}.skill-node.locked .skill-node-status{color:#899087}.skill-node:not(:last-child)::after{content:"";position:absolute;right:-8px;top:50%;width:7px;height:2px;background:#d6c8e8;z-index:2}.skill-row + .skill-row{margin-top:8px;padding-top:8px}.skill-row + .skill-row::before{content:"";position:absolute;left:16.666%;right:16.666%;top:-1px;height:2px;background:#d6c8e8}.skill-tree-footer{font-size:10px;color:#6d6479;font-weight:800;padding:8px 10px;border-radius:12px;background:#f7f4fb;line-height:1.5}
+    .skill-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;position:relative;margin-bottom:22px}
+    .skill-row:last-child{margin-bottom:4px}
+    .skill-node-empty{min-width:0;min-height:1px}
+    .skill-node{position:relative;z-index:3;width:100%;min-width:0;min-height:118px;border:2px solid #e3d8f4;background:#fbf9ff;border-radius:15px;padding:8px 6px;text-align:center;color:var(--ink);display:flex;align-items:center;flex-direction:column;justify-content:flex-start;gap:5px;box-shadow:0 3px 0 #eee5fa;transition:transform .12s,border-color .12s,box-shadow .12s}
+    .skill-node.available{border-color:#86c87b;background:linear-gradient(160deg,#f7fff2,#eaf8e4);box-shadow:0 3px 0 #cce8c4}.skill-node.available:hover{transform:translateY(-2px);box-shadow:0 5px 0 #cce8c4}
+    .skill-node.selected{border-color:#8b5fbf;background:linear-gradient(160deg,#f5edff,#e8d9ff);box-shadow:0 0 0 3px #d8c1f7,0 4px 0 #c9b1e7}
+    .skill-node.owned{border-color:#8b5fbf;background:linear-gradient(160deg,#f5edff,#eadfff)}
+    .skill-node.locked{background:linear-gradient(160deg,#f5f5f1,#e9ece5);border-color:#dce1d7;color:#8a9188;box-shadow:none}
+    .skill-node:disabled{opacity:1}.skill-node-icon{display:grid;place-items:center;width:35px;height:35px;flex:none;border-radius:12px;background:#fff;box-shadow:0 2px 0 #e6def2;font-size:22px;line-height:1}
+    .skill-node-title{font-size:10px;font-weight:1000;color:#68418f;line-height:1.25;overflow-wrap:anywhere}.skill-node.locked .skill-node-title{color:#7a8178}
+    .skill-node-desc{font-size:9px;font-weight:800;line-height:1.35;color:#6d6479;overflow-wrap:anywhere}
+    .skill-node-status{margin-top:auto;font-size:9px;font-weight:950;color:#527b49;line-height:1.3}.skill-node.selected .skill-node-status{color:#68418f}.skill-node.locked .skill-node-status{color:#899087}
+    .skill-connections{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:2}
+    .skill-connection{fill:none;stroke:#d2c4e7;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+    .skill-connection.active{stroke:#9a70cc;stroke-width:3}
+    .skill-tree-footer{grid-column:1/-1;font-size:11px;color:#6d6479;font-weight:800;padding:10px 12px;border-radius:13px;background:#f7f4fb;border:1px solid #eee5fa;line-height:1.6}
+    .skill-selected-card{grid-column:1/-1;display:flex;align-items:center;gap:10px;background:#f4ecff;border:2px solid #d9c7ef;border-radius:14px;padding:10px 12px;font-size:11px;font-weight:900;color:#68418f}
+    .skill-selected-card .selected-glyph{font-size:25px}
+    @media(max-width:680px){.rebirth-modal{width:100%;max-height:94vh;padding:13px}.skill-tree{grid-template-columns:1fr;gap:10px}.skill-tree-footer,.skill-selected-card{grid-column:1}.skill-node{min-height:108px}.skill-node-title{font-size:11px}.skill-node-desc{font-size:10px}.skill-node-status{font-size:10px}}
     .skill-badge{font-size:9px;font-weight:1000;padding:3px 6px;border-radius:999px;background:#e9f7e4;color:#4c7950;white-space:nowrap}
     .notice{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--leaf-dark);color:white;padding:12px 17px;border-radius:999px;font-size:13px;font-weight:900;box-shadow:0 7px 24px #173d2d44;z-index:50;transition:.25s;max-width:90vw;text-align:center}.notice.show{opacity:1;transform:translate(-50%,0)}.footer{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#557563;font-size:10px;font-weight:750;padding:15px 4px 3px}.fruit-pips{letter-spacing:3px;font-size:15px;white-space:nowrap}
     .lab-locked{background:#f5f0fa;border:2px dashed #c9b8e2;border-radius:18px;padding:18px 14px;text-align:center;color:#695780}.lab-lock-icon{font-size:36px;margin-bottom:5px}.lab-lock-title{font-size:14px;font-weight:1000;color:#68418f}.lab-locked p{font-size:11px;font-weight:750;line-height:1.55;margin:7px 0 11px}.lab-unlock-progress{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:950;color:#68418f}.rebirth-option.maxed{opacity:.55;background:#f1f0f4;border-color:#d6d1df}.rebirth-selection-summary{margin-top:10px!important;padding:10px;border-radius:12px;background:#f2eaff;color:#68418f!important;font-size:12px!important;font-weight:900!important}.confirm-rebirth-btn:disabled{opacity:.45;filter:grayscale(1);cursor:not-allowed}
@@ -481,16 +502,13 @@
       if(!host)return;
 
       const branches=[...new Set(
-        Object.values(perkData||{})
-          .filter(p=>p && p.branch)
-          .map(p=>p.branch)
+        Object.values(perkData||{}).filter(p=>p&&p.branch).map(p=>p.branch)
       )];
 
-      host.innerHTML=branches.map(branch=>{
+      const branchHtml=branches.map(branch=>{
         const entries=Object.entries(perkData||{})
-          .filter(([,p])=>p && p.branch===branch)
-          .sort((a,b)=>(Number(a[1].tier||0)-Number(b[1].tier||0))||a[0].localeCompare(b[0]));
-
+          .filter(([,p])=>p&&p.branch===branch)
+          .sort((a,b)=>(Number(a[1].tier||1)-Number(b[1].tier||1))||a[0].localeCompare(b[0]));
         if(!entries.length)return '';
 
         const maxTier=Math.max(...entries.map(([,p])=>Number(p.tier||1)));
@@ -500,43 +518,32 @@
         for(let tier=1;tier<=maxTier;tier++){
           const tierEntries=entries.filter(([,p])=>Number(p.tier||1)===tier);
           if(!tierEntries.length)continue;
-
           const cells=tierEntries.slice(0,3);
           while(cells.length<3)cells.push(null);
 
-          rows.push(`<div class="skill-row">${cells.map(entry=>{
-            if(entry===null)return '<div class="skill-node-empty" aria-hidden="true"></div>';
-
-            const id=entry[0];
-            const p=entry[1];
-            if(!id || !p)return '<div class="skill-node-empty" aria-hidden="true"></div>';
+          rows.push(`<div class="skill-row" data-branch="${branch}" data-tier="${tier}">${cells.map(entry=>{
+            if(!entry)return '<div class="skill-node-empty" aria-hidden="true"></div>';
+            const id=entry[0],p=entry[1];
+            if(!id||!p)return '<div class="skill-node-empty" aria-hidden="true"></div>';
 
             const lv=perkLevel(id);
             const maxed=lv>=Number(p.maxLevel||0);
             const available=skillAvailable(id);
             const selected=id===selectedRebirthPerk;
-            const req=(Array.isArray(p.requires)?p.requires:[])
-              .map(r=>perkData?.[r]?.name||r)
-              .join('・');
-
+            const req=(Array.isArray(p.requires)?p.requires:[]);
             let status='';
-            if(maxed){
-              status=`✅ Lv.${lv}/${p.maxLevel}`;
-            }else if(selected){
-              status='⭐ 今回選択中';
-            }else if(available){
-              status=`🟢 Lv.${lv} → ${lv+1}`;
-            }else{
-              status=`🔒 ${upcomingRebirth()<Number(p.minRebirths||1)
-                ? `一年待ち${p.minRebirths}回目から`
-                : req ? '前提：'+req : '条件未達'}`;
-            }
+            if(maxed)status=`✓ MAX Lv.${lv}/${p.maxLevel}`;
+            else if(selected)status='★ 今回の強化先';
+            else if(available)status=`選択可能 · Lv.${lv} → ${lv+1}`;
+            else if(upcomingRebirth()<Number(p.minRebirths||1))status=`🔒 ${p.minRebirths}回目の一年待ちから`;
+            else if(req.length)status='🔒 前提スキルが必要';
+            else status='🔒 未解放';
 
-            const describe=typeof p.describe==='function'
-              ? p.describe(Math.min(Number(p.maxLevel||0),lv+1))
-              : '';
-
-            return `<button class="skill-node ${maxed?'owned':''} ${available?'available':'locked'} ${selected?'selected':''}" type="button" data-perk="${id}" ${(!available||maxed)?'disabled':''} aria-label="${p.name||id}">
+            const describe=typeof p.describe==='function'?p.describe(Math.min(Number(p.maxLevel||0),lv+1)):'';
+            const reqNames=req.map(r=>perkData?.[r]?.name||r);
+            const reqText=reqNames.length?`前提：${reqNames.join('・')}`:'基礎スキル';
+            const detail=`${p.name||id}。${describe}。${reqText}。現在レベル ${lv}、最大レベル ${p.maxLevel}。`;
+            return `<button class="skill-node ${maxed?'owned':''} ${available?'available':'locked'} ${selected?'selected':''}" type="button" data-perk="${id}" data-requires="${req.join(',')}" ${(!available||maxed)?'disabled':''} aria-label="${detail}" title="${detail}">
               <span class="skill-node-icon">${p.icon||'⭐'}</span>
               <span class="skill-node-title">${p.name||id}</span>
               <span class="skill-node-desc">${describe}</span>
@@ -545,25 +552,70 @@
           }).join('')}</div>`);
         }
 
-        return `<section class="skill-branch">
+        return `<section class="skill-branch" data-skill-branch="${branch}">
           <div class="skill-branch-head">
             <div class="skill-branch-title">${branch}</div>
-            <span class="skill-branch-count">${ownedCount}/${entries.length} 解放</span>
+            <span class="skill-branch-count">${ownedCount}/${entries.length} 習得</span>
           </div>
           ${rows.join('')}
         </section>`;
-      }).join('')+
-      `<div class="skill-tree-footer">
-        🌟 今回の一年待ち：${upcomingRebirth()}回目 ／ 使えるのは1回につき1スキル。<br>
-        🔑 条件を満たしたノードだけ選択でき、習得済みノードは次のレベルへ進めるよ。
-      </div>`;
+      }).join('');
 
-      const selected=selectedRebirthPerk ? perkData?.[selectedRebirthPerk] : null;
+      const selected=selectedRebirthPerk?perkData?.[selectedRebirthPerk]:null;
+      const selectedHtml=selected
+        ? `<div class="skill-selected-card"><span class="selected-glyph">${selected.icon||'⭐'}</span><span>今回の強化：${selected.name}　Lv.${perkLevel(selectedRebirthPerk)} → Lv.${perkLevel(selectedRebirthPerk)+1}<br><small>${typeof selected.describe==='function'?selected.describe(Math.min(Number(selected.maxLevel||0),perkLevel(selectedRebirthPerk)+1)):''}</small></span></div>`
+        : `<div class="skill-selected-card"><span class="selected-glyph">🧭</span><span>ノードを選ぶと、ここに今回の強化内容が表示されるよ。</span></div>`;
+
+      host.innerHTML=`<div class="skill-tree-legend">
+        <span class="skill-legend-chip">🟢 選択可能</span>
+        <span class="skill-legend-chip">🟣 習得済み・選択中</span>
+        <span class="skill-legend-chip">🔒 条件未達</span>
+        <span class="skill-legend-chip">線＝前提スキル</span>
+      </div>${branchHtml}${selectedHtml}
+      <div class="skill-tree-footer">🌟 一年待ち1回につき強化できるのは1レベル。<br>🔗 線でつながった前提スキルを習得すると、次のスキルが解放されるよ。別の枝に伸びるスキルもあるよ。</div>`;
+
       $('rebirthSelectionSummary').textContent=selected
         ? `今回上げる能力：${selected.icon} ${selected.name}（Lv.${perkLevel(selectedRebirthPerk)} → Lv.${perkLevel(selectedRebirthPerk)+1}）`
         : 'まだ未選択だよ。上げたい能力を1つタップしてね。';
-
       $('confirmRebirth').disabled=!selectedRebirthPerk||!skillAvailable(selectedRebirthPerk);
+      drawSkillConnections();
+    }
+
+    function drawSkillConnections(){
+      const host=$('rebirthOptions');
+      if(!host)return;
+      const old=host.querySelector('.skill-connections');
+      if(old)old.remove();
+
+      const hostRect=host.getBoundingClientRect();
+      const width=Math.max(host.scrollWidth,host.clientWidth);
+      const height=Math.max(host.scrollHeight,host.clientHeight);
+      const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('class','skill-connections');
+      svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+      svg.setAttribute('width',width);
+      svg.setAttribute('height',height);
+      svg.setAttribute('aria-hidden','true');
+
+      host.querySelectorAll('.skill-node[data-perk]').forEach(node=>{
+        const childId=node.dataset.perk;
+        const requires=(node.dataset.requires||'').split(',').filter(Boolean);
+        requires.forEach(parentId=>{
+          const parent=host.querySelector(`.skill-node[data-perk="${CSS.escape(parentId)}"]`);
+          if(!parent)return;
+          const a=parent.getBoundingClientRect(),b=node.getBoundingClientRect();
+          const x1=a.left-hostRect.left+a.width/2;
+          const y1=a.top-hostRect.top+a.height;
+          const x2=b.left-hostRect.left+b.width/2;
+          const y2=b.top-hostRect.top;
+          const bend=Math.max(18,Math.abs(y2-y1)*.45);
+          const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+          path.setAttribute('d',`M ${x1} ${y1} C ${x1} ${y1+bend}, ${x2} ${y2-bend}, ${x2} ${y2}`);
+          path.setAttribute('class','skill-connection'+(perkLevel(parentId)>0?' active':''));
+          svg.appendChild(path);
+        });
+      });
+      host.prepend(svg);
     }
     function addPoints(n){const actual=scaledGain(n);state.points+=actual;state.total+=actual;state.lifetimeTotal+=actual;render();return actual}
     function spawnFloat(text,x,y){const parent=$('fruitRain'),el=document.createElement('span');el.className='float-text';el.textContent=text;el.style.left=x+'px';el.style.top=y+'px';parent.appendChild(el);setTimeout(()=>el.remove(),850)}
