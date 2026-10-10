@@ -338,7 +338,7 @@
       {n:10000,title:'フルーツ王国！',desc:'転生できるくらい稼ごう！',icon:'👑'},
       {n:250000,title:'すいかレジェンド！',desc:'転生を重ねて、強化ラボの封印を解こう！',icon:'🏆'}
     ];
-    const fresh=()=>({version:6,points:0n,total:0n,lifetimeTotal:0n,tap:1n,legacyRate:0,owned:{melonfarm:0,pineappleFarm:0,pineappleFarm2:0,pineappleFarm3:0,appleFarm:0,appleFarm2:0,appleFarm3:0,grapeFarm:0,grapeFarm2:0,grapeFarm3:0,tapupgrade:0,golden:0,bigmelonfarm:0,greenhouse:0,hydroponic:0,skyfarm:0,moonfarm:0},stock:{pineapple:0,apple:0,grape:0},products:{juice:0,jam:0,syrup:0},upgrades:{pineapple:0,apple:0,grape:0},rebirths:0,rebirthShards:0,rebirthPerks:{tap:0,farm:0,fruit:0,lab:0,start:0,luck:0,golden:0,coupon:0,offline:0,labcost:0,mission:0,goldspeed:0,shard:0,combo:0,crit:0,tapburst:0,tapmaster:0,farmking:0,farmcost:0,idleplus:0,fruitluck:0,labpower:0,labshortcut:0,startmaster:0,keep:0,keepplus:0,rebirthboost:0,shardmaster:0,rebirthdiscount:0,eternal:0},money:0n,yearCount:0,moneyUpgrades:{sale:0,conversion:0,factory:0,interest:0},clicks:0,claimedMissions:{},dailyClaim:'',goldenReady:false,goldenNext:Date.now()+35000,lastTime:Date.now(),dragonLevel:1,dragonExp:0,dragonAura:''});
+    const fresh=()=>({version:7,points:0n,total:0n,lifetimeTotal:0n,tap:1n,legacyRate:0,owned:{melonfarm:0,pineappleFarm:0,pineappleFarm2:0,pineappleFarm3:0,appleFarm:0,appleFarm2:0,appleFarm3:0,grapeFarm:0,grapeFarm2:0,grapeFarm3:0,tapupgrade:0,golden:0,bigmelonfarm:0,greenhouse:0,hydroponic:0,skyfarm:0,moonfarm:0},stock:{pineapple:0n,apple:0n,grape:0n},products:{juice:0,jam:0,syrup:0},upgrades:{pineapple:0,apple:0,grape:0},rebirths:0,rebirthShards:0,rebirthPerks:{tap:0,farm:0,fruit:0,lab:0,start:0,luck:0,golden:0,coupon:0,offline:0,labcost:0,mission:0,goldspeed:0,shard:0,combo:0,crit:0,tapburst:0,tapmaster:0,farmking:0,farmcost:0,idleplus:0,fruitluck:0,labpower:0,labshortcut:0,startmaster:0,keep:0,keepplus:0,rebirthboost:0,shardmaster:0,rebirthdiscount:0,eternal:0},money:0n,yearCount:0,moneyUpgrades:{sale:0,conversion:0,factory:0,interest:0},clicks:0,claimedMissions:{},dailyClaim:'',goldenReady:false,goldenNext:Date.now()+35000,lastTime:Date.now(),dragonLevel:1,dragonExp:0,dragonAura:''});
     let state=fresh(),noticeTimer,selectedRebirthPerks=[],selectedRebirthLevels={};
     let buyQuantity=1;
     const perkData={
@@ -381,6 +381,7 @@
     const $=id=>document.getElementById(id);
     const BIG_MAX=BigInt(Number.MAX_VALUE);
     const BALANCE_SCALE=1000000n;
+    const STOCK_SCALE=BALANCE_SCALE;
     function toBigBalance(value){
       if(typeof value==='bigint')return value<0n?0n:value;
       if(typeof value==='string'){
@@ -395,6 +396,8 @@
       if(!Number.isFinite(n))return n>0?BIG_MAX:0n;
       return BigInt(Math.floor(n));
     }
+    function stockFromSave(value,storedUnits=false){if(storedUnits)return toBigBalance(value);const n=Number(value);if(Number.isNaN(n)||n<=0)return 0n;if(!Number.isFinite(n))return BIG_MAX;return BigInt(Math.floor(n*Number(STOCK_SCALE)))}
+    function fmtStock(value){const units=toBigBalance(value),whole=units/STOCK_SCALE,frac=units%STOCK_SCALE;if(frac===0n)return fmtBigBalance(whole);const decimals=frac.toString().padStart(6,'0').replace(/0+$/,'');return fmtBigBalance(whole)+'.'+decimals}
     function fmtBigBalance(value){
       const n=toBigBalance(value),digits=n.toString();
       if(digits.length<=4)return n.toLocaleString('ja-JP');
@@ -504,7 +507,7 @@
     function productValue(id){const p=productData[id];return moneyEarnedFromSale(p.sell)}
     function conversionValue(){
       let value=state.points*BigInt(Math.floor(MONEY_POINT_RATE));
-      value+=toBigBalance(state.stock.pineapple||0)*500n+toBigBalance(state.stock.apple||0)*800n+toBigBalance(state.stock.grape||0)*1200n;
+      value+=(state.stock.pineapple||0n)*500n/STOCK_SCALE+(state.stock.apple||0n)*800n/STOCK_SCALE+(state.stock.grape||0n)*1200n/STOCK_SCALE;
       Object.keys(productData).forEach(id=>{value+=toBigBalance(state.products?.[id]||0)*productValue(id)});
       Object.keys(shop).forEach(id=>{const it=shop[id],owned=state.owned?.[id]||0;if(owned)value+=toBigBalance(Math.floor((it.cost||0)*owned*.25))});
       const conversion=fixedMultiplier(moneyUpgradeLevel('conversion'),moneyUpgradeData.conversion.bonus);
@@ -526,9 +529,9 @@
         base.lastTime=finite(parsed.lastTime)||Date.now();
         return base;
       }
-      if(parsed.version===2||parsed.version===3||parsed.version===4||parsed.version===5||parsed.version===6){
+      if(parsed.version===2||parsed.version===3||parsed.version===4||parsed.version===5||parsed.version===6||parsed.version===7){
         const oldBalance=parsed.version<4;
-        return {...base,...parsed,version:6,rebirthPerks:{...base.rebirthPerks,...(parsed.rebirthPerks||{})},claimedMissions:{...base.claimedMissions,...(parsed.claimedMissions||{})},owned:{...base.owned,...(parsed.owned||{})},stock:{...base.stock,...(parsed.stock||{})},products:{...base.products,...(parsed.products||{})},moneyUpgrades:{...base.moneyUpgrades,...(parsed.moneyUpgrades||{})},money:toBigBalance(parsed.money),yearCount:Math.max(0,finite(parsed.yearCount)),dragonLevel:Math.max(1,finite(parsed.dragonLevel)||1),dragonExp:Math.max(0,finite(parsed.dragonExp)),dragonAura:String(parsed.dragonAura||''),points:oldBalance?toBigBalance(compressOldBalance(parsed.points)):toBigBalance(parsed.points),total:oldBalance?toBigBalance(compressOldBalance(parsed.total,REBIRTH_REQUIREMENT*Math.pow(1.5,Math.min(parsed.rebirths||0,15)))):toBigBalance(parsed.total),lifetimeTotal:toBigBalance(parsed.lifetimeTotal),tap:toBigBalance(parsed.tap)>0n?toBigBalance(parsed.tap):1n,lastTime:finite(parsed.lastTime)||Date.now()};
+        return {...base,...parsed,version:7,rebirthPerks:{...base.rebirthPerks,...(parsed.rebirthPerks||{})},claimedMissions:{...base.claimedMissions,...(parsed.claimedMissions||{})},owned:{...base.owned,...(parsed.owned||{})},stock:{pineapple:stockFromSave(parsed.stock?.pineapple,parsed.version>=7),apple:stockFromSave(parsed.stock?.apple,parsed.version>=7),grape:stockFromSave(parsed.stock?.grape,parsed.version>=7)},products:{...base.products,...(parsed.products||{})},moneyUpgrades:{...base.moneyUpgrades,...(parsed.moneyUpgrades||{})},money:toBigBalance(parsed.money),yearCount:Math.max(0,finite(parsed.yearCount)),dragonLevel:Math.max(1,finite(parsed.dragonLevel)||1),dragonExp:Math.max(0,finite(parsed.dragonExp)),dragonAura:String(parsed.dragonAura||''),points:oldBalance?toBigBalance(compressOldBalance(parsed.points)):toBigBalance(parsed.points),total:oldBalance?toBigBalance(compressOldBalance(parsed.total,REBIRTH_REQUIREMENT*Math.pow(1.5,Math.min(parsed.rebirths||0,15)))):toBigBalance(parsed.total),lifetimeTotal:toBigBalance(parsed.lifetimeTotal),tap:toBigBalance(parsed.tap)>0n?toBigBalance(parsed.tap):1n,lastTime:finite(parsed.lastTime)||Date.now()};
       }
       return base;
     }
@@ -537,8 +540,7 @@
       const elapsed=Math.max(0,Math.min(offlineCap,seconds));
       const gained=rateBig()*BigInt(Math.floor(elapsed))*BigInt(100+8*Math.max(0,Math.floor(perkLevel('offline'))))/100n;
       if(gained>0n){state.points=safeAdd(state.points,gained);state.total=safeAdd(state.total,gained);state.lifetimeTotal=safeAdd(state.lifetimeTotal,gained)}
-      const fruitElapsed=elapsed,fruitBoost=fruitMultiplier();
-      if(labUnlocked())Object.entries(shop).forEach(([id,item])=>{if(item.fruit&&item.fruitRate)state.stock[item.fruit]+=(state.owned[id]||0)*item.fruitRate*fruitElapsed*fruitBoost;});
+      generateFruit(elapsed);
       return gained;
     }
     function load(){
@@ -567,11 +569,11 @@
     }
     function renderUpgrades(){
       Object.keys(upgradeData).forEach(id=>{
-        const item=upgradeData[id],card=document.querySelector(`[data-upgrade-card="${id}"]`),btn=document.querySelector(`[data-upgrade="${id}"]`),level=state.upgrades[id]||0,cost=upgradeCost(id),unlocked=labUnlocked()&&item.unlocked();
+        const item=upgradeData[id],card=document.querySelector(`[data-upgrade-card="${id}"]`),btn=document.querySelector(`[data-upgrade="${id}"]`),level=state.upgrades[id]||0,cost=upgradeCost(id),costStock=toBigBalance(cost)*STOCK_SCALE,unlocked=labUnlocked()&&item.unlocked();
         $(id==='pineapple'?'pineLevel':id==='apple'?'appleLevel':'grapeLevel').textContent=`レベル ${level}（上限なし）`;
         $(id==='pineapple'?'pineCost':id==='apple'?'appleCost':'grapeCost').textContent=`${item.emoji} ${fmt(cost)}`;
-        card.classList.toggle('locked',!unlocked);card.classList.toggle('ready-card',unlocked&&state.stock[item.fruit]>=cost);
-        btn.disabled=!unlocked;btn.textContent=!unlocked?'ロック中':`強化する · Lv.${level+1}`;btn.classList.toggle('upgrade-ready',unlocked&&state.stock[item.fruit]>=cost);
+        card.classList.toggle('locked',!unlocked);card.classList.toggle('ready-card',unlocked&&state.stock[item.fruit]>=costStock);
+        btn.disabled=!unlocked;btn.textContent=!unlocked?'ロック中':`強化する · Lv.${level+1}`;btn.classList.toggle('upgrade-ready',unlocked&&state.stock[item.fruit]>=costStock);
         const note=$(id==='pineapple'?'pineNote':id==='apple'?'appleNote':'grapeNote');
         if(note){note.textContent=unlocked?`${item.desc}（現在Lv.${level}）`:item.requirement||'パイナップル農園を買うと解放';note.style.display=unlocked?'block':'none'}
         btn.setAttribute('aria-label',unlocked?`${item.name}を${cost}${item.emoji}で強化`:`${item.name}はまだロック中`);
@@ -579,7 +581,7 @@
     }
     function render(){
       $('score').textContent=fmt(state.points);$('tapPower').textContent='+'+fmt(tapPowerBig());$('perSecond').textContent=fmt(rateBig());$('moneyStat').textContent=fmt(state.money);$('money').textContent=fmt(state.money);$('yearCount').textContent=fmt(state.yearCount)+'年';$('saleMultiplier').textContent='×'+productSaleMultiplier().toFixed(2);
-      $('stockPineapple').textContent=fmt(state.stock.pineapple);$('stockApple').textContent=fmt(state.stock.apple);$('stockGrape').textContent=fmt(state.stock.grape);
+      $('stockPineapple').textContent=fmtStock(state.stock.pineapple);$('stockApple').textContent=fmtStock(state.stock.apple);$('stockGrape').textContent=fmtStock(state.stock.grape);
       $('farmLevel').textContent=`🍉 すいか王国レベル ${fmt(1n+state.total/500n)} ・ 農園 ${fmt(['melonfarm','golden','bigmelonfarm','greenhouse','hydroponic','skyfarm','moonfarm'].reduce((sum,id)=>sum+(state.owned[id]||0),0))}個`;
       renderShop();renderUpgrades();
       const labOpen=labUnlocked();$('labLocked').style.display=labOpen?'none':'block';$('upgradeList').style.display=labOpen?'grid':'none';$('labRebirthProgress').textContent=`🌌 一年待ち ${fmt(Math.min(state.rebirths,LAB_UNLOCK_REBIRTHS))} / ${LAB_UNLOCK_REBIRTHS}回`; $('labLifetimeProgress').textContent=`🍉 累計 ${fmt(state.lifetimeTotal<BigInt(labRequiredLifetime())?state.lifetimeTotal:BigInt(labRequiredLifetime()))} / ${fmt(labRequiredLifetime())}`;
@@ -749,7 +751,18 @@
     };
     function addPoints(n){const actual=scaledGain(n);state.points=safeAdd(state.points,actual);state.total=safeAdd(state.total,actual);state.lifetimeTotal=safeAdd(state.lifetimeTotal,actual);render();return actual}
     function spawnFloat(text,x,y){const parent=$('fruitRain'),el=document.createElement('span');el.className='float-text';el.textContent=text;el.style.left=x+'px';el.style.top=y+'px';parent.appendChild(el);setTimeout(()=>el.remove(),850)}
-    function generateFruit(seconds=1){if(!labUnlocked())return;const fruitBoost=fruitMultiplier();Object.entries(shop).forEach(([id,item])=>{if(item.fruit&&item.fruitRate)state.stock[item.fruit]+=(state.owned[id]||0)*item.fruitRate*seconds*fruitBoost;})}
+    function generateFruit(seconds=1){
+      if(!labUnlocked())return;
+      const secondsUnits=toBigBalance(Math.floor(Math.max(0,Number(seconds)||0)*Number(STOCK_SCALE)));
+      const fruitBoostUnits=STOCK_SCALE+levelBig(perkLevel('fruit'))*80000n+levelBig(perkLevel('fruitluck'))*150000n;
+      Object.entries(shop).forEach(([id,item])=>{
+        if(!item.fruit||!item.fruitRate)return;
+        const owned=toBigBalance(state.owned[id]||0);
+        const rateUnits=BigInt(Math.round(Number(item.fruitRate)*Number(STOCK_SCALE)));
+        const gained=owned*rateUnits*secondsUnits*fruitBoostUnits/(STOCK_SCALE*STOCK_SCALE);
+        state.stock[item.fruit]=safeAdd(state.stock[item.fruit]||0n,gained);
+      });
+    }
 
     $('melonButton').addEventListener('click',e=>{
       state.clicks=(state.clicks||0)+1;
@@ -773,8 +786,8 @@
     $('upgradeList').addEventListener('click',e=>{
       const btn=e.target.closest('[data-upgrade]');if(!btn)return;const id=btn.dataset.upgrade,item=upgradeData[id];if(!item)return;
       if(!labUnlocked()){toast('🧪 先に強化ラボを解放してね！');return}if(!item.unlocked()){toast(item.requirement||'🍍 パイナップル農園を先に買おう！');return}
-      const cost=upgradeCost(id);if(state.stock[item.fruit]<cost){toast(`あと ${fmt(cost-state.stock[item.fruit])} ${item.emoji} 必要だよ！`);return}
-      state.stock[item.fruit]-=cost;state.upgrades[id]=(state.upgrades[id]||0)+1;render();save();toast(`${item.emoji} ${item.name} Lv.${state.upgrades[id]}！ すいかがパワーアップ！`);
+      const cost=upgradeCost(id),costStock=toBigBalance(cost)*STOCK_SCALE;if(state.stock[item.fruit]<costStock){toast(`あと ${fmtStock(costStock-state.stock[item.fruit])} ${item.emoji} 必要だよ！`);return}
+      state.stock[item.fruit]-=costStock;state.upgrades[id]=(state.upgrades[id]||0)+1;render();save();toast(`${item.emoji} ${item.name} Lv.${state.upgrades[id]}！ すいかがパワーアップ！`);
     });
     $('saveBtn').addEventListener('click',()=>save(true));
     $('resetBtn').addEventListener('click',()=>$('resetModal').classList.add('show'));
@@ -793,16 +806,16 @@
       [{id:'tap5000',text:'🍉 すいかを5,000回タップ',type:'clicks',target:5000,reward:500000},{id:'farm100',text:'🌱 すいか畑を100個買う',type:'farms',target:100,reward:750000},{id:'fruit300',text:'🍍🍎🍇 フルーツを300個集める',type:'fruit',target:300,reward:1000000}]
     ];
     function currentMissions(){return missionTiers[missionTier()]}
-    function missionProgress(m){if(m.type==='clicks')return state.clicks||0;if(m.type==='farms')return state.owned.melonfarm||0;if(m.type==='fruit')return (state.stock.pineapple||0)+(state.stock.apple||0)+(state.stock.grape||0);if(m.type==='total')return state.total||0;return 0}
+    function missionProgress(m){if(m.type==='clicks')return state.clicks||0;if(m.type==='farms')return state.owned.melonfarm||0;if(m.type==='fruit')return ((state.stock.pineapple||0n)+(state.stock.apple||0n)+(state.stock.grape||0n))/STOCK_SCALE;if(m.type==='total')return state.total||0;return 0}
     function missionReward(m){return Math.floor(m.reward*(1+perkLevel('mission')*.15))}
     function goldenRange(){const p=state.lifetimeTotal||0;if(p<10000)return [1,2];if(p<100000)return [2,4];if(p<1000000)return [3,6];return [5,10]}
     function goldenMultiplier(){const [min,max]=goldenRange();const roll=min+Math.random()*(max-min);const aura=state.dragonAura==='gold'?1.5:1;return roll*(1+perkLevel('golden')*.08)*aura*dragonPowerMultiplier()}
     function dragonUnlocked(){return (state.lifetimeTotal||0)>=1000000}
     const dragonAuras=[['power','🔥 焼けるすいか','タップ・自動生産 ×1.25'],['gold','✨ 黄金の眼','黄金スイカ報酬 ×1.50'],['farm','🌱 豊穣の翼','農園生産 ×1.50'],['luck','🍀 幸運の牙','クリティカル率 +10%'],['rebirth','🌌 転生の息吹','一年待ちボーナス +10%']];
     function dragonExpNeed(lv){return Math.floor(100*Math.pow(1.6,Math.max(0,lv-1)))}
-    function dragonFeed(type){if(!dragonUnlocked())return;const values={pineapple:10,apple:25,grape:50};const v=values[type]||0;if((state.stock[type]||0)<=0){toast('そのフルーツが足りないよ！');return}state.stock[type]--;state.dragonExp=(state.dragonExp||0)+v;while(state.dragonExp>=dragonExpNeed(state.dragonLevel||1)){state.dragonExp-=dragonExpNeed(state.dragonLevel||1);state.dragonLevel=(state.dragonLevel||1)+1;toast(`🐉 ドラゴンがLv.${state.dragonLevel}に成長！`)}save();render()}
+    function dragonFeed(type){if(!dragonUnlocked())return;const values={pineapple:10,apple:25,grape:50};const v=values[type]||0;if((state.stock[type]||0n)<STOCK_SCALE){toast('そのフルーツが足りないよ！');return}state.stock[type]-=STOCK_SCALE;state.dragonExp=(state.dragonExp||0)+v;while(state.dragonExp>=dragonExpNeed(state.dragonLevel||1)){state.dragonExp-=dragonExpNeed(state.dragonLevel||1);state.dragonLevel=(state.dragonLevel||1)+1;toast(`🐉 ドラゴンがLv.${state.dragonLevel}に成長！`)}save();render()}
     $('goldenBtn').addEventListener('click',()=>{if(!state.goldenReady)return;state.goldenReady=false;const tapBonus=Number(state.tap>400n?400n:state.tap);const baseBonus=Math.max(75,Math.min(400,Math.floor(100+rate()*.8+tapBonus)));const mult=goldenMultiplier();const bonus=Math.floor(baseBonus*mult);const awarded=addPoints(bonus);state.goldenNext=Date.now()+Math.max(0,35000+Math.random()*45000-perkLevel('goldspeed')*3*1000);save();render();toast(`✨ 黄金のすいか！ ×${mult.toFixed(1)} → +${fmt(awarded)}ポイント！`)});
-    document.querySelectorAll('[data-mission-slot]').forEach(btn=>btn.addEventListener('click',()=>{const slot=Number(btn.dataset.missionSlot),m=currentMissions()[slot],id=m.id;if(!m||state.claimedMissions[id])return;if(missionProgress(m)<m.target)return;state.claimedMissions[id]=true;const reward=missionReward(m);if(m.type==='fruit'){state.stock.pineapple=(state.stock.pineapple||0)+Math.max(1,Math.floor(reward/5000))}else exactPoints(reward);save();render();toast(m.type==='fruit'?`🎉 ミッション達成！🍍フルーツを受け取ったよ！`:`🎉 ミッション達成！ +${fmt(reward)}ポイント！`)}));
+    document.querySelectorAll('[data-mission-slot]').forEach(btn=>btn.addEventListener('click',()=>{const slot=Number(btn.dataset.missionSlot),m=currentMissions()[slot],id=m.id;if(!m||state.claimedMissions[id])return;if(missionProgress(m)<m.target)return;state.claimedMissions[id]=true;const reward=missionReward(m);if(m.type==='fruit'){state.stock.pineapple=(state.stock.pineapple||0n)+toBigBalance(Math.max(1,Math.floor(reward/5000)))*STOCK_SCALE}else exactPoints(reward);save();render();toast(m.type==='fruit'?`🎉 ミッション達成！🍍フルーツを受け取ったよ！`:`🎉 ミッション達成！ +${fmt(reward)}ポイント！`)}));
     document.querySelectorAll('[data-dragon-feed]').forEach(btn=>btn.addEventListener('click',()=>dragonFeed(btn.dataset.dragonFeed)));
 
     document.querySelectorAll('[data-craft-product]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.craftProduct,p=productData[id];if(!p)return;const cost=Math.ceil(p.cost*productMaterialMultiplier()),costBig=toBigBalance(cost);if(state.points<costBig){toast(`あと ${fmt(costBig-state.points)} 🍉ポイント必要だよ！`);return}state.points-=costBig;state.products[id]=(state.products[id]||0)+1;render();save();toast(`${p.emoji} ${p.name}を1個作ったよ！`)}));
@@ -931,14 +944,14 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     $('redeemModal').addEventListener('click',e=>{if(e.target===$('redeemModal'))$('redeemModal').classList.remove('show')});
     $('redeemBtn').addEventListener('click',async()=>{
       const code=($('redeemCode').value||'').trim().toUpperCase();if(!code){$('redeemStatus').textContent='コードを入力してね';return}
-      try{const res=await fetch(apiUrl('/api/redeem'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});const data=await res.json();if(!res.ok)throw new Error(data.error||'redeem');const amount=Math.floor(Number(data.amount)||0);if(data.type==='points'){exactPoints(amount);render();save()}else if(data.type==='shards'){state.rebirthShards+=amount;render();save()}else if(data.type==='money'){state.money=safeAdd(state.money,toBigBalance(amount));render();save()}else if(['pineapple','apple','grape'].includes(data.type)){state.stock[data.type]+=amount;render();save()}$('redeemStatus').textContent=`🎉 ${rewardLabel(data.type,amount)}を受け取ったよ！`;$('redeemCode').value='';toast('🎁 コード報酬を受け取ったよ！')}catch(e){$('redeemStatus').textContent='❌ '+e.message}
+      try{const res=await fetch(apiUrl('/api/redeem'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});const data=await res.json();if(!res.ok)throw new Error(data.error||'redeem');const amount=Math.floor(Number(data.amount)||0);if(data.type==='points'){exactPoints(amount);render();save()}else if(data.type==='shards'){state.rebirthShards+=amount;render();save()}else if(data.type==='money'){state.money=safeAdd(state.money,toBigBalance(amount));render();save()}else if(['pineapple','apple','grape'].includes(data.type)){state.stock[data.type]=safeAdd(state.stock[data.type]||0n,toBigBalance(amount)*STOCK_SCALE);render();save()}$('redeemStatus').textContent=`🎉 ${rewardLabel(data.type,amount)}を受け取ったよ！`;$('redeemCode').value='';toast('🎁 コード報酬を受け取ったよ！')}catch(e){$('redeemStatus').textContent='❌ '+e.message}
     });
     setTimeout(refreshRanking,800);
 
     const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';state.products={...fresh().products,...(state.products||{})};state.moneyUpgrades={...fresh().moneyUpgrades,...(state.moneyUpgrades||{})};state.money=toBigBalance(state.money);state.yearCount=Math.max(0,finite(state.yearCount));render();if(offline>0n)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
     setInterval(()=>{const income=rateBig();if(income>0n){state.points=safeAdd(state.points,income);state.total=safeAdd(state.total,income);state.lifetimeTotal=safeAdd(state.lifetimeTotal,income)}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
-    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=24').catch(()=>{}))}
+    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=25').catch(()=>{}))}
   })();
   </script>
 
