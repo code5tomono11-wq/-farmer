@@ -904,7 +904,7 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';state.products={...fresh().products,...(state.products||{})};state.moneyUpgrades={...fresh().moneyUpgrades,...(state.moneyUpgrades||{})};state.money=Math.max(0,finite(state.money));state.yearCount=Math.max(0,finite(state.yearCount));render();if(offline>0n)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
     setInterval(()=>{const income=rateBig();if(income>0n){state.points=safeAdd(state.points,income);state.total=safeAdd(state.total,income);state.lifetimeTotal=safeAdd(state.lifetimeTotal,income)}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
-    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=22').catch(()=>{}))}
+    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=23').catch(()=>{}))}
   })();
   </script>
 
