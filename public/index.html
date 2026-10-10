@@ -382,7 +382,7 @@
     const fmt=n=>{
       n=Number(n);
       if(Number.isNaN(n)||n<=0)return '0';
-      if(n===Infinity)return '∞';
+      if(n===Infinity)n=Number.MAX_VALUE;
       if(!Number.isFinite(n))return '0';
       if(n<10000)return Math.floor(n).toLocaleString('ja-JP');
       const units=['万','億','兆','京','垓','秭','穣','溝','澗','正','載','極','恒河沙','阿僧祇','那由他','不可思議','無量大数'];
@@ -401,7 +401,8 @@
     function pruneSelectedRebirthPerks(){let previous=-1;while(previous!==selectedRebirthPerks.length){previous=selectedRebirthPerks.length;selectedRebirthPerks=selectedRebirthPerks.filter(id=>{const p=perkData[id];return !!p&&upcomingRebirth()>=(p.minRebirths||1)&&(p.requires||[]).every(req=>perkLevel(req)>0||selectedRebirthPerks.includes(req))})}Object.keys(selectedRebirthLevels).forEach(id=>{if(!selectedRebirthPerks.includes(id))delete selectedRebirthLevels[id]})}
     function labRequiredLifetime(){return Math.max(0,LAB_UNLOCK_LIFETIME-perkLevel('labshortcut')*25000)}
     function labUnlocked(){return (state.rebirths||0)>=LAB_UNLOCK_REBIRTHS&&(state.lifetimeTotal||0)>=labRequiredLifetime()}
-    function scaledGain(n){return Math.max(0,finite(n))}
+    function safeAdd(a,b){a=Number(a);b=Number(b);if(Number.isNaN(a)||a<0)a=0;if(Number.isNaN(b)||b<0)b=0;if(a===Infinity||b===Infinity)return Number.MAX_VALUE;if(!Number.isFinite(a))a=Number.MAX_VALUE;if(!Number.isFinite(b))b=Number.MAX_VALUE;return a>Number.MAX_VALUE-b?Number.MAX_VALUE:a+b}
+    function scaledGain(n){n=Number(n);if(n===Infinity)return Number.MAX_VALUE;if(Number.isNaN(n))return 0;return Math.max(0,n)}
     function effectiveOwned(n){return Math.max(0,finite(n))}
     function upgradeMultiplier(){const labIsOpen=labUnlocked(),dragonBoost=dragonPowerMultiplier(),powerAura=state.dragonAura==='power'?1.25:1,pine=labIsOpen?(state.upgrades.pineapple||0)*.10:0,apple=labIsOpen?(state.upgrades.apple||0)*.15:0,grape=labIsOpen?(state.upgrades.grape||0)*.20:0,labBonus=labIsOpen?1+perkLevel('lab')*.05+perkLevel('labpower')*.08:1,tapBonus=1+perkLevel('combo')*.08+perkLevel('tapburst')*.15+perkLevel('tapmaster')*.10;return (1+pine+apple+grape)*rebirthMultiplier()*labBonus*tapBonus*dragonBoost*powerAura}
     function rebirthMultiplier(){const aura=state.dragonAura==='rebirth'?1.10:1;const byRebirth=(state.rebirths||0)*.03;const byShards=(state.rebirthShards||0)*.01;const bySkill=perkLevel('rebirthboost')*.05;return (1+byRebirth+byShards+bySkill)*aura}
@@ -449,7 +450,7 @@
       const offlineCap=(8+perkLevel('idleplus'))*60*60;
       const elapsed=Math.max(0,Math.min(offlineCap,seconds));
       const gained=rate()*elapsed*(1+perkLevel('offline')*.08);
-      if(gained>0){state.points+=gained;state.total+=gained;state.lifetimeTotal+=gained}
+      if(gained>0){state.points=safeAdd(state.points,gained);state.total=safeAdd(state.total,gained);state.lifetimeTotal=safeAdd(state.lifetimeTotal,gained)}
       const fruitElapsed=elapsed,fruitBoost=fruitMultiplier();
       if(labUnlocked())Object.entries(shop).forEach(([id,item])=>{if(item.fruit&&item.fruitRate)state.stock[item.fruit]+=(state.owned[id]||0)*item.fruitRate*fruitElapsed*fruitBoost;});
       return gained;
@@ -660,7 +661,7 @@
       $('cancelRebirth').textContent='まだ待たない';
       selectedRebirthPerks=[];selectedRebirthLevels={};
     };
-    function addPoints(n){const actual=scaledGain(n);state.points+=actual;state.total+=actual;state.lifetimeTotal+=actual;render();return actual}
+    function addPoints(n){const actual=scaledGain(n);state.points=safeAdd(state.points,actual);state.total=safeAdd(state.total,actual);state.lifetimeTotal=safeAdd(state.lifetimeTotal,actual);render();return actual}
     function spawnFloat(text,x,y){const parent=$('fruitRain'),el=document.createElement('span');el.className='float-text';el.textContent=text;el.style.left=x+'px';el.style.top=y+'px';parent.appendChild(el);setTimeout(()=>el.remove(),850)}
     function generateFruit(seconds=1){if(!labUnlocked())return;const fruitBoost=fruitMultiplier();Object.entries(shop).forEach(([id,item])=>{if(item.fruit&&item.fruitRate)state.stock[item.fruit]+=(state.owned[id]||0)*item.fruitRate*seconds*fruitBoost;})}
 
@@ -695,7 +696,7 @@
     $('confirmReset').addEventListener('click',()=>{state=fresh();save();render();$('resetModal').classList.remove('show');toast('🌱 すべてリセットしたよ！新しいすいか畑を育てよう')});
     $('resetModal').addEventListener('click',e=>{if(e.target===$('resetModal'))$('resetModal').classList.remove('show')});
     $('dailyBtn').addEventListener('click',()=>{const today=new Date().toISOString().slice(0,10);if(state.dailyClaim===today)return;const bonus=Math.max(50,Math.min(250,Math.floor(50+rate()*.5)));state.dailyClaim=today;const awarded=addPoints(bonus);save();render();toast(`🎁 ログインボーナス +${fmt(awarded)}ポイント！`)});
-    function exactPoints(n){const actual=Math.max(0,Math.floor(Number(n)||0));state.points+=actual;state.total+=actual;state.lifetimeTotal+=actual;return actual}
+    function exactPoints(n){const raw=Number(n),actual=!Number.isFinite(raw)&&raw>0?Number.MAX_VALUE:Math.max(0,Math.floor(Number.isNaN(raw)?0:raw));state.points=safeAdd(state.points,actual);state.total=safeAdd(state.total,actual);state.lifetimeTotal=safeAdd(state.lifetimeTotal,actual);return actual}
     function missionTier(){const p=state.lifetimeTotal||0;if(p<1000)return 0;if(p<10000)return 1;if(p<50000)return 2;if(p<250000)return 3;if(p<1000000)return 4;return 5}
     const missionTiers=[
       [{id:'tap30',text:'🍉 すいかを30回タップ',type:'clicks',target:30,reward:100},{id:'farm3',text:'🌱 すいか畑を3個買う',type:'farms',target:3,reward:150},{id:'points500',text:'✨ この周回で500ポイント稼ぐ',type:'total',target:500,reward:200}],
@@ -848,9 +849,9 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     setTimeout(refreshRanking,800);
 
     const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';state.products={...fresh().products,...(state.products||{})};state.moneyUpgrades={...fresh().moneyUpgrades,...(state.moneyUpgrades||{})};state.money=Math.max(0,finite(state.money));state.yearCount=Math.max(0,finite(state.yearCount));render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
-    setInterval(()=>{const income=rate();if(income>0){state.points+=income;state.total+=income;state.lifetimeTotal+=income}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
+    setInterval(()=>{const income=rate();if(income>0){state.points=safeAdd(state.points,income);state.total=safeAdd(state.total,income);state.lifetimeTotal=safeAdd(state.lifetimeTotal,income)}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
-    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=20').catch(()=>{}))}
+    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=21').catch(()=>{}))}
   })();
   </script>
 
