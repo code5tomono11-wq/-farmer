@@ -800,6 +800,16 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     function ensurePlayerName(){
       const saved=localStorage.getItem('suika-ranking-name')||'';if(!$('rankingName').value)$('rankingName').value=saved;return ($('rankingName').value||'').trim();
     }
+    function rankScoreString(value){
+      const n=Number(value);
+      if(!Number.isFinite(n)||n<0)return '0';
+      const raw=String(Math.floor(n));
+      if(!/[eE]/.test(raw))return raw;
+      const parts=raw.toLowerCase().split('e'),mantissa=parts[0],exponent=Number(parts[1]),chunks=mantissa.split('.'),digits=chunks.join(''),point=chunks[0].length+exponent;
+      if(point<=0)return '0';
+      if(point>=digits.length)return digits+'0'.repeat(Math.min(1000,point-digits.length));
+      return digits.slice(0,point);
+    }
     function showRanking(rows){
       const host=$('rankingList');if(!Array.isArray(rows)||!rows.length){host.innerHTML='<div class="tool-status">まだランキングデータがないよ。</div>';return}
       host.innerHTML=rows.map((r,i)=>`<div class="rank-row"><div class="rank-no">${i+1}</div><div class="rank-name">${String(r.name||'名無し').replace(/[&<>"']/g,'')}</div><div class="rank-score">${fmt(r.score)} 🍉</div></div>`).join('');
@@ -811,7 +821,7 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     $('rankingSaveBtn').addEventListener('click',async()=>{
       const name=ensurePlayerName();if(name.length<1||name.length>12){toast('ランキング名は1～12文字で入力してね');return}
       localStorage.setItem('suika-ranking-name',name);
-      try{const res=await fetch(apiUrl('/api/ranking'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,score:Math.floor(state.lifetimeTotal||0)})});const data=await res.json();if(!res.ok)throw new Error(data.error||'ranking');showRanking(data.rows||[]);toast('🏆 ランキングを更新したよ！')}catch(e){toast('ランキングサーバーに接続できないよ')}
+      try{const res=await fetch(apiUrl('/api/ranking'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,score:rankScoreString(state.lifetimeTotal||0)})});const data=await res.json();if(!res.ok)throw new Error(data.error||'ranking');showRanking(data.rows||[]);toast('🏆 ランキングを更新したよ！')}catch(e){toast('ランキングサーバーに接続できないよ')}
     });
 
     $('adminOpenBtn').addEventListener('click',()=>{$('adminModal').classList.add('show');$('adminPassword').focus()});
@@ -840,7 +850,7 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';state.products={...fresh().products,...(state.products||{})};state.moneyUpgrades={...fresh().moneyUpgrades,...(state.moneyUpgrades||{})};state.money=Math.max(0,finite(state.money));state.yearCount=Math.max(0,finite(state.yearCount));render();if(offline>0)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
     setInterval(()=>{const income=rate();if(income>0){state.points+=income;state.total+=income;state.lifetimeTotal+=income}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
-    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=19').catch(()=>{}))}
+    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=20').catch(()=>{}))}
   })();
   </script>
 
