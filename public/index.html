@@ -397,7 +397,7 @@
       return BigInt(Math.floor(n));
     }
     function stockFromSave(value,storedUnits=false){if(storedUnits)return toBigBalance(value);const n=Number(value);if(Number.isNaN(n)||n<=0)return 0n;if(!Number.isFinite(n))return BIG_MAX;return BigInt(Math.floor(n*Number(STOCK_SCALE)))}
-    function fmtStock(value){const units=toBigBalance(value),whole=units/STOCK_SCALE,frac=units%STOCK_SCALE;if(frac===0n)return fmtBigBalance(whole);const decimals=frac.toString().padStart(6,'0').replace(/0+$/,'');return fmtBigBalance(whole)+'.'+decimals}
+    function fmtStock(value){const units=toBigBalance(value),whole=units/STOCK_SCALE,frac=units%STOCK_SCALE;if(whole>=10000n||frac===0n)return fmtBigBalance(whole);const decimals=frac.toString().padStart(6,'0').replace(/0+$/,'');return fmtBigBalance(whole)+'.'+decimals}
     function fmtBigBalance(value){
       const n=toBigBalance(value),digits=n.toString();
       if(digits.length<=4)return n.toLocaleString('ja-JP');
@@ -482,7 +482,7 @@
     }
     function rebirthMultiplier(){const aura=state.dragonAura==='rebirth'?1.10:1;const byRebirth=(state.rebirths||0)*.03;const byShards=(state.rebirthShards||0)*.01;const bySkill=perkLevel('rebirthboost')*.05;return (1+byRebirth+byShards+bySkill)*aura}
     function rebirthRequirement(){const discount=Math.pow(.92,perkLevel('rebirthdiscount'));return Math.max(1,safeCost(REBIRTH_REQUIREMENT*Math.pow(1.5,Math.max(0,state.rebirths||0))*discount))}
-    function rate(){const farmAura=state.dragonAura==='farm'?1.5:1;const farmRate=Object.entries(shop).reduce((sum,[id,item])=>sum+(item.rate||0)*effectiveOwned(state.owned[id]||0),0);const raw=farmRate+Math.max(0,finite(state.legacyRate||0));return scaledGain(raw*upgradeMultiplier()*farmAura*(1+perkLevel('farm')*.08+perkLevel('farmking')*.15))}
+    function rate(){const value=rateBig();return value>BIG_MAX?Number.MAX_VALUE:Number(value)}
     function safeCost(value){if(Number.isFinite(value))return Math.max(1,Math.ceil(value));return value>0?Number.MAX_VALUE:1}
     function nextCost(id,ownedCount=state.owned[id]||0){const item=shop[id],discount=Math.pow(.95,perkLevel('coupon'))*Math.pow(.97,perkLevel('farmcost'));return safeCost(item.cost*Math.pow(item.growth||1.17,ownedCount)*discount)}
     function batchCost(id,quantity=buyQuantity){let total=0;const owned=state.owned[id]||0;for(let i=0;i<quantity;i++){total+=nextCost(id,owned+i);if(!Number.isFinite(total))return Number.MAX_VALUE}return total}
@@ -951,7 +951,7 @@ $('rebirthModal').addEventListener('click',e=>{if(e.target===$('rebirthModal')){
     const offline=load();state.dragonLevel=state.dragonLevel||1;state.dragonExp=state.dragonExp||0;state.dragonAura=state.dragonAura||'';state.products={...fresh().products,...(state.products||{})};state.moneyUpgrades={...fresh().moneyUpgrades,...(state.moneyUpgrades||{})};state.money=toBigBalance(state.money);state.yearCount=Math.max(0,finite(state.yearCount));render();if(offline>0n)setTimeout(()=>toast(`🌙 おかえり！お休み中に +${fmt(offline)} 🍉ポイント`),500);
     setInterval(()=>{const income=rateBig();if(income>0n){state.points=safeAdd(state.points,income);state.total=safeAdd(state.total,income);state.lifetimeTotal=safeAdd(state.lifetimeTotal,income)}generateFruit(1);if(!state.goldenReady&&Date.now()>=(state.goldenNext||Date.now()+35000)){state.goldenReady=true;toast('✨ 黄金のすいかが出現したよ！')}render()},1000);
     setInterval(()=>save(false),10000);document.addEventListener('visibilitychange',()=>{if(document.hidden)save(false)});window.addEventListener('beforeunload',()=>save(false));
-    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=25').catch(()=>{}))}
+    if('serviceWorker'in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=26').catch(()=>{}))}
   })();
   </script>
 
