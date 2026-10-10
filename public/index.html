@@ -481,7 +481,8 @@
       if(critical){const critN=10n+2n*levelBig(perkLevel('crit'));result=result*critN/5n}
       return result;
     }
-    function rebirthMultiplier(){const parts=multiplierParts(false);const ratio=Number(parts.numerator)/Number(parts.denominator);return Number.isFinite(ratio)?ratio:Number.MAX_VALUE}
+    function rebirthMultiplierScaled(){const scale=COST_SCALE;let value=scale+toBigBalance(state.rebirths||0)*3n*scale/100n+toBigBalance(state.rebirthShards||0)*scale/100n+toBigBalance(perkLevel('rebirthboost'))*5n*scale/100n;if(state.dragonAura==='rebirth')value=value*11n/10n;return value}
+    function rebirthMultiplier(){const value=rebirthMultiplierScaled();return value/BigInt(1)>BIG_MAX?Number.MAX_VALUE:Number(value)/Number(COST_SCALE)}
     function rebirthRequirement(){const growth=powScaled(1.5,state.rebirths||0),discount=powScaled(.92,perkLevel('rebirthdiscount'));const required=toBigBalance(REBIRTH_REQUIREMENT)*growth/COST_SCALE*discount/COST_SCALE;return required>0n?required:1n}
     function rate(){const value=rateBig();return value>BIG_MAX?Number.MAX_VALUE:Number(value)}
     function powScaled(base,exponent){let e=toBigBalance(exponent),factor=BigInt(Math.max(0,Math.round(Number(base)*Number(COST_SCALE)))),result=COST_SCALE;while(e>0n){if(e%2n===1n)result=result*factor/COST_SCALE;e/=2n;if(e>0n){factor=factor*factor/COST_SCALE;if(factor===0n)return 0n}}return result}
@@ -500,7 +501,8 @@
     function productMaterialFactor(){return powScaled(1-moneyUpgradeData.factory.bonus,moneyUpgradeLevel('factory'))}
     function productMaterialMultiplier(){return Number(productMaterialFactor())/Number(COST_SCALE)}
     function productMaterialCost(base){const cost=toBigBalance(base)*productMaterialFactor()/COST_SCALE;return cost>0n?cost:1n}
-    function productSaleMultiplier(){const n=fixedMultiplier(moneyUpgradeLevel('sale'),moneyUpgradeData.sale.bonus);return Number(n)/Number(MONEY_SCALE)}
+    function productSaleMultiplier(){return fixedMultiplier(moneyUpgradeLevel('sale'),moneyUpgradeData.sale.bonus)}
+    function formatScaledMultiplier(value,scale=MONEY_SCALE,decimals=2){const whole=value/scale;if(whole>1000000n)return fmt(whole);const fraction=(value%scale)*10n**BigInt(decimals)/scale;return whole.toString()+'.'+fraction.toString().padStart(decimals,'0')}
     function moneyConversionMultiplier(){const a=fixedMultiplier(moneyUpgradeLevel('conversion'),moneyUpgradeData.conversion.bonus),b=fixedMultiplier(moneyUpgradeLevel('interest'),moneyUpgradeData.interest.bonus);return (Number(a)/Number(MONEY_SCALE))*(Number(b)/Number(MONEY_SCALE))}
     const MONEY_SCALE=1000000n;
     function fixedMultiplier(level,bonus){return MONEY_SCALE+levelBig(level)*BigInt(Math.round(Number(bonus)*Number(MONEY_SCALE)))}
@@ -585,7 +587,7 @@
       });
     }
     function render(){
-      $('score').textContent=fmt(state.points);$('tapPower').textContent='+'+fmt(tapPowerBig());$('perSecond').textContent=fmt(rateBig());$('moneyStat').textContent=fmt(state.money);$('money').textContent=fmt(state.money);$('yearCount').textContent=fmt(state.yearCount)+'年';$('saleMultiplier').textContent='×'+productSaleMultiplier().toFixed(2);
+      $('score').textContent=fmt(state.points);$('tapPower').textContent='+'+fmt(tapPowerBig());$('perSecond').textContent=fmt(rateBig());$('moneyStat').textContent=fmt(state.money);$('money').textContent=fmt(state.money);$('yearCount').textContent=fmt(state.yearCount)+'年';$('saleMultiplier').textContent='×'+formatScaledMultiplier(productSaleMultiplier(),MONEY_SCALE,2);
       $('stockPineapple').textContent=fmtStock(state.stock.pineapple);$('stockApple').textContent=fmtStock(state.stock.apple);$('stockGrape').textContent=fmtStock(state.stock.grape);
       $('farmLevel').textContent=`🍉 すいか王国レベル ${fmt(1n+state.total/500n)} ・ 農園 ${fmt(['melonfarm','golden','bigmelonfarm','greenhouse','hydroponic','skyfarm','moonfarm'].reduce((sum,id)=>sum+toBigBalance(state.owned[id]||0n),0n))}個`;
       renderShop();renderUpgrades();
@@ -596,8 +598,8 @@
       $('collectionText').textContent=fruits.length?fruits.join(' ・ '):'農園を買って、強化用フルーツを集めよう！';$('lifetimeText').textContent=`これまでの累計：${fmt(state.lifetimeTotal)} 🍉`;
       const need=rebirthRequirement(),needBig=need,remaining=state.total>=needBig?0n:needBig-state.total,can=state.total>=needBig,reward=rebirthReward();
       $('rebirthBtn').textContent=can?`⏳ 一年待つ！ +${fmt(reward)}しずく`:`🔒 あと ${fmt(remaining)}`;$('rebirthBtn').classList.toggle('ready',can);$('rebirthBtn').disabled=false;$('rebirthBtn').removeAttribute('disabled');$('rebirthBtn').style.pointerEvents='auto';$('rebirthBtn').title=can?'クリックして一年待つ':'まだ条件不足だよ';
-      $('rebirthDesc').textContent=can?`一年待つと現在の資産が💴お金に換算され、農園・フルーツ・強化レベルが次の年へリセット。💴は消えず、しずく${reward}個と永続スキルも残るよ！`:`この年で${fmt(need)}ポイント稼ぐと一年待てるよ。待つ回数に応じて必要ポイントも増えるよ。` ;
-      $('rebirthStat').textContent=`${fmt(state.yearCount)}年待ち ・ 永久お金 ${fmt(state.money)} ・ しずく ${fmt(state.rebirthShards)} ・ ボーナス ×${rebirthMultiplier().toFixed(1)}`;
+      $('rebirthDesc').textContent=can?`一年待つと現在の資産が💴お金に換算され、農園・フルーツ・強化レベルが次の年へリセット。💴は消えず、しずく${fmt(reward)}個と永続スキルも残るよ！`:`この年で${fmt(need)}ポイント稼ぐと一年待てるよ。待つ回数に応じて必要ポイントも増えるよ。` ;
+      $('rebirthStat').textContent=`${fmt(state.yearCount)}年待ち ・ 永久お金 ${fmt(state.money)} ・ しずく ${fmt(state.rebirthShards)} ・ ボーナス ×${formatScaledMultiplier(rebirthMultiplierScaled(),COST_SCALE,1)}`;
       const activePerks=Object.keys(perkData).filter(id=>perkLevel(id)>0).map(id=>`${perkData[id].icon}${perkData[id].name} Lv.${perkLevel(id)}`);$('perkSummary').textContent=activePerks.length?'永続スキル：'+activePerks.join(' ・ '):'永続スキル：まだ選択していないよ';
       const today=new Date().toISOString().slice(0,10);$('dailyBtn').disabled=state.dailyClaim===today;$('dailyBtn').textContent=state.dailyClaim===today?'✅ 今日のボーナス受取済み':'🎁 今日のログインボーナスを受け取る';$('goldenBtn').disabled=!state.goldenReady;$('goldenBtn').textContent=state.goldenReady?'✨ 黄金のすいかをタップ！':'✨ 黄金のすいかを待とう…';$('eventHint').textContent=state.goldenReady?'今だ！タップしてボーナスをゲット！':'黄金のすいかはときどき出現するよ！';$('streakText').textContent=`🍉 すいかタップ回数：${fmt(state.clicks)}回`;
       const missions=currentMissions();missions.forEach((m,i)=>{const n=i+1;const rawProgress=missionProgress(m),progress=typeof rawProgress==='bigint'?Number(rawProgress>=BigInt(m.target)?BigInt(m.target):rawProgress):Math.min(m.target,rawProgress);const claimed=!!state.claimedMissions[m.id];const ready=progress>=m.target;
